@@ -10,10 +10,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class GrnTournamentApplication {
 
+    private static MetadataRepository metadataRepository;
+
     public static void main(String[] args) {
         SpringApplication.run(GrnTournamentApplication.class, args);
-        MetadataRepository metadataRepository = new MetadataRepository();
+        metadataRepository = new MetadataRepository();
 
     }
 
+    public static MetadataRepository getMetadataRepository() {
+        return metadataRepository;
+    }
 }
