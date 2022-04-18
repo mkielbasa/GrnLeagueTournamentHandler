@@ -6,6 +6,7 @@ import grn.database.Query;
 import grn.database.QueryRow;
 import grn.database.pojo.ChampionMastery;
 import grn.database.pojo.Player;
+import grn.database.pojo.PlayerStats;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +57,22 @@ public class PlayerService {
         insert.setColumns("playerid", "championid", "championlevel", "championpoints", "lastplaytime");
         insert.setValues(championMastery.getPlayerId(), championMastery.getChampionId(), championMastery.getChampionLevel(),
                 championMastery.getChampionPoints(), championMastery.getLastPlayTime());
+        insert.execute();
+    }
+
+    public static void clearLeagues (Player player) {
+        String sql = "delete from tournament.playerstats where playerid = ?";
+        Delete delete = new Delete(sql);
+        delete.setParams(player.getInternalId());
+        delete.execute();
+    }
+
+    public static void addLeague (PlayerStats playerStats) {
+        Insert insert = new Insert("tournament.playerstats");
+        insert.setColumns("playerid", "queuetype", "tier", "rank", "leaguepoints", "wins", "loses");
+        insert.setValues(playerStats.getPlayerId(), playerStats.getQueueType(),
+                playerStats.getTier(), playerStats.getRank(), playerStats.getLeaguePoints(),
+                playerStats.getWins(), playerStats.getLoses());
         insert.execute();
     }
 }

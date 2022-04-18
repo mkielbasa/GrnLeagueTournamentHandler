@@ -1,6 +1,9 @@
 package grn.database.pojo;
 
 
+import grn.database.QueryRow;
+import org.json.simple.JSONObject;
+
 public class PlayerStats {
 
   private long playerId;
@@ -11,6 +14,24 @@ public class PlayerStats {
   private long wins;
   private long loses;
 
+  public void fromJson (JSONObject jStats) {
+    this.queueType = (String) jStats.get("queueType");
+    this.tier = (String) jStats.get("tier");
+    this.rank = (String) jStats.get("rank");
+    this.leaguePoints = (long) jStats.get("leaguePoints");
+    this.wins = (long) jStats.get("wins");
+    this.loses = (long) jStats.get("losses");
+  }
+
+  public void fromQueryRow (QueryRow row) {
+    this.playerId = (long) row.get(1);
+    this.queueType = (String) row.get(2);
+    this.tier = (String) row.get(3);
+    this.rank = (String) row.get(4);
+    this.leaguePoints = (long) row.get(5);
+    this.wins = (long) row.get(6);
+    this.loses = (long) row.get(7);
+  }
 
   public long getPlayerId() {
     return playerId;

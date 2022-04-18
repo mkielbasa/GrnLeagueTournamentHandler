@@ -2,10 +2,12 @@ package grn.database.repository;
 
 import grn.database.pojo.ChampionMastery;
 import grn.database.pojo.Player;
+import grn.database.pojo.PlayerStats;
 import grn.database.pojo.Team;
 import grn.database.service.PlayerService;
 import grn.file.PlayerReader;
 import grn.riot.lol.endpoint.ChampionMasteryEndpoint;
+import grn.riot.lol.endpoint.LeagueEndpoint;
 import grn.riot.lol.endpoint.SummonerEndpoint;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -46,6 +48,17 @@ public class PlayerRepository {
                 championMastery.fromJson(jMaestry);
                 championMastery.setPlayerId(player.getInternalId());
                 PlayerService.addMastery(championMastery);
+            }
+        }
+        for (Player player : players) {
+            PlayerService.clearLeagues(player);
+            JSONArray jLeagues = LeagueEndpoint.getLeagueEntries(player.getId());
+            for (Object jObject : jLeagues.toArray()) {
+                JSONObject jLeague =  (JSONObject) jObject;
+                PlayerStats playerStats = new PlayerStats();
+                playerStats.fromJson(jLeague);
+                playerStats.setPlayerId(player.getInternalId());
+                PlayerService.addLeague(playerStats);
             }
         }
     }
