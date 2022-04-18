@@ -1,4 +1,4 @@
-package grn.json;
+package grn.properties.json;
 
 import grn.error.ConsoleHandler;
 import org.json.simple.JSONObject;

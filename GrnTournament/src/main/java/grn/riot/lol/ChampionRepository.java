@@ -2,17 +2,11 @@ package grn.riot.lol;
 
 
 import grn.error.ConsoleHandler;
-import grn.json.JsonFileReader;
-import grn.json.JsonParser;
-import org.json.simple.JSONArray;
+import grn.properties.json.JsonFileReader;
+import grn.properties.json.JsonParser;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 

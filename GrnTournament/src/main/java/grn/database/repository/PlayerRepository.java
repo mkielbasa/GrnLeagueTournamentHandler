@@ -1,0 +1,37 @@
+package grn.database.repository;
+
+import grn.database.pojo.Player;
+import grn.database.pojo.Team;
+import grn.database.service.PlayerService;
+import grn.file.PlayerReader;
+import grn.riot.lol.endpoint.SummonerEndpoint;
+import org.json.simple.JSONObject;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class PlayerRepository {
+    private Map<Long, Player> players = new HashMap<>();
+    private static final File TEAMS_FILE = new File("./GrnTournament/players.conf");
+
+    public PlayerRepository (TeamRepository teamRepository) {
+        Map<String, String> playersAndTeams = PlayerReader.read(TEAMS_FILE);
+        for (String summoner : playersAndTeams.keySet()) {
+            String teamName = playersAndTeams.get(summoner);
+            Team team = teamRepository.getTeam(teamName);
+            if (team == null)
+                continue;
+            JSONObject jSummoner = SummonerEndpoint.getSummonerByName(summoner);
+            Player player = new Player();
+            player.fromJson(jSummoner);
+            player.setTeamId(team.getId());
+            if (!PlayerService.playerRegistered(player.getPUuid())) {
+                PlayerService.register(player);
+            }
+        }
+    }
+
+
+}

@@ -1,9 +1,6 @@
 package grn.riot.lol;
 
 import grn.datadragon.DataDragonHandler;
-import grn.json.JsonFileReader;
-
-import java.io.File;
 
 public class MetadataRepository {
 

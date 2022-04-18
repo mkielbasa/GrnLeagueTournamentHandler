@@ -34,4 +34,16 @@ public class PropertiesHandler {
     public String getDataFileDirectory () {
         return props.getProperty("dataDragonFileDirectory");
     }
+
+    public String getRiotApiKey () {
+        return props.getProperty("riotApiKey");
+    }
+
+    public String getDbUser () {
+        return props.getProperty("dbUser");
+    }
+
+    public String getDbPass () {
+        return props.getProperty("dbPass");
+    }
 }

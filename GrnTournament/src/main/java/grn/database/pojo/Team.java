@@ -1,6 +1,8 @@
 package grn.database.pojo;
 
 
+import grn.database.QueryRow;
+
 public class Team {
 
   private long id;
@@ -8,7 +10,12 @@ public class Team {
   private String shortName;
   private String icon;
 
-
+  public void fromQueryRow(QueryRow row) {
+    this.id = (long) row.get(1);
+    this.name = (String) row.get(2);
+    this.shortName = (String) row.get(3);
+    this.icon = (String) row.get(4);
+  }
   public long getId() {
     return id;
   }
@@ -43,5 +50,6 @@ public class Team {
   public void setIcon(String icon) {
     this.icon = icon;
   }
+
 
 }

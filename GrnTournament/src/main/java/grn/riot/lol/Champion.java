@@ -1,6 +1,6 @@
 package grn.riot.lol;
 
-import grn.json.JsonParser;
+import grn.properties.json.JsonParser;
 import org.json.simple.JSONObject;
 
 public class Champion implements JsonParser {
