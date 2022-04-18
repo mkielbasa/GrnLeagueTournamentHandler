@@ -1,8 +1,10 @@
 package grn.database.service;
 
+import grn.database.Delete;
 import grn.database.Insert;
 import grn.database.Query;
 import grn.database.QueryRow;
+import grn.database.pojo.ChampionMastery;
 import grn.database.pojo.Player;
 
 import java.util.ArrayList;
@@ -39,6 +41,21 @@ public class PlayerService {
         insert.setValues(player.getAccountId(), player.getPUuid(),
                 player.getName(), player.getTeamId(), player.getProfileIconId(), player.getRevisionDate(),
                 player.getSummonerLevel(), player.getId());
+        insert.execute();
+    }
+
+    public static void clearMasteries (Player player) {
+        String sql = "delete from tournament.championmastery where playerid = ?";
+        Delete delete = new Delete(sql);
+        delete.setParams(player.getInternalId());
+        delete.execute();
+    }
+
+    public static void addMastery (ChampionMastery championMastery) {
+        Insert insert = new Insert("tournament.championmastery");
+        insert.setColumns("playerid", "championid", "championlevel", "championpoints", "lastplaytime");
+        insert.setValues(championMastery.getPlayerId(), championMastery.getChampionId(), championMastery.getChampionLevel(),
+                championMastery.getChampionPoints(), championMastery.getLastPlayTime());
         insert.execute();
     }
 }

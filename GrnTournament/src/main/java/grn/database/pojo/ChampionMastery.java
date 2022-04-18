@@ -1,6 +1,11 @@
 package grn.database.pojo;
 
 
+import grn.database.QueryRow;
+import org.json.simple.JSONObject;
+
+import java.sql.Timestamp;
+
 public class ChampionMastery {
 
   private long playerId;
@@ -9,6 +14,20 @@ public class ChampionMastery {
   private long championPoints;
   private java.sql.Timestamp lastPlayTime;
 
+  public void fromJson (JSONObject jPlayer) {
+      this.championId = (long)  jPlayer.get("championId");
+      this.championLevel = (long) jPlayer.get("championLevel");
+      this.championPoints = (long) jPlayer.get("championPoints");
+      this.lastPlayTime = new Timestamp((long) jPlayer.get("lastPlayTime"));
+  }
+
+  public void fromQueryRow (QueryRow row) {
+    this.playerId = (long) row.get(1);
+    this.championId = (long) row.get(2);
+    this.championLevel = (long) row.get(3);
+    this.championPoints = (long) row.get(4);
+    this.lastPlayTime = (Timestamp) row.get(5);
+  }
 
   public long getPlayerId() {
     return playerId;

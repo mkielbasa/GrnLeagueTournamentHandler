@@ -1,6 +1,7 @@
 package grn.http;
 
 import grn.error.ConsoleHandler;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -13,12 +14,12 @@ import java.util.Map;
 
 public class HttpRequester {
 
-    public static JSONObject doRequest (String url, String... params) {
+    public static Object doRequest (String url, String... params) {
         String formattedUrl = String.format(url, params);
         String response = HttpRequester.doRequest(formattedUrl);
         JSONParser parser = new JSONParser();
         try {
-            return (JSONObject) parser.parse(response);
+            return parser.parse(response);
         } catch (ParseException e) {
             ConsoleHandler.handleException(e);
         }

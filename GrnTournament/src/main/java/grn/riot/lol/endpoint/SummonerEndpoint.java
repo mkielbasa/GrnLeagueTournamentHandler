@@ -17,7 +17,7 @@ public class SummonerEndpoint {
             String apiKey = PropertiesHandler.instance().getRiotApiKey();
             String summoner = URLEncoder.encode(summonerName, "UTF-8");
             String url = "https://eun1.api.riotgames.com/lol/summoner/v4/summoners/by-name/%s?api_key=%s";
-            return HttpRequester.doRequest(url, summoner, apiKey);
+            return (JSONObject) HttpRequester.doRequest(url, summoner, apiKey);
         } catch (UnsupportedEncodingException e) {
             ConsoleHandler.handleException(e);
         }

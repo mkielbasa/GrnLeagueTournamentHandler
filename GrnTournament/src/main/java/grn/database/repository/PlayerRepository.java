@@ -1,10 +1,13 @@
 package grn.database.repository;
 
+import grn.database.pojo.ChampionMastery;
 import grn.database.pojo.Player;
 import grn.database.pojo.Team;
 import grn.database.service.PlayerService;
 import grn.file.PlayerReader;
+import grn.riot.lol.endpoint.ChampionMasteryEndpoint;
 import grn.riot.lol.endpoint.SummonerEndpoint;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.File;
@@ -29,6 +32,20 @@ public class PlayerRepository {
             player.setTeamId(team.getId());
             if (!PlayerService.playerRegistered(player.getPUuid())) {
                 PlayerService.register(player);
+            }
+        }
+        List<Player> players = PlayerService.getAllPlayers();
+        for (Player player : players)
+            this.players.put(player.getInternalId(), player);
+        for (Player player : players) {
+            PlayerService.clearMasteries(player);
+            JSONArray jMaestries = ChampionMasteryEndpoint.getChampionMaestries(player.getId());
+            for (Object jObject : jMaestries.toArray()) {
+                JSONObject jMaestry = (JSONObject) jObject;
+                ChampionMastery championMastery = new ChampionMastery();
+                championMastery.fromJson(jMaestry);
+                championMastery.setPlayerId(player.getInternalId());
+                PlayerService.addMastery(championMastery);
             }
         }
     }
