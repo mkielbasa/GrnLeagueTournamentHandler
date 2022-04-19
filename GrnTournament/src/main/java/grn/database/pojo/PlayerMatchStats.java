@@ -1,6 +1,10 @@
 package grn.database.pojo;
 
 
+import grn.database.QueryRow;
+import grn.properties.json.JsonParser;
+import org.json.simple.JSONObject;
+
 public class PlayerMatchStats {
 
   private long playerId;
@@ -17,8 +21,8 @@ public class PlayerMatchStats {
   private long deaths;
   private long detectorWardsPlaced;
   private long dragonKills;
-  private String firstBloodKill;
-  private String firstTowerKill;
+  private boolean firstBloodKill;
+  private boolean firstTowerKill;
   private long goldEarned;
   private long goldSpent;
   private String individualPosition;
@@ -56,6 +60,111 @@ public class PlayerMatchStats {
   private long turretKills;
   private long visionScore;
   private long nexusKills;
+
+  public void fromJson (JSONObject jStats) {
+    this.assists = (long) jStats.get("assists");
+    this.baronKills = (long) jStats.get("baronKills");
+    this.champLevel = (long) jStats.get("champLevel");
+    this.championId = (long) jStats.get("championId");
+    this.damageDealtToBuildings = (long) jStats.get ("damageDealtToBuildings");
+    this.damageDealtToObjectives = (long) jStats.get("damageDealtToObjectives");
+    this.damageDealtToTurrets = (long) jStats.get("damageDealtToTurrets");
+    this.damageSelfMitigated = (long) jStats.get("damageSelfMitigated");
+    this.deaths = (long) jStats.get("deaths");
+    this.detectorWardsPlaced = (long) jStats.get("detectorWardsPlaced");
+    this.dragonKills = (long) jStats.get("dragonKills");
+    this.firstBloodKill = (boolean) jStats.get("firstBloodKill");
+    this.firstTowerKill = (boolean) jStats.get("firstTowerKill");
+    this.goldEarned = (long) jStats.get("goldEarned");
+    this.goldSpent = (long) jStats.get("goldSpent");
+    this.individualPosition = (String) jStats.get("individualPosition");
+    this.inhibitorKills = (long) jStats.get("inhibitorKills");
+    this.inhibitorTakedowns = (long) jStats.get("inhibitorTakedowns");
+    this.inhibitorsLost = (long) jStats.get("inhibitorsLost");
+    this.item0 = (long) jStats.get("item0");
+    this.item1 = (long) jStats.get("item1");
+    this.item2 = (long) jStats.get("item2");
+    this.item3 = (long) jStats.get("item3");
+    this.item4 = (long) jStats.get("item4");
+    this.item5 = (long) jStats.get("item5");
+    this.item6 = (long) jStats.get("item6");
+    this.kills = (long) jStats.get("kills");
+    this.magicDamageDealt = (long) jStats.get("magicDamageDealt");
+    this.magicDamageDealtToChampions = (long) jStats.get("magicDamageDealtToChampions");
+    this.neutralMinionsKilled = (long) jStats.get("neutralMinionsKilled");
+    this.objectivesStolen = (long) jStats.get("objectivesStolen");
+    this.physicalDamageDealt = (long) jStats.get("physicalDamageDealt");
+    this.physicalDamageDealtToChampions = (long) jStats.get("physicalDamageDealtToChampions");
+    this.profileIcon = (long) jStats.get("profileIcon");
+    this.spell1Casts = (long) jStats.get("spell1Casts");
+    this.spell2Casts = (long) jStats.get("spell2Casts");
+    this.spell3Casts = (long) jStats.get("spell3Casts");
+    this.spell4Casts = (long) jStats.get("spell4Casts");
+    this.totalDamageDealt = (long) jStats.get("totalDamageDealt");
+    this.totalDamageDealtToChampions = (long) jStats.get("totalDamageDealtToChampions");
+    this.totalHeal = (long) jStats.get("totalHeal");
+    this.totalHealsOnTeammates = (long) jStats.get("totalHealsOnTeammates");
+    this.totalMinionsKilled = (long) jStats.get("totalMinionsKilled");
+    this.totalTimeCcDealt = (long) jStats.get("totalTimeCCDealt");
+    this.totalTimeSpentDead = (long) jStats.get("totalTimeSpentDead");
+    this.trueDamageDealt = (long) jStats.get("trueDamageDealt");
+    this.trueDamageDealtToChampions = (long) jStats.get("trueDamageDealtToChampions");
+    this.turretKills = (long) jStats.get("turretKills");
+    this.visionScore = (long) jStats.get("visionScore");
+    this.nexusKills = (long) jStats.get("nexusKills");
+  }
+
+  public void fromQueryRow (QueryRow row) {
+    this.assists = (long) row.get(1);
+    this.baronKills = (long) row.get(2);
+    this.champLevel = (long) row.get(3);
+    this.championId = (long) row.get(4);
+    this.damageDealtToBuildings = (long) row.get(5);
+    this.damageDealtToObjectives = (long) row.get(6);
+    this.damageDealtToTurrets = (long) row.get(7);
+    this.damageSelfMitigated = (long) row.get(8);
+    this.deaths = (long) row.get(9);
+    this.detectorWardsPlaced = (long) row.get(10);
+    this.dragonKills = (long) row.get(11);
+    this.firstBloodKill = (boolean) row.get(12);
+    this.firstTowerKill = (boolean) row.get(13);
+    this.goldEarned = (long) row.get(14);
+    this.goldSpent = (long) row.get(15);
+    this.individualPosition = (String) row.get(16);
+    this.inhibitorKills = (long) row.get(17);
+    this.inhibitorTakedowns = (long) row.get(18);
+    this.inhibitorsLost = (long) row.get(19);
+    this.item0 = (long) row.get(20);
+    this.item1 = (long) row.get(21);
+    this.item2 = (long) row.get(22);
+    this.item3 = (long) row.get(23);
+    this.item4 = (long) row.get(24);
+    this.item5 = (long) row.get(25);
+    this.item6 = (long) row.get(26);
+    this.kills = (long) row.get(27);
+    this.magicDamageDealt = (long) row.get(28);
+    this.magicDamageDealtToChampions = (long) row.get(29);
+    this.neutralMinionsKilled = (long) row.get(30);
+    this.objectivesStolen = (long) row.get(31);
+    this.physicalDamageDealt = (long) row.get(32);
+    this.physicalDamageDealtToChampions = (long) row.get(33);
+    this.profileIcon = (long) row.get(34);
+    this.spell1Casts = (long) row.get(35);
+    this.spell2Casts = (long) row.get(36);
+    this.spell3Casts = (long) row.get(37);
+    this.spell4Casts = (long) row.get(38);
+    this.totalDamageDealt = (long) row.get(39);
+    this.totalHeal = (long) row.get(40);
+    this.totalHealsOnTeammates = (long) row.get(41);
+    this.totalMinionsKilled = (long) row.get(42);
+    this.totalTimeCcDealt = (long) row.get(43);
+    this.totalTimeSpentDead = (long) row.get(44);
+    this.trueDamageDealt = (long) row.get(45);
+    this.trueDamageDealtToChampions = (long) row.get(46);
+    this.turretKills = (long) row.get(47);
+    this.visionScore = (long) row.get(48);
+    this.nexusKills = (long) row.get(49);
+  }
 
 
   public long getPlayerId() {
@@ -184,20 +293,20 @@ public class PlayerMatchStats {
   }
 
 
-  public String getFirstBloodKill() {
+  public boolean getFirstBloodKill() {
     return firstBloodKill;
   }
 
-  public void setFirstBloodKill(String firstBloodKill) {
+  public void setFirstBloodKill(boolean firstBloodKill) {
     this.firstBloodKill = firstBloodKill;
   }
 
 
-  public String getFirstTowerKill() {
+  public boolean getFirstTowerKill() {
     return firstTowerKill;
   }
 
-  public void setFirstTowerKill(String firstTowerKill) {
+  public void setFirstTowerKill(boolean firstTowerKill) {
     this.firstTowerKill = firstTowerKill;
   }
 

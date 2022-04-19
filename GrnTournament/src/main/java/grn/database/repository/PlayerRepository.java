@@ -13,6 +13,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,5 +64,21 @@ public class PlayerRepository {
         }
     }
 
+    public List<Player> getAll () {
+        return new ArrayList<>(players.values());
+    }
 
+    public Player get (String pUUID) {
+        for (Player player : players.values())
+            if (player.getPUuid().equals(pUUID))
+                return player;
+        return null;
+    }
+
+    public boolean containsPlayer (String pUUID) {
+        for (Player player : players.values())
+            if (player.getPUuid().equals(pUUID))
+                return true;
+        return false;
+    }
 }

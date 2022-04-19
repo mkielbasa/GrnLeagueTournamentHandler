@@ -3,11 +3,13 @@ package com.example.grntournament;
 import grn.database.ConnectionEstablisher;
 import grn.database.repository.PlayerRepository;
 import grn.database.repository.TeamRepository;
+import grn.database.service.MatchService;
 import grn.database.service.PlayerService;
 import grn.datadragon.DataDragonHandler;
 import grn.file.FileDownloader;
 import grn.http.HttpRequester;
 import grn.properties.PropertiesHandler;
+import grn.riot.lol.MatchController;
 import grn.riot.lol.MetadataRepository;
 import grn.riot.lol.endpoint.SummonerEndpoint;
 import org.springframework.boot.SpringApplication;
@@ -29,10 +31,18 @@ public class GrnTournamentApplication {
         metadataRepository = new MetadataRepository();
         teamRepository = new TeamRepository();
         playerRepository = new PlayerRepository(teamRepository);
-
+        MatchController.testRegisteringAllPlayerMatchStats();
     }
 
     public static MetadataRepository getMetadataRepository() {
         return metadataRepository;
+    }
+
+    public static TeamRepository getTeamRepository() {
+        return teamRepository;
+    }
+
+    public static PlayerRepository getPlayerRepository() {
+        return playerRepository;
     }
 }
