@@ -31,7 +31,7 @@ public class GrnTournamentApplication {
         metadataRepository = new MetadataRepository();
         teamRepository = new TeamRepository();
         playerRepository = new PlayerRepository(teamRepository);
-        MatchController.testRegisteringAllPlayerMatchStats();
+//        MatchController.testRegisteringAllPlayerMatchStats();
     }
 
     public static MetadataRepository getMetadataRepository() {

@@ -3,6 +3,7 @@ package grn.database.repository;
 import grn.database.pojo.Team;
 import grn.database.service.PlayerService;
 import grn.database.service.TeamService;
+import grn.error.ConsoleHandler;
 import grn.file.TeamReader;
 
 import java.io.File;
@@ -15,6 +16,11 @@ public class TeamRepository {
     private static final File TEAMS_FILE = new File("./GrnTournament/teams.conf");
 
     public TeamRepository () {
+        buildTeams();
+    }
+
+    private void buildTeams () {
+        ConsoleHandler.handleInfo("Building teams repository");
         List<String> teamsNames = TeamReader.read(TEAMS_FILE);
         for (String teamName : teamsNames) {
             Team team = new Team();

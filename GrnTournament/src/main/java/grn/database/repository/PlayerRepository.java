@@ -5,6 +5,7 @@ import grn.database.pojo.Player;
 import grn.database.pojo.PlayerStats;
 import grn.database.pojo.Team;
 import grn.database.service.PlayerService;
+import grn.error.ConsoleHandler;
 import grn.file.PlayerReader;
 import grn.riot.lol.endpoint.ChampionMasteryEndpoint;
 import grn.riot.lol.endpoint.LeagueEndpoint;
@@ -23,24 +24,46 @@ public class PlayerRepository {
     private static final File TEAMS_FILE = new File("./GrnTournament/players.conf");
 
     public PlayerRepository (TeamRepository teamRepository) {
+        buildPlayerProfiles(teamRepository);
+    }
+
+    private void loadPlayerProfiles () {
+        for (Player player : PlayerService.getAllPlayers())
+            this.players.put(player.getInternalId(), player);
+    }
+
+    private void buildPlayerProfiles (TeamRepository teamRepository) {
+        ConsoleHandler.handleInfo("Building players repository");
+        //Read players and their assigment to teams
         Map<String, String> playersAndTeams = PlayerReader.read(TEAMS_FILE);
         for (String summoner : playersAndTeams.keySet()) {
-            String teamName = playersAndTeams.get(summoner);
-            Team team = teamRepository.getTeam(teamName);
+            Team team = getPlayerTeam(summoner, teamRepository, playersAndTeams);
+            //Skip players that are not assigned to any team
             if (team == null)
                 continue;
-            JSONObject jSummoner = SummonerEndpoint.getSummonerByName(summoner);
-            Player player = new Player();
-            player.fromJson(jSummoner);
-            player.setTeamId(team.getId());
-            if (!PlayerService.playerRegistered(player.getPUuid())) {
-                PlayerService.register(player);
-            }
+            buildPlayerProfile(summoner, team);
         }
-        List<Player> players = PlayerService.getAllPlayers();
-        for (Player player : players)
-            this.players.put(player.getInternalId(), player);
-        for (Player player : players) {
+        loadPlayerProfiles();
+    }
+
+    private Team getPlayerTeam (String summonerName, TeamRepository teamRepository,
+                                   Map<String, String> playersAndTeams) {
+        String teamName = playersAndTeams.get(summonerName);
+        return teamRepository.getTeam(teamName);
+    }
+
+    private Player buildPlayerProfile(String summoner, Team team) {
+        JSONObject jSummoner = SummonerEndpoint.getSummonerByName(summoner);
+        Player player = new Player();
+        player.fromJson(jSummoner);
+        player.setTeamId(team.getId());
+        if (!PlayerService.playerRegistered(player.getPUuid()))
+            PlayerService.register(player);
+        return player;
+    }
+
+    public void updatePlayerMaestries () {
+        for (Player player : players.values()) {
             PlayerService.clearMasteries(player);
             JSONArray jMaestries = ChampionMasteryEndpoint.getChampionMaestries(player.getId());
             for (Object jObject : jMaestries.toArray()) {
@@ -51,7 +74,10 @@ public class PlayerRepository {
                 PlayerService.addMastery(championMastery);
             }
         }
-        for (Player player : players) {
+    }
+
+    public void updatePlayerLeagues() {
+        for (Player player : players.values()) {
             PlayerService.clearLeagues(player);
             JSONArray jLeagues = LeagueEndpoint.getLeagueEntries(player.getId());
             for (Object jObject : jLeagues.toArray()) {

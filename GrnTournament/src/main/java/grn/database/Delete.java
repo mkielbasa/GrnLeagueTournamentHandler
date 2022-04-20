@@ -25,7 +25,6 @@ public class Delete {
     public void execute () {
         try (Connection conn = ConnectionEstablisher.connect(); PreparedStatement ps = conn.prepareStatement(sql)) {
             setParams(ps);
-            ConsoleHandler.handleInfo("Params: " + params);
             ps.execute();
         } catch (SQLException e) {
             ConsoleHandler.handleException(e);

@@ -43,7 +43,6 @@ public class HttpRequester {
                 content.append(inputLine);
             }
             in.close();
-            ConsoleHandler.handleInfo("Output: " + content.toString());
             con.disconnect();
             return content.toString();
         } catch (ProtocolException e) {

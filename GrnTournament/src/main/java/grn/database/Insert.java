@@ -43,14 +43,12 @@ public class Insert {
                 sb.append(",");
         }
         sb.append(")");
-        ConsoleHandler.handleInfo(sb.toString());
         return sb.toString();
     }
 
     public void execute () {
         try (Connection conn = ConnectionEstablisher.connect(); PreparedStatement ps = conn.prepareStatement(buildSQL())) {
             setParams(ps);
-            ConsoleHandler.handleInfo("Params: " + params);
             ps.execute();
         } catch (SQLException e) {
             ConsoleHandler.handleException(e);
