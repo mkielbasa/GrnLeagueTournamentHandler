@@ -23,7 +23,8 @@ public class Delete {
     }
 
     public void execute () {
-        try (Connection conn = ConnectionEstablisher.connect(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        Connection conn = ConnectionEstablisher.getConnection();
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             setParams(ps);
             ps.execute();
         } catch (SQLException e) {

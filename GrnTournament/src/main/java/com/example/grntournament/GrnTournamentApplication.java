@@ -28,6 +28,7 @@ public class GrnTournamentApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(GrnTournamentApplication.class, args);
+        ConnectionEstablisher.connect();
         metadataRepository = new MetadataRepository();
         teamRepository = new TeamRepository();
         playerRepository = new PlayerRepository(teamRepository);

@@ -22,7 +22,8 @@ public class Query {
 
     public List<QueryRow> execute () {
         List<QueryRow> rows = new ArrayList<>();
-        try (Connection conn = ConnectionEstablisher.connect(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        Connection conn = ConnectionEstablisher.getConnection();
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             setParams(ps);
             try (ResultSet rs = ps.executeQuery()) {
                 ResultSetMetaData rsmd = rs.getMetaData();

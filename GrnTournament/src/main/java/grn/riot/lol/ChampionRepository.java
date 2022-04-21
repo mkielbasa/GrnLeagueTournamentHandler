@@ -32,7 +32,6 @@ public class ChampionRepository implements JsonParser {
             Champion champion = new Champion();
             champion.parse(jChampion);
             champions.put(champion.getId(), champion);
-            ConsoleHandler.handleInfo("Loaded champion: " + keyString);
         }
         ConsoleHandler.handleInfo("Loaded all champions (" + champions.keySet().size() + ")");
     }
