@@ -27,9 +27,12 @@ public class PlayerRepository {
         buildPlayerProfiles(teamRepository);
     }
 
-    private void loadPlayerProfiles () {
-        for (Player player : PlayerService.getAllPlayers())
+    private void loadPlayerProfiles (TeamRepository teamRepository) {
+        for (Player player : PlayerService.getAllPlayers()) {
             this.players.put(player.getInternalId(), player);
+            Team team = teamRepository.getTeam(player.getTeamId());
+            team.addPlayer(player);
+        }
     }
 
     private void buildPlayerProfiles (TeamRepository teamRepository) {
@@ -43,7 +46,7 @@ public class PlayerRepository {
                 continue;
             buildPlayerProfile(summoner, team);
         }
-        loadPlayerProfiles();
+        loadPlayerProfiles(teamRepository);
     }
 
     private Team getPlayerTeam (String summonerName, TeamRepository teamRepository,

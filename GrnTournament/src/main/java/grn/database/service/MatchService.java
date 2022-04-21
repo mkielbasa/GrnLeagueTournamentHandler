@@ -1,9 +1,7 @@
 package grn.database.service;
 
-import grn.database.Delete;
-import grn.database.Insert;
-import grn.database.Query;
-import grn.database.QueryRow;
+import grn.database.*;
+import grn.database.pojo.Match;
 import grn.database.pojo.PlayerMatchStats;
 import grn.database.pojo.Team;
 
@@ -56,4 +54,30 @@ public class MatchService {
                 pms.getTurretKills(), pms.getVisionScore(), pms.getNexusKills());
         insert.execute();
     }
+
+    public static List<QueryRow> getAllMatches () {
+        String sql = "select * from tournament.match order by queue asc";
+        Query query = new Query(sql);
+        return query.execute();
+    }
+
+    public static List<QueryRow> getFinishedMatches () {
+        String sql = "select * from tournament.match where finished = true order by queue asc";
+        Query query = new Query(sql);
+        return query.execute();
+    }
+
+    public static List<QueryRow> getNonFinishedMatches () {
+        String sql = "select * from tournament.match where finished = false order by queue asc";
+        Query query = new Query(sql);
+        return query.execute();
+    }
+
+    public static void finishMatch (long id, String matchId) {
+        String sql = "update tournament.match set finished=true matchid = ? where id = ?";
+        Update update = new Update(sql);
+        update.setParams(matchId, id);
+        update.execute();
+    }
+
 }

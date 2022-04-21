@@ -40,4 +40,12 @@ public class TeamRepository {
         }
         return null;
     }
+
+    public Team getTeam (long id) {
+        for (Team team : teams.values()) {
+            if (team.getId() == id)
+                return team;
+        }
+        return null;
+    }
 }

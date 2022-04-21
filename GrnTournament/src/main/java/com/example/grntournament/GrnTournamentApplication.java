@@ -1,11 +1,14 @@
 package com.example.grntournament;
 
 import grn.database.ConnectionEstablisher;
+import grn.database.pojo.Match;
+import grn.database.pojo.Team;
 import grn.database.repository.PlayerRepository;
 import grn.database.repository.TeamRepository;
 import grn.database.service.MatchService;
 import grn.database.service.PlayerService;
 import grn.datadragon.DataDragonHandler;
+import grn.error.ConsoleHandler;
 import grn.file.FileDownloader;
 import grn.http.HttpRequester;
 import grn.properties.PropertiesHandler;
@@ -25,6 +28,7 @@ public class GrnTournamentApplication {
     private static MetadataRepository metadataRepository;
     private static TeamRepository teamRepository;
     private static PlayerRepository playerRepository;
+    private static MatchController matchController;
 
     public static void main(String[] args) {
         SpringApplication.run(GrnTournamentApplication.class, args);
@@ -32,7 +36,8 @@ public class GrnTournamentApplication {
         metadataRepository = new MetadataRepository();
         teamRepository = new TeamRepository();
         playerRepository = new PlayerRepository(teamRepository);
-//        MatchController.testRegisteringAllPlayerMatchStats();
+        matchController = new MatchController();
+        matchController.init();
     }
 
     public static MetadataRepository getMetadataRepository() {
@@ -45,5 +50,9 @@ public class GrnTournamentApplication {
 
     public static PlayerRepository getPlayerRepository() {
         return playerRepository;
+    }
+
+    public static MatchController getMatchController() {
+        return matchController;
     }
 }

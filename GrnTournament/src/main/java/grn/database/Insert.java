@@ -47,7 +47,8 @@ public class Insert {
     }
 
     public void execute () {
-        try (Connection conn = ConnectionEstablisher.connect(); PreparedStatement ps = conn.prepareStatement(buildSQL())) {
+        Connection conn = ConnectionEstablisher.getConnection();
+        try (PreparedStatement ps = conn.prepareStatement(buildSQL())) {
             setParams(ps);
             ps.execute();
         } catch (SQLException e) {

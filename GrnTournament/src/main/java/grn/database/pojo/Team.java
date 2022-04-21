@@ -3,6 +3,9 @@ package grn.database.pojo;
 
 import grn.database.QueryRow;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Team {
 
   private long id;
@@ -10,12 +13,30 @@ public class Team {
   private String shortName;
   private String icon;
 
+  private List<Player> players = new ArrayList<>();
+
   public void fromQueryRow(QueryRow row) {
     this.id = (long) row.get(1);
     this.name = (String) row.get(2);
     this.shortName = (String) row.get(3);
     this.icon = (String) row.get(4);
   }
+
+  public boolean containsPlayer (String pUUID) {
+    for (Player player : players)
+      if (player.getPUuid().equals(pUUID))
+        return true;
+    return false;
+  }
+
+  public void addPlayer (Player player) {
+    this.players.add(player);
+  }
+
+  public List<Player> getPlayers() {
+    return players;
+  }
+
   public long getId() {
     return id;
   }
