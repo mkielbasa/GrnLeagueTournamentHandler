@@ -74,7 +74,7 @@ public class MatchService {
     }
 
     public static void finishMatch (long id, String matchId) {
-        String sql = "update tournament.match set finished=true matchid = ? where id = ?";
+        String sql = "update tournament.match set finished=true, matchid = ? where id = ?";
         Update update = new Update(sql);
         update.setParams(matchId, id);
         update.execute();

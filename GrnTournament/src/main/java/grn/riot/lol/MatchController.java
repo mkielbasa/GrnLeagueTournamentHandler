@@ -58,7 +58,7 @@ public class MatchController {
             ConsoleHandler.handleWarning("Tournament match not found " +
                     teamA.getShortName() + " vs " + teamB.getShortName());
             reloadMatches();
-            return;
+            tournamentMatchId = "NO-ID";
         }
         registerMatchStats(tournamentMatchId, currentMatch.getId());
         reloadMatches();
@@ -122,10 +122,12 @@ public class MatchController {
 
     private void registerMatchStats (String matchId, long matchInternalId) {
         ConsoleHandler.handleInfo("Match " + matchId);
-        List<PlayerMatchStats> playerMatchStats = getPlayerMatchStats(matchId, matchInternalId);
-        for (PlayerMatchStats playerMatchStat : playerMatchStats) {
-            ConsoleHandler.handleInfo("Adding match info " + matchId);
-            MatchService.addMatchStats(playerMatchStat);
+        if (!matchId.equals("NO-ID")) {
+            List<PlayerMatchStats> playerMatchStats = getPlayerMatchStats(matchId, matchInternalId);
+            for (PlayerMatchStats playerMatchStat : playerMatchStats) {
+                ConsoleHandler.handleInfo("Adding match info " + matchId);
+                MatchService.addMatchStats(playerMatchStat);
+            }
         }
         MatchService.finishMatch(matchInternalId, matchId);
     }
