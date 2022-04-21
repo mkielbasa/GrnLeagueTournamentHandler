@@ -46,4 +46,12 @@ public class PropertiesHandler {
     public String getDbPass () {
         return props.getProperty("dbPass");
     }
+
+    public String getMockMatch () {
+        return props.getProperty("mockMatch");
+    }
+
+    public boolean isDebug () {
+        return Boolean.parseBoolean(props.getProperty("debug"));
+    }
 }

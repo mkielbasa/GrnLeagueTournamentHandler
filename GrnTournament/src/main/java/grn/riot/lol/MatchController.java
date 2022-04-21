@@ -10,10 +10,13 @@ import grn.database.repository.PlayerRepository;
 import grn.database.repository.TeamRepository;
 import grn.database.service.MatchService;
 import grn.error.ConsoleHandler;
+import grn.properties.PropertiesHandler;
+import grn.properties.json.JsonFileReader;
 import grn.riot.lol.endpoint.MatchEndpoint;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,8 +60,10 @@ public class MatchController {
         if (tournamentMatchId == null) {
             ConsoleHandler.handleWarning("Tournament match not found " +
                     teamA.getShortName() + " vs " + teamB.getShortName());
-            reloadMatches();
             tournamentMatchId = "NO-ID";
+            registerMockMatchStats(tournamentMatchId, currentMatch.getId());
+            reloadMatches();
+            return;
         }
         registerMatchStats(tournamentMatchId, currentMatch.getId());
         reloadMatches();
@@ -98,10 +103,20 @@ public class MatchController {
         return MatchEndpoint.getMatchIds(player.getPUuid());
     }
 
+    public List<PlayerMatchStats> getMockPlayerMatchStats (long matchInternalId) {
+        File file = new File(PropertiesHandler.instance().getMockMatch());
+        JSONObject jStats = JsonFileReader.read(file);
+        return buildPlayerMatchStats(jStats, matchInternalId);
+    }
+
     public List<PlayerMatchStats> getPlayerMatchStats (String matchId, long matchInternalId) {
+        JSONObject jStats = MatchEndpoint.getMatchDetails(matchId);
+        return buildPlayerMatchStats(jStats, matchInternalId);
+    }
+
+    private List<PlayerMatchStats> buildPlayerMatchStats (JSONObject jStats, long matchInternalId) {
         List<PlayerMatchStats> stats = new ArrayList<>();
         PlayerRepository playerRepository = GrnTournamentApplication.getPlayerRepository();
-        JSONObject jStats = MatchEndpoint.getMatchDetails(matchId);
         JSONObject jInfo = (JSONObject) jStats.get("info");
         JSONArray jParticipants = (JSONArray) jInfo.get("participants");
         for (Object jObject : jParticipants.toArray()) {
@@ -118,6 +133,16 @@ public class MatchController {
             stats.add(playerMatchStats);
         }
         return stats;
+    }
+
+    private void registerMockMatchStats (String matchId, long matchInternalId) {
+        ConsoleHandler.handleInfo("Match " + matchId);
+        List<PlayerMatchStats> playerMatchStats = getMockPlayerMatchStats(matchInternalId);
+        for (PlayerMatchStats playerMatchStat : playerMatchStats) {
+            ConsoleHandler.handleInfo("Adding match info " + matchId);
+            MatchService.addMatchStats(playerMatchStat);
+        }
+        MatchService.finishMatch(matchInternalId, matchId);
     }
 
     private void registerMatchStats (String matchId, long matchInternalId) {

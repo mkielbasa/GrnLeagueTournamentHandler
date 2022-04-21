@@ -1,0 +1,43 @@
+package grn.database;
+
+import grn.error.ConsoleHandler;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Update {
+
+    private String sql;
+    private List<Object> params = new ArrayList<>();
+
+    public Update(String sql) {
+        this.sql =  sql;
+    }
+
+    public void setParams(Object... values) {
+        for (Object object : values)
+            this.params.add(object);
+    }
+
+    public void execute () {
+        Connection conn = ConnectionEstablisher.getConnection();
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            setParams(ps);
+            ps.execute();
+        } catch (SQLException e) {
+            ConsoleHandler.handleException(e);
+        }
+    }
+
+    private void setParams(PreparedStatement ps) {
+        try {
+            for (int i = 0; i < params.size(); i++)
+                ps.setObject(i + 1, params.get(i));
+        } catch (SQLException e) {
+            ConsoleHandler.handleException(e);
+        }
+    }
+}
