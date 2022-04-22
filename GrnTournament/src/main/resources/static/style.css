@@ -1,0 +1,56 @@
+body {
+    background-image: url("grnroom.png");
+}
+
+.team-tables {
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+    position: absolute;
+}
+
+.team-tables-row {
+    margin: auto;
+    width: 80%;
+    position: absolute;
+    left: 10%;
+    right: 10%;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    padding: 10px;
+}
+
+.team {
+    width: 14%;
+    display: inline-block;
+    padding: 20px;
+    margin: 20px;
+    font-family: "Luckiest Guy", sans-serif;
+    background-color: rgba(190, 190, 190, 0.5);
+    box-shadow: 3px 3px #343434;
+}
+
+.team-name {
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 20px;
+    color: #fffb00;
+    text-shadow: 3px 3px 3px #343434;
+}
+
+.team-player {
+    font-family: "Luckiest Guy", sans-serif;
+    font-size: 18px;
+    color: #66FF00;
+    text-shadow: 3px 3px 3px #343434;
+}
+
+.team-logo {
+    width: 60px;
+    height: 60px;
+}
+
+.team-player-rank {
+    width: 50px;
+    height: 50px;
+}

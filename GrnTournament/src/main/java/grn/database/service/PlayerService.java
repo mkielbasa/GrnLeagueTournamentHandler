@@ -75,4 +75,18 @@ public class PlayerService {
                 playerStats.getWins(), playerStats.getLoses());
         insert.execute();
     }
+
+    public static List<PlayerStats> getLeagues (Player player) {
+        List<PlayerStats> playerStats = new ArrayList<>();
+        String sql = "select * from tournament.playerstats where playerid = ? and queuetype not like '%TFT%'";
+        Query query = new Query(sql);
+        query.setParams(player.getInternalId());
+        List<QueryRow> rows = query.execute();
+        for (QueryRow row : rows) {
+            PlayerStats playerStat = new PlayerStats();
+            playerStat.fromQueryRow(row);
+            playerStats.add(playerStat);
+        }
+        return playerStats;
+    }
 }

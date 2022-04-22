@@ -15,6 +15,8 @@ public class Player {
   private long profileIconId;
   private long revisionDate;
   private long summonerLevel;
+  private PlayerStats playerStats;
+  private String tierIcon;
 
   public void fromJson (JSONObject jPlayer) {
       this.id = (String)jPlayer.get("id");
@@ -38,7 +40,24 @@ public class Player {
       this.id = (String) row.get(9);
   }
 
-  public long getProfileIconId() {
+    public String getTierIcon() {
+        return tierIcon;
+    }
+
+    public void setTierIcon(String tierIcon) {
+        this.tierIcon = tierIcon;
+    }
+
+    public PlayerStats getPlayerStats() {
+        return playerStats;
+    }
+
+    public void setPlayerStats(PlayerStats playerStats) {
+        this.playerStats = playerStats;
+        this.tierIcon = PlayerRank.getRankIcon(playerStats.getTier());
+    }
+
+    public long getProfileIconId() {
     return profileIconId;
   }
 

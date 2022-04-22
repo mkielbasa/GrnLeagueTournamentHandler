@@ -4,6 +4,9 @@ package grn.database.pojo;
 import grn.database.QueryRow;
 import org.json.simple.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PlayerStats {
 
   private long playerId;

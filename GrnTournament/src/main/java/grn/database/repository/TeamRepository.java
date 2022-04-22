@@ -7,6 +7,7 @@ import grn.error.ConsoleHandler;
 import grn.file.TeamReader;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,10 @@ public class TeamRepository {
         List<Team> registeredTeams = TeamService.getAllTeams();
         for (Team team :registeredTeams)
             teams.put(team.getId(), team);
+    }
+
+    public List<Team> getAllTeams () {
+        return new ArrayList<>(teams.values());
     }
 
     public Team getTeam (String teamName) {

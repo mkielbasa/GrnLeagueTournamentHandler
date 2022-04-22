@@ -26,4 +26,5 @@ public class WebController {
         ConsoleHandler.handleInfo("PlayersReloaded");
         return "Reloaded";
     }
+
 }

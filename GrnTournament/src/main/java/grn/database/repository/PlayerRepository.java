@@ -1,9 +1,6 @@
 package grn.database.repository;
 
-import grn.database.pojo.ChampionMastery;
-import grn.database.pojo.Player;
-import grn.database.pojo.PlayerStats;
-import grn.database.pojo.Team;
+import grn.database.pojo.*;
 import grn.database.service.PlayerService;
 import grn.error.ConsoleHandler;
 import grn.file.PlayerReader;
@@ -47,6 +44,28 @@ public class PlayerRepository {
             buildPlayerProfile(summoner, team);
         }
         loadPlayerProfiles(teamRepository);
+        buildPlayersBestStats();
+    }
+
+    private void buildPlayersBestStats () {
+        for (Player player : players.values()) {
+            List<PlayerStats> playerStats = PlayerService.getLeagues(player);
+            if (playerStats.isEmpty()) {
+                PlayerStats ps = new PlayerStats();
+                ps.setPlayerId(player.getInternalId());
+                ps.setRank("UNRANKED");
+                playerStats.add(ps);
+            }
+            PlayerStats higherStats = playerStats.get(0);
+            int highestRank = PlayerRank.getRankValue(higherStats.getTier());
+            for (PlayerStats ps : playerStats) {
+                String tier = ps.getTier();
+                int rank = PlayerRank.getRankValue(tier);
+                if (rank > highestRank)
+                    higherStats = ps;
+            }
+            player.setPlayerStats(higherStats);
+        }
     }
 
     private Team getPlayerTeam (String summonerName, TeamRepository teamRepository,
