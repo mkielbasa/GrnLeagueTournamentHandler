@@ -60,6 +60,20 @@ public class PlayerService {
         insert.execute();
     }
 
+    public static List<ChampionMastery> getMasteries (long playerId) {
+        List<ChampionMastery> masteries = new ArrayList<>();
+        String sql = "select * from tournament.championmastery where playerid = ? order by championpoints desc";
+        Query query = new Query(sql);
+        query.setParams(playerId);
+        List<QueryRow> rows = query.execute();
+        for (QueryRow row : rows) {
+            ChampionMastery mastery = new ChampionMastery();
+            mastery.fromQueryRow(row);
+            masteries.add(mastery);
+        }
+        return masteries;
+    }
+
     public static void clearLeagues (Player player) {
         String sql = "delete from tournament.playerstats where playerid = ?";
         Delete delete = new Delete(sql);

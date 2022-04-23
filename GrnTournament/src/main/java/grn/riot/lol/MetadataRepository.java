@@ -11,4 +11,8 @@ public class MetadataRepository {
         dDragonHandler.updateFiles();
         this.championRepository = new ChampionRepository(dDragonHandler.getFile(DataDragonHandler.CHAMPION));
     }
+
+    public ChampionRepository getChampionRepository() {
+        return championRepository;
+    }
 }

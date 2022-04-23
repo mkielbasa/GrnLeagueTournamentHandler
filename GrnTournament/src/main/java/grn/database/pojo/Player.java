@@ -4,6 +4,9 @@ package grn.database.pojo;
 import grn.database.QueryRow;
 import org.json.simple.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Player {
 
   private long internalId;
@@ -17,6 +20,9 @@ public class Player {
   private long summonerLevel;
   private PlayerStats playerStats;
   private String tierIcon;
+  private String tier;
+  private String profileIcon;
+  private List<ChampionMastery> masteries = new ArrayList<>();
 
   public void fromJson (JSONObject jPlayer) {
       this.id = (String)jPlayer.get("id");
@@ -38,7 +44,20 @@ public class Player {
       this.revisionDate = (long) row.get(7);
       this.summonerLevel = (long) row.get(8);
       this.id = (String) row.get(9);
+      this.profileIcon = "/profileicon/" + profileIconId + ".png";
   }
+
+    public String getProfileIcon() {
+        return profileIcon;
+    }
+
+    public List<ChampionMastery> getMasteries() {
+        return masteries;
+    }
+
+    public void setMasteries(List<ChampionMastery> masteries) {
+        this.masteries = masteries;
+    }
 
     public String getTierIcon() {
         return tierIcon;
@@ -55,6 +74,11 @@ public class Player {
     public void setPlayerStats(PlayerStats playerStats) {
         this.playerStats = playerStats;
         this.tierIcon = PlayerRank.getRankIcon(playerStats.getTier());
+        this.tier = playerStats.getTier() + " " + playerStats.getRank();
+    }
+
+    public String getTier() {
+        return tier;
     }
 
     public long getProfileIconId() {

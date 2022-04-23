@@ -26,7 +26,7 @@ public class Champion implements JsonParser {
     }
 
     public String getIcon() {
-        return icon;
+        return "/champion/" + icon;
     }
 
 }

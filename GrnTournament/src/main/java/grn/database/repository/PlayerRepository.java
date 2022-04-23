@@ -29,6 +29,8 @@ public class PlayerRepository {
             this.players.put(player.getInternalId(), player);
             Team team = teamRepository.getTeam(player.getTeamId());
             team.addPlayer(player);
+            List<ChampionMastery> masteries = PlayerService.getMasteries(player.getInternalId());
+            player.setMasteries(masteries);
         }
     }
 
@@ -114,6 +116,13 @@ public class PlayerRepository {
 
     public List<Player> getAll () {
         return new ArrayList<>(players.values());
+    }
+
+    public Player get (long internalId) {
+        for (Player player : players.values())
+            if (player.getInternalId() == internalId)
+                return player;
+        return null;
     }
 
     public Player get (String pUUID) {
