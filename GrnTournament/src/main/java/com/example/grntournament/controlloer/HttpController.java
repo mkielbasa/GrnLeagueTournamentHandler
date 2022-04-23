@@ -1,12 +1,10 @@
 package com.example.grntournament.controlloer;
 
 import com.example.grntournament.GrnTournamentApplication;
-import grn.database.pojo.ChampionMastery;
-import grn.database.pojo.Match;
-import grn.database.pojo.Player;
-import grn.database.pojo.Team;
+import grn.database.pojo.*;
 import grn.database.repository.PlayerRepository;
 import grn.database.repository.TeamRepository;
+import grn.database.service.MatchService;
 import grn.error.ConsoleHandler;
 import grn.riot.lol.MatchController;
 import org.springframework.stereotype.Controller;
@@ -16,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -82,5 +82,43 @@ public class HttpController {
         mav.addObject("teamIcon", team.getIcon());
         mav.addObject("maestries", maestries);
         return mav;
+    }
+
+    @GetMapping("/table")
+    public ModelAndView getMatchTable () {
+        List<MatchStats> matchStats = MatchService.getMatchStats();
+        TeamRepository teamRepository = GrnTournamentApplication.getTeamRepository();
+        for (MatchStats matchStat : matchStats) {
+            Team team = teamRepository.getTeam(matchStat.getTeamId());
+            Player player = team.getPlayers().get(0);
+            long matchesDuration = MatchService.getMatchesDuration(player.getInternalId());
+            long minutes = matchesDuration / 60;
+            matchStat.setGoldForMinute(matchStat.getGoldEarned()/minutes);
+            matchStat.setTeamName(team.getShortName());
+            matchStat.setTeamIcon(team.getIcon());
+        }
+
+        for (Team team : teamRepository.getAllTeams()) {
+            if (!teamExists(matchStats, team)) {
+                MatchStats matchStat = new MatchStats();
+                matchStat.setTeamId(team.getId());
+                matchStat.setTeamName(team.getShortName());
+                matchStat.setTeamIcon(team.getIcon());
+                matchStats.add(matchStat);
+            }
+        }
+        Collections.sort(matchStats);
+        Collections.reverse(matchStats);
+
+        ModelAndView mav = new ModelAndView("table");
+        mav.addObject("matchStats", matchStats);
+        return mav;
+    }
+
+    private boolean teamExists (List<MatchStats> matchStats, Team team) {
+        for (MatchStats matchStat : matchStats)
+            if (matchStat.getTeamId() == team.getId())
+                return true;
+        return false;
     }
 }

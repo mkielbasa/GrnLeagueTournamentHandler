@@ -129,6 +129,7 @@ public class MatchController {
         List<PlayerMatchStats> stats = new ArrayList<>();
         PlayerRepository playerRepository = GrnTournamentApplication.getPlayerRepository();
         JSONObject jInfo = (JSONObject) jStats.get("info");
+        long matchDuration = (long) jInfo.get("gameDuration");
         JSONArray jParticipants = (JSONArray) jInfo.get("participants");
         for (Object jObject : jParticipants.toArray()) {
             JSONObject jParticipant = (JSONObject) jObject;
@@ -141,6 +142,7 @@ public class MatchController {
             playerMatchStats.setPlayerId(player.getInternalId());
             playerMatchStats.setTeamId(player.getTeamId());
             playerMatchStats.setMatchId(matchInternalId);
+            playerMatchStats.setMatchDuration(matchDuration);
             stats.add(playerMatchStats);
         }
         return stats;

@@ -2,9 +2,11 @@ package grn.database.service;
 
 import grn.database.*;
 import grn.database.pojo.Match;
+import grn.database.pojo.MatchStats;
 import grn.database.pojo.PlayerMatchStats;
 import grn.database.pojo.Team;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +38,7 @@ public class MatchService {
                 "spell1casts", "spell2casts", "spell3casts", "spell4casts", "totaldamagedealt",
                 "totaldamagedealttochampions", "totalheal", "totalhealsonteammates", "totalminionskilled",
                 "totaltimeccdealt", "totaltimespentdead", "truedamagedealt", "truedamagedealttochampions",
-                "turretkills", "visionscore", "nexuskills");
+                "turretkills", "visionscore", "nexuskills", "matchduration");
         insert.setValues(pms.getPlayerId(), pms.getTeamId(), pms.getMatchId(),
                 pms.getAssists(), pms.getBaronKills(), pms.getChampLevel(), pms.getChampionId(),
                 pms.getDamageDealtToBuildings(), pms.getDamageDealtToObjectives(), pms.getDamageDealtToTurrets(),
@@ -51,7 +53,7 @@ public class MatchService {
                 pms.getTotalDamageDealt(), pms.getTotalDamageDealtToChampions(), pms.getTotalHeal(),
                 pms.getTotalHealsOnTeammates(), pms.getTotalMinionsKilled(), pms.getTotalTimeCcDealt(),
                 pms.getTotalTimeSpentDead(), pms.getTrueDamageDealt(), pms.getTrueDamageDealtToChampions(),
-                pms.getTurretKills(), pms.getVisionScore(), pms.getNexusKills());
+                pms.getTurretKills(), pms.getVisionScore(), pms.getNexusKills(), pms.getMatchDuration());
         insert.execute();
     }
 
@@ -101,4 +103,28 @@ public class MatchService {
         return resultTeamA + " : " + resultTeamB;
     }
 
+    public static List<MatchStats> getMatchStats () {
+        List<MatchStats> matchStats = new ArrayList<>();
+        String sql = "select teamid, sum(nexuskills), sum(goldearned) from tournament.playermatchstats group by teamid";
+        Query query = new Query(sql);
+        List<QueryRow> rows = query.execute();
+        for (QueryRow row : rows) {
+            MatchStats matchStat = new MatchStats();
+            matchStat.fromQueryRow(row);
+            matchStats.add(matchStat);
+        }
+        return matchStats;
+    }
+
+    public static long getMatchesDuration (long playerId) {
+        String sql = "select sum(matchduration) from tournament.playermatchstats where playerid = ?";
+        Query query = new Query(sql);
+        query.setParams(playerId);
+        List<QueryRow> rows = query.execute();
+        if (rows.size() == 1) {
+            BigDecimal bd = (BigDecimal) rows.get(0).get(1);
+            return bd.longValue();
+        }
+        return 0;
+    }
 }

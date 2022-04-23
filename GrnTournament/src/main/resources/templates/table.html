@@ -1,0 +1,24 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+            xmlns:th="http://www.thymeleaf.org"
+            xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+            xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Luckiest Guy">
+    <link th:href="@{/style.css}" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="team-result-container">
+        <table class="match-table">
+            <tr th:each="teamStat : ${matchStats}">
+                <td><img class="team-logo" th:src="@{${teamStat.teamIcon}}"></td>
+                <td class="match-team-name" th:text="${teamStat.teamName}">Team A</td>
+                <td class="match-vs" th:text="${teamStat.wins}">VS</td>
+                <td class="match-team-name" th:text="${teamStat.goldForMinute}">Team B</td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

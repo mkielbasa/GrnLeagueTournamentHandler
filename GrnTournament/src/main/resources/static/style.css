@@ -243,3 +243,17 @@
     text-shadow: 3px 3px 3px #343434;
     padding-left: 20px;
 }
+
+.team-result-container {
+    margin: auto;
+    width: 50%;
+    position: absolute;
+    left: 10%;
+    right: 10%;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    padding: 10px;
+    background-color: rgba(190, 190, 190, 0.5);
+    box-shadow: 3px 3px #343434;
+}

@@ -60,6 +60,7 @@ public class PlayerMatchStats {
   private long turretKills;
   private long visionScore;
   private long nexusKills;
+  private long matchDuration;
 
   public void fromJson (JSONObject jStats) {
     this.assists = (long) jStats.get("assists");
@@ -164,8 +165,16 @@ public class PlayerMatchStats {
     this.turretKills = (long) row.get(47);
     this.visionScore = (long) row.get(48);
     this.nexusKills = (long) row.get(49);
+    this.matchDuration = (long) row.get(45);
   }
 
+  public long getMatchDuration() {
+    return matchDuration;
+  }
+
+  public void setMatchDuration(long matchDuration) {
+    this.matchDuration = matchDuration;
+  }
 
   public long getPlayerId() {
     return playerId;
