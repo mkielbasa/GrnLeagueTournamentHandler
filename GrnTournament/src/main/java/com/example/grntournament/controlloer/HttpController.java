@@ -43,4 +43,18 @@ public class HttpController {
         mav.addObject("matches", matches);
         return mav;
     }
+
+    @GetMapping("/currentMatch")
+    public ModelAndView getCurrentMatch () {
+        MatchController matchController = GrnTournamentApplication.getMatchController();
+        Match currentMatch = matchController.getCurrentMatch();
+        ModelAndView mav = new ModelAndView("currentMatch");
+        Team teamA = currentMatch.getTeamAObject();
+        Team teamB = currentMatch.getTeamBObject();
+        mav.addObject("teamA", teamA);
+        mav.addObject("teamAplayers", teamA.getPlayers());
+        mav.addObject("teamB", teamB);
+        mav.addObject("teamBplayers", teamB.getPlayers());
+        return mav;
+    }
 }

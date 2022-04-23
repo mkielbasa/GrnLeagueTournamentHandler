@@ -65,6 +65,22 @@ public class Match {
     return "" + (hours < 10 ? "0" + hours : hours) + ":" + (minutes < 10 ? "0" + minutes : minutes);
   }
 
+  public Team getTeamAObject() {
+    return teamAObject;
+  }
+
+  public void setTeamAObject(Team teamAObject) {
+    this.teamAObject = teamAObject;
+  }
+
+  public Team getTeamBObject() {
+    return teamBObject;
+  }
+
+  public void setTeamBObject(Team teamBObject) {
+    this.teamBObject = teamBObject;
+  }
+
   public String getTime() {
     return time;
   }

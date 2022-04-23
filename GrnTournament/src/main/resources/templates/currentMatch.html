@@ -1,0 +1,46 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+            xmlns:th="http://www.thymeleaf.org"
+            xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+            xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Luckiest Guy">
+    <link th:href="@{/style.css}" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="team-tables-row">
+        <div class="team">
+            <table>
+                <tr>
+                    <td><img class="team-logo" th:src="@{${teamA.icon}}"></td>
+                    <td class="team-name" th:text="${teamA.name}">Team A</td></tr>
+                <tr th:each="player : ${teamAplayers}">
+                    <td><img class="team-player-rank" th:src="@{${player.tierIcon}}"></td>
+                    <td class="team-player" th:text="${player.name}">Player 1</td>
+                </tr>
+            </table>
+        </div>
+        <div class="vs-container">
+            <div>
+                <img class="vs-logo" src="grnroom.png"/>
+            </div>
+            <div class="vs">
+                VS
+            </div>
+        </div>
+        <div class="team">
+            <table>
+                <tr>
+                    <td><img class="team-logo" th:src="@{${teamB.icon}}"></td>
+                    <td class="team-name" th:text="${teamB.name}">Team B</td></tr>
+                <tr th:each="player : ${teamBplayers}">
+                    <td><img class="team-player-rank" th:src="@{${player.tierIcon}}"></td>
+                    <td class="team-player" th:text="${player.name}">Player 1</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
