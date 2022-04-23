@@ -1,6 +1,7 @@
 package com.example.grntournament.controlloer;
 
 import com.example.grntournament.GrnTournamentApplication;
+import grn.database.pojo.Match;
 import grn.database.pojo.Team;
 import grn.database.repository.PlayerRepository;
 import grn.database.repository.TeamRepository;
@@ -33,5 +34,13 @@ public class HttpController {
         mav.addObject("teamEplayers", teams.get(4).getPlayers());
         return mav;
     }
-    
+
+    @GetMapping("/allMatches")
+    public ModelAndView getAllMatches () {
+        MatchController matchController = GrnTournamentApplication.getMatchController();
+        List<Match> matches = matchController.getAllMatches();
+        ModelAndView mav = new ModelAndView("allmatches");
+        mav.addObject("matches", matches);
+        return mav;
+    }
 }

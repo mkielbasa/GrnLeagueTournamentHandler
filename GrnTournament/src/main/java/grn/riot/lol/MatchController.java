@@ -95,6 +95,17 @@ public class MatchController {
         return participantCount == currentMatch.getParticipants();
     }
 
+    public List<Match> getAllMatches () {
+        List<QueryRow> rows = MatchService.getAllMatches();
+        List<Match> matches = new ArrayList<>();
+        for (QueryRow row : rows) {
+            Match match = new Match();
+            match.fromQueryRow(row);
+            matches.add(match);
+        }
+        return matches;
+    }
+
     public Match getCurrentMatch() {
         return currentMatch;
     }

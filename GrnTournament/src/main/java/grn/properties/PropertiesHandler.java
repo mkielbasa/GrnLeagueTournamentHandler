@@ -54,4 +54,12 @@ public class PropertiesHandler {
     public boolean isDebug () {
         return Boolean.parseBoolean(props.getProperty("debug"));
     }
+
+    public int getTournamentStartHour () {
+        return Integer.parseInt(props.getProperty("tournamentStart"));
+    }
+
+    public int getMatchTime () {
+        return Integer.parseInt(props.getProperty("matchTime"));
+    }
 }

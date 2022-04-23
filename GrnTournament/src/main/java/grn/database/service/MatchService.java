@@ -80,4 +80,25 @@ public class MatchService {
         update.execute();
     }
 
+    public static String getMatchResult (long id, long teamAId, long teamBId) {
+        String sql = "select teamid, sum(nexuskills) from tournament.playermatchstats where matchid = ? and teamid = ? group by teamid";
+        Query query = new Query(sql);
+        query.setParams(id);
+        query.setParams(teamAId);
+        List<QueryRow> rows = query.execute();
+        if (rows.size() != 1)
+            return "???";
+        QueryRow teamA = rows.get(0);
+        long resultTeamA = (long) teamA.get(2);
+        query = new Query(sql);
+        query.setParams(id);
+        query.setParams(teamBId);
+        rows = query.execute();
+        if (rows.size() != 1)
+            return "???";
+        QueryRow teamB = rows.get(0);
+        long resultTeamB = (long) teamB.get(2);
+        return resultTeamA + " : " + resultTeamB;
+    }
+
 }
