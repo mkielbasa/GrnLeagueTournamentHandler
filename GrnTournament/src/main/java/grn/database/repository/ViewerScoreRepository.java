@@ -17,11 +17,18 @@ public class ViewerScoreRepository {
         TeamRepository teamRepository = GrnTournamentApplication.getTeamRepository();
         for (Team team : teamRepository.getAllTeams()) {
             long teamId = team.getId();
-            Set<String> aliases = new HashSet<>();
-            aliases.add(team.getName());
+            Set<String> aliases = new LinkedHashSet<>();
+            String[] splittedName = team.getName().split(" ");
+            for (String splitted : splittedName)
+                aliases.add(splitted);
             aliases.add(team.getShortName());
-            for (Player player : team.getPlayers())
-                aliases.add(player.getName());
+            for (Player player : team.getPlayers()) {
+                splittedName = player.getName().split(" ");
+                for (String splitted : splittedName) {
+                    String withoutNumber = splitted.replaceAll("\\d*$", "");
+                    aliases.add(withoutNumber);
+                }
+            }
             keyAliases.put(teamId, aliases);
         }
     }
