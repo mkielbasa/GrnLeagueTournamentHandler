@@ -34,8 +34,6 @@ public class HttpController {
         mav.addObject("teamCplayers", teams.get(2).getPlayers());
         mav.addObject("teamD", teams.get (3));
         mav.addObject("teamDplayers", teams.get(3).getPlayers());
-        mav.addObject("teamE", teams.get (4));
-        mav.addObject("teamEplayers", teams.get(4).getPlayers());
         return mav;
     }
 
@@ -112,6 +110,41 @@ public class HttpController {
 
         ModelAndView mav = new ModelAndView("table");
         mav.addObject("matchStats", matchStats);
+        return mav;
+    }
+
+    @GetMapping("/winner")
+    public ModelAndView getWinner () {
+        List<MatchStats> matchStats = MatchService.getMatchStats();
+        TeamRepository teamRepository = GrnTournamentApplication.getTeamRepository();
+        for (MatchStats matchStat : matchStats) {
+            Team team = teamRepository.getTeam(matchStat.getTeamId());
+            Player player = team.getPlayers().get(0);
+            long matchesDuration = MatchService.getMatchesDuration(player.getInternalId());
+            long minutes = matchesDuration / 60;
+            matchStat.setGoldForMinute(matchStat.getGoldEarned()/minutes);
+            matchStat.setTeamName(team.getShortName());
+            matchStat.setTeamIcon(team.getIcon());
+        }
+
+        for (Team team : teamRepository.getAllTeams()) {
+            if (!teamExists(matchStats, team)) {
+                MatchStats matchStat = new MatchStats();
+                matchStat.setTeamId(team.getId());
+                matchStat.setTeamName(team.getShortName());
+                matchStat.setTeamIcon(team.getIcon());
+                matchStats.add(matchStat);
+            }
+        }
+        Collections.sort(matchStats);
+        Collections.reverse(matchStats);
+
+        MatchStats winnerStats = matchStats.get(0);
+        Team winner = teamRepository.getTeam(winnerStats.getTeamId());
+
+        ModelAndView mav = new ModelAndView("winner");
+        mav.addObject("winnerIcon", winner.getIcon());
+        mav.addObject("winnerName", winner.getName());
         return mav;
     }
 

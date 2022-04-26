@@ -9,6 +9,18 @@
     margin: auto;
     width: 80%;
     position: absolute;
+    left: 15%;
+    right: 15%;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    padding: 10px;
+}
+
+.current-team-tables-row {
+    margin: auto;
+    width: 80%;
+    position: absolute;
     left: 10%;
     right: 10%;
     top: 50%;
@@ -18,11 +30,12 @@
 }
 
 .team {
-    width: 14%;
+    height: 400px;
+    width: 16%;
     display: inline-block;
     padding: 20px;
     margin: 20px;
-    font-family: "Luckiest Guy", sans-serif;
+    font-family: "Staatliches", sans-serif;
     background-color: rgba(190, 190, 190, 0.5);
     box-shadow: 3px 3px #343434;
 }
@@ -30,27 +43,29 @@
 .vs-container {
     width: 40%;
     display: inline-block;
-    margin-left: : 20px;
+    margin-left : 20px;
     margin-right: 20px;
     padding: 90px;
 }
 
 .vs-logo {
-    width: 400px;
-    height: 500px;
-    margin-left: 80px;
+    width: 200px;
+    height: 250px;
+    margin-left: 210px;
+    padding-bottom: 70px
 }
 
 .vs {
-    font-family: "Luckiest Guy", sans-serif;
-    font-size: 90px;
+    font-family: "Staatliches", sans-serif;
+    font-size: 190px;
     text-align: center;
     color: #fffb00;
     text-shadow: 3px 3px 3px #343434;
+    transform: translateY(-80%);
 }
 
 .team-name {
-    font-family: "Luckiest Guy", sans-serif;
+    font-family: "Staatliches", sans-serif;
     font-size: 20px;
     color: #fffb00;
     padding: 20px;
@@ -58,7 +73,7 @@
 }
 
 .team-player {
-    font-family: "Luckiest Guy", sans-serif;
+    font-family: "Staatliches", sans-serif;
     font-size: 18px;
     color: #66FF00;
     text-shadow: 3px 3px 3px #343434;
@@ -70,8 +85,8 @@
 }
 
 .team-player-rank {
-    width: 50px;
-    height: 50px;
+    width: 55px;
+    height: 55px;
 }
 
 .matches-list {
@@ -92,7 +107,7 @@
     right: 10%;
     display: inline-block;
     padding: 20px;
-    font-family: "Luckiest Guy", sans-serif;
+    font-family: "Staatliches", sans-serif;
     background-color: rgba(190, 190, 190, 0.5);
     box-shadow: 3px 3px #343434;
 }
@@ -103,7 +118,7 @@
 }
 
 .match-team-name {
-    font-family: "Luckiest Guy", sans-serif;
+    font-family: "Staatliches", sans-serif;
     font-size: 40px;
     color: #fffb00;
     padding-left: 20px;
@@ -114,7 +129,7 @@
 }
 
 .match-vs {
-    font-family: "Luckiest Guy", sans-serif;
+    font-family: "Staatliches", sans-serif;
     font-size: 40px;
     color: #66FF00;
     padding-left: 20px;
@@ -127,6 +142,7 @@
 .player {
     margin: auto;
     width: 50%;
+    height: 80%;
     left: 25%;
     top: 10%;
     position: absolute;
@@ -155,18 +171,17 @@
 }
 
 .player-name {
-    font-family: "Luckiest Guy", sans-serif;
-    font-size: 40px;
+    font-family: "Staatliches", sans-serif;
+    font-size: 45px;
     color: #fffb00;
     padding-left: 20px;
     padding-right: 20px;
     padding-top: 5px;
-    padding-bottom: 5px;
     text-shadow: 3px 3px 3px #343434;
 }
 
 .player-level {
-    font-family: "Luckiest Guy", sans-serif;
+    font-family: "Staatliches", sans-serif;
     font-size: 35px;
     color: #ffffff;
     padding-left: 20px;
@@ -177,13 +192,11 @@
 }
 
 .player-rank {
-    font-family: "Luckiest Guy", sans-serif;
+    font-family: "Staatliches", sans-serif;
     font-size: 40px;
     color: #fffb00;
     padding-left: 20px;
     padding-right: 20px;
-    padding-top: 5px;
-    padding-bottom: 5px;
     text-shadow: 3px 3px 3px #343434;
 }
 
@@ -200,6 +213,7 @@
     display: inline-block;
     text-align: center;
     vertical-align: center;
+    transform: translateY(-13px);
 }
 
 .player-team-icon-container {
@@ -213,11 +227,11 @@
 
 .player-maestries {
     width: 100%;
-    padding: 10px;
+    text-align: center;
 }
 
 .player-maestries-title {
-    font-family: "Luckiest Guy", sans-serif;
+    font-family: "Staatliches", sans-serif;
     font-size: 40px;
     color: #fffb00;
     padding-left: 20px;
@@ -228,7 +242,7 @@
 }
 
 .player-maestries-table-container {
-    margin-left: 50px;
+    margin-left: 250px;
 }
 
 .player-maestries-icon {
@@ -237,7 +251,7 @@
 }
 
 .player-maestries-entry {
-    font-family: "Luckiest Guy", sans-serif;
+    font-family: "Staatliches Guy", sans-serif;
     font-size: 28px;
     color: #66FF00;
     text-shadow: 3px 3px 3px #343434;
@@ -246,7 +260,7 @@
 
 .team-result-container {
     margin: auto;
-    width: 50%;
+    width: 30%;
     position: absolute;
     left: 10%;
     right: 10%;
@@ -256,4 +270,28 @@
     padding: 10px;
     background-color: rgba(190, 190, 190, 0.5);
     box-shadow: 3px 3px #343434;
+}
+
+.winner {
+    margin: auto;
+    width: 80%;
+    position: absolute;
+    left: 15%;
+    right: 15%;
+    top: 30%;
+}
+
+.winner-team-name {
+    display: inline-block;
+    font-family: "Staatliches", sans-serif;
+    font-size: 90px;
+    color: #fffb00;
+    padding: 20px;
+    text-shadow: 3px 3px 3px #343434;
+}
+
+.winner-team-icon {
+    display: inline-block;
+    width: 300px;
+    height: 300px;
 }

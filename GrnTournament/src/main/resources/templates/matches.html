@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Luckiest Guy">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Staatliches">
     <link th:href="@{/style.css}" rel="stylesheet" />
 </head>
 
@@ -51,17 +51,6 @@
                         <td><img class="team-logo" th:src="@{${teamD.icon}}"></td>
                         <td class="team-name" th:text="${teamD.name}">Team A</td></tr>
                     <tr th:each="player : ${teamDplayers}">
-                        <td><img class="team-player-rank" th:src="@{${player.tierIcon}}"></td>
-                        <td class="team-player" th:text="${player.name}">Player 1</td>
-                    </tr>
-                </table>
-            </div>
-            <div class="team">
-                <table>
-                    <tr>
-                        <td><img class="team-logo" th:src="@{${teamE.icon}}"></td>
-                        <td class="team-name" th:text="${teamE.name}">Team A</td></tr>
-                    <tr th:each="player : ${teamEplayers}">
                         <td><img class="team-player-rank" th:src="@{${player.tierIcon}}"></td>
                         <td class="team-player" th:text="${player.name}">Player 1</td>
                     </tr>

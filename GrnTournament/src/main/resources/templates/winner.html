@@ -10,15 +10,13 @@
 </head>
 
 <body>
-    <div class="team-result-container">
-        <table class="match-table">
-            <tr th:each="teamStat : ${matchStats}">
-                <td><img class="team-logo" th:src="@{${teamStat.teamIcon}}"></td>
-                <td class="match-team-name" th:text="${teamStat.teamName}">Team A</td>
-                <td class="match-vs" th:text="${teamStat.wins}">VS</td>
-                <td class="match-team-name" th:text="${teamStat.goldForMinute}">Team B</td>
-            </tr>
-        </table>
+    <div class="winner">
+        <div class="winner-team-icon">
+            <img th:src="@{${winnerIcon}}">
+        </div>
+        <div class="winner-team-name">
+            <span class="winner-team-name" th:text="${winnerName}"></span>
+        </div>
     </div>
 </body>
 </html>
