@@ -22,6 +22,7 @@ public class Player {
   private String tierIcon;
   private String tier;
   private String profileIcon;
+  private String winRatio;
   private List<ChampionMastery> masteries = new ArrayList<>();
 
   public void fromJson (JSONObject jPlayer) {
@@ -45,6 +46,16 @@ public class Player {
       this.summonerLevel = (long) row.get(8);
       this.id = (String) row.get(9);
       this.profileIcon = "/profileicon/" + profileIconId + ".png";
+  }
+
+  public String getWinRatio () {
+      if (playerStats == null)
+          return "???";
+      long wins = playerStats.getWins();
+      long loses = playerStats.getLoses();
+      long matches = wins + loses;
+      double ratio = ((double)wins/(double)matches) * 100;
+      return String.format("%,.2f", ratio) + "%";
   }
 
     public String getProfileIcon() {
@@ -75,6 +86,7 @@ public class Player {
         this.playerStats = playerStats;
         this.tierIcon = PlayerRank.getRankIcon(playerStats.getTier());
         this.tier = playerStats.getTier() + " " + playerStats.getRank();
+        this.winRatio = getWinRatio();
     }
 
     public String getTier() {

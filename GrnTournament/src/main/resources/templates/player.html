@@ -24,7 +24,7 @@
                             <img class="player-rank-icon" th:src="@{${player.tierIcon}}">
                         </div>
                         <div class="player-rank-text">
-                            <span th:text="${player.tier}"></span>
+                            <span th:text="${player.tier}"></span> W/L:<span class="player-level" th:text="${player.winRatio}"></span>
                         </div>
                     </div>
                 </div>

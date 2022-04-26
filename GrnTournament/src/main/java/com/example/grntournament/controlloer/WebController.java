@@ -4,6 +4,7 @@ import com.example.grntournament.GrnTournamentApplication;
 import grn.database.repository.PlayerRepository;
 import grn.error.ConsoleHandler;
 import grn.riot.lol.MatchController;
+import grn.sound.SoundPlayer;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,6 +16,7 @@ public class WebController {
         MatchController matchController = GrnTournamentApplication.getMatchController();
         matchController.finishCurrentMatch();
         ConsoleHandler.handleInfo("MatchesReloaded");
+        SoundPlayer.playSound("./GrnTournament/ding.wav");
         return "Reloaded";
     }
 
@@ -24,6 +26,7 @@ public class WebController {
         playerRepository.updatePlayerMaestries();
         playerRepository.updatePlayerLeagues();
         ConsoleHandler.handleInfo("PlayersReloaded");
+        SoundPlayer.playSound("./GrnTournament/ding.wav");
         return "Reloaded";
     }
 

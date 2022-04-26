@@ -31,6 +31,7 @@ public class PlayerRepository {
             team.addPlayer(player);
             List<ChampionMastery> masteries = PlayerService.getMasteries(player.getInternalId());
             player.setMasteries(masteries);
+            team.updateWinRatio ();
         }
     }
 

@@ -15,6 +15,7 @@ import grn.properties.PropertiesHandler;
 import grn.riot.lol.MatchController;
 import grn.riot.lol.MetadataRepository;
 import grn.riot.lol.endpoint.SummonerEndpoint;
+import grn.sound.SoundPlayer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -38,6 +39,7 @@ public class GrnTournamentApplication {
         playerRepository = new PlayerRepository(teamRepository);
         matchController = new MatchController();
         matchController.init();
+        SoundPlayer.playSound("./GrnTournament/ding.wav");
     }
 
     public static MetadataRepository getMetadataRepository() {

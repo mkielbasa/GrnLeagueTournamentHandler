@@ -12,6 +12,7 @@ public class Team {
   private String name;
   private String shortName;
   private String icon;
+  private String winRatio;
 
   private List<Player> players = new ArrayList<>();
 
@@ -27,6 +28,22 @@ public class Team {
       if (player.getPUuid().equals(pUUID))
         return true;
     return false;
+  }
+
+  public String getWinratio () {
+    long wins = 0;
+    long loses = 0;
+    long matches = 0;
+    for (Player player : players) {
+      if (player.getPlayerStats() == null)
+        continue;
+      PlayerStats playerStats = player.getPlayerStats();
+      wins += playerStats.getWins();
+      loses += playerStats.getLoses();
+      matches += (wins + loses);
+    }
+    double ratio = ((double)wins/(double)matches) * 100;
+    return String.format("%,.2f", ratio) + "%";
   }
 
   public void addPlayer (Player player) {
@@ -73,4 +90,7 @@ public class Team {
   }
 
 
+  public void updateWinRatio() {
+    this.winRatio = getWinratio();
+  }
 }
