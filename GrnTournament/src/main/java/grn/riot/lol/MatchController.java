@@ -170,23 +170,4 @@ public class MatchController {
         MatchService.finishMatch(matchInternalId, matchId);
     }
 
-    public void testRegisteringAllPlayerMatchStats () {
-        PlayerRepository playerRepository = GrnTournamentApplication.getPlayerRepository();
-        int players = 1;
-        for (Player player : playerRepository.getAll()) {
-            if (players == 3)
-                break;
-            ConsoleHandler.handleInfo("Getting " + player.getName() + " matches...");
-            List<String> matchIds = getMatchIds(player);
-            for (String matchId : matchIds) {
-                ConsoleHandler.handleInfo("Match " + matchId);
-                List<PlayerMatchStats> playerMatchStats = getPlayerMatchStats(matchId, -1);
-                for (PlayerMatchStats playerMatchStat : playerMatchStats) {
-                    ConsoleHandler.handleInfo("Adding match info " + matchId);
-                    MatchService.addMatchStats(playerMatchStat);
-                }
-            }
-            players++;
-        }
-    }
 }

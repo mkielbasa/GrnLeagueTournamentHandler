@@ -1,10 +1,12 @@
 package grn.database.repository;
 
 import com.example.grntournament.GrnTournamentApplication;
+import grn.database.pojo.Match;
 import grn.database.pojo.Player;
 import grn.database.pojo.Team;
 import grn.database.pojo.ViewerScore;
 import grn.database.service.ViewerScoreService;
+import grn.riot.lol.MatchController;
 
 import java.util.*;
 
@@ -85,9 +87,15 @@ public class ViewerScoreRepository {
     }
 
     public static void maybeAppendScore (String viewer, String message) {
+        MatchController matchController = GrnTournamentApplication.getMatchController();
+        Match currentMatch = matchController.getCurrentMatch();
         long teamId = getTeamIdFromMessage(message);
         if (teamId < 0)
             return;
+        if (currentMatch != null) {
+            if (teamId != currentMatch.getTeamA() && teamId != currentMatch.getTeamB())
+                return;
+        }
         ViewerScore viewerScore = new ViewerScore();
         viewerScore.setViewer(viewer);
         viewerScore.setTeamId(teamId);

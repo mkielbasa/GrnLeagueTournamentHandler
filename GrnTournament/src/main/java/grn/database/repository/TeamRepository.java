@@ -1,5 +1,6 @@
 package grn.database.repository;
 
+import grn.database.pojo.Player;
 import grn.database.pojo.Team;
 import grn.database.service.PlayerService;
 import grn.database.service.TeamService;
@@ -7,10 +8,7 @@ import grn.error.ConsoleHandler;
 import grn.file.TeamReader;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TeamRepository {
     private Map<Long, Team> teams = new HashMap<>();
@@ -41,6 +39,27 @@ public class TeamRepository {
     public Team getTeam (String teamName) {
         for (Team team : teams.values()) {
             if (team.getName().equals(teamName))
+                return team;
+        }
+        return null;
+    }
+
+    public Player getPlayerByWord (String playerName) {
+        for (Team team : teams.values()) {
+            for (Player player : team.getPlayers()) {
+                if (player.getName().equalsIgnoreCase(playerName)
+                        || player.getName().toLowerCase(Locale.ROOT).contains(playerName.toLowerCase(Locale.ROOT)))
+                    return player;
+            }
+        }
+        return null;
+    }
+
+    public Team getTeamByWord (String teamName) {
+        for (Team team : teams.values()) {
+            if (team.getName().equalsIgnoreCase(teamName)
+                    || team.getShortName().equalsIgnoreCase(teamName)
+                    || team.getName().toLowerCase(Locale.ROOT).contains(teamName.toLowerCase(Locale.ROOT)))
                 return team;
         }
         return null;
