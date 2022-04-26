@@ -62,4 +62,12 @@ public class PropertiesHandler {
     public int getMatchTime () {
         return Integer.parseInt(props.getProperty("matchTime"));
     }
+
+    public String getTwitchChannel () {
+        return props.getProperty("twitchChannel");
+    }
+
+    public String getTwitchOAuth () {
+        return props.getProperty("twitchOAuth");
+    }
 }

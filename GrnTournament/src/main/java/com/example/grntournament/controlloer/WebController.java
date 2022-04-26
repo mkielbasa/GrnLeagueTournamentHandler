@@ -2,6 +2,8 @@ package com.example.grntournament.controlloer;
 
 import com.example.grntournament.GrnTournamentApplication;
 import grn.database.repository.PlayerRepository;
+import grn.database.repository.ViewerScoreRepository;
+import grn.database.service.ViewerScoreService;
 import grn.error.ConsoleHandler;
 import grn.riot.lol.MatchController;
 import grn.sound.SoundPlayer;
@@ -28,6 +30,21 @@ public class WebController {
         ConsoleHandler.handleInfo("PlayersReloaded");
         SoundPlayer.playSound("./GrnTournament/ding.wav");
         return "Reloaded";
+    }
+
+    @GetMapping("/clearViewerScores")
+    public String clearViewerScores () {
+        ViewerScoreService.clear();
+        ConsoleHandler.handleInfo("ScoresCleared");
+        SoundPlayer.playSound("./GrnTournament/ding.wav");
+        return "Reloaded";
+    }
+
+    @GetMapping("stop")
+    public String stop () {
+        ViewerScoreRepository.saveScores();
+        System.exit(0);
+        return "STOPPED";
     }
 
 }
