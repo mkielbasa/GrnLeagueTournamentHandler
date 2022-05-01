@@ -69,12 +69,47 @@ public class ViewerScoreRepository {
         return sb.toString();
     }
 
+    public static String getBestViewerScores () {
+        StringBuilder sb = new StringBuilder();
+        TeamRepository teamRepository = GrnTournamentApplication.getTeamRepository();
+        for (Team team : teamRepository.getAllTeams()) {
+            sb.append("Kibice " + team.getShortName() + ": ");
+            List<ViewerScore> teamViewerScores =  getViewerScoresForTeam(team.getId());
+            if (teamViewerScores.isEmpty()) {
+                sb.append("brak;  ");
+                continue;
+            }
+            Collections.sort(teamViewerScores);
+            Collections.reverse(teamViewerScores);
+
+            for (int i = 0; i < teamViewerScores.size(); i++) {
+                if (i == 3)
+                    break;
+                ViewerScore score = teamViewerScores.get(i);
+                sb.append((i+1) + ". " + score.getViewer() + "=" + score.getScore() + ";  ");
+            }
+        }
+        return sb.toString();
+    }
+
+    public static List<ViewerScore> getViewerScoresForTeam (long teamId) {
+        List<ViewerScore> viewerScores = new ArrayList<>();
+        for (String viewer : scores.keySet()) {
+            if  (!scores.get(viewer).containsKey(teamId))
+                continue;
+            ViewerScore viewerScore = scores.get(viewer).get(teamId);
+            viewerScores.add(viewerScore);
+        }
+        return viewerScores;
+    }
+
     public static String getViewerScores (String viewer) {
         StringBuilder sb = new StringBuilder();
         Map<Long,ViewerScore> score = scores.get(viewer);
         if (score == null)
-            return "Ten użytkownik jeszcze nie kibicował. Głosuj za pomocą słów kluczowych aby mieć szanse wygrać nagrodę! " +
-                    "Słowa kluczowe bieżącego meczu sprawdź za pomocą !konkurs .";
+            return "Jeszcze nie kibicowałaś/kibicowałeś. " +
+                    "Słowa kluczowe bieżącego meczu sprawdź za pomocą !konkurs. " +
+                    "Kibicuj za ich pomocą na czacie! Słowa kluczowe zmieniają się co mecz.";
         TeamRepository teamRepository = GrnTournamentApplication.getTeamRepository();
         sb.append("Wyniki kibicowania dla " + viewer + ":\n");
         for (Team team : teamRepository.getAllTeams()) {

@@ -2,7 +2,7 @@ package grn.database.pojo;
 
 import grn.database.QueryRow;
 
-public class ViewerScore {
+public class ViewerScore implements Comparable<ViewerScore> {
 
     private String viewer;
     private long teamId;
@@ -12,6 +12,10 @@ public class ViewerScore {
         this.viewer = (String) row.get(1);
         this.teamId = (long) row.get(2);
         this.score = (long) row.get(3);
+    }
+
+    @Override public int compareTo(ViewerScore u) {
+        return Long.compare(score, u.score);
     }
 
     public String getViewer() {

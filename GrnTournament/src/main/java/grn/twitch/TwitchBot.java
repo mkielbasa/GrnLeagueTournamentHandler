@@ -49,6 +49,7 @@ public class TwitchBot {
         if (isCommand(message)) {
             handleCommandlist(viewer, message);
             handleUserScore(viewer, message);
+            handleUserBestScores(viewer,message);
             handleCurrentMatch(viewer, message);
             handleGetKeywords(viewer, message);
             handleTable(viewer, message);
@@ -65,7 +66,7 @@ public class TwitchBot {
         messageLowerCase = messageLowerCase.trim();
         if (!messageLowerCase.startsWith("!komendy"))
             return;
-        sendMessage("Dostępne komendy: !gracz <nick>, !kibic, !konkurs, !mecz, !mecze, !tabela, !team <nazwa drużyny>");
+        sendMessage("Dostępne komendy: !gracz <nick>, !kibic, !kibicetop, !konkurs, !mecz, !mecze, !tabela, !team <nazwa drużyny>");
     }
 
 
@@ -76,6 +77,16 @@ public class TwitchBot {
             return;
         String response;
         response = ViewerScoreRepository.getViewerScores(viewer);
+        sendMessage(response);
+    }
+
+    private static void handleUserBestScores (String viewer, String message) {
+        String messageLowerCase = message.toLowerCase(Locale.ROOT);
+        messageLowerCase = messageLowerCase.trim();
+        if (!messageLowerCase.startsWith("!kibicetop"))
+            return;
+        String response;
+        response = ViewerScoreRepository.getBestViewerScores();
         sendMessage(response);
     }
 

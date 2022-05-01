@@ -61,7 +61,8 @@ public class MatchController {
             ConsoleHandler.handleWarning("Tournament match not found " +
                     teamA.getShortName() + " vs " + teamB.getShortName());
             tournamentMatchId = "NO-ID";
-            registerMockMatchStats(tournamentMatchId, currentMatch.getId());
+            if (PropertiesHandler.instance().isDebug())
+                registerMockMatchStats(tournamentMatchId, currentMatch.getId());
             reloadMatches();
             return;
         }
@@ -133,6 +134,8 @@ public class MatchController {
         JSONArray jParticipants = (JSONArray) jInfo.get("participants");
         for (Object jObject : jParticipants.toArray()) {
             JSONObject jParticipant = (JSONObject) jObject;
+            String summonerName = (String) jParticipant.get("summonerName");
+            ConsoleHandler.handleInfo("Player: " + summonerName);
             String pUUID = (String) jParticipant.get("puuid");
             if (!playerRepository.containsPlayer(pUUID))
                 continue;
