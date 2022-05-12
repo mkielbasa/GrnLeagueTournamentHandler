@@ -127,10 +127,10 @@ public class ViewerScoreRepository {
         long teamId = getTeamIdFromMessage(message);
         if (teamId < 0)
             return;
-        if (currentMatch != null) {
-            if (teamId != currentMatch.getTeamA() && teamId != currentMatch.getTeamB())
-                return;
-        }
+//        if (currentMatch != null) {
+//            if (teamId != currentMatch.getTeamA() && teamId != currentMatch.getTeamB())
+//                return;
+//        }
         ViewerScore viewerScore = new ViewerScore();
         viewerScore.setViewer(viewer);
         viewerScore.setTeamId(teamId);
@@ -174,6 +174,10 @@ public class ViewerScoreRepository {
                     ViewerScoreService.register(viewerScore);
             }
         }
+    }
+
+    public static Map<Long, Set<String>> getKeyAliases() {
+        return keyAliases;
     }
 
     private static boolean containsScore (ViewerScore score, List<ViewerScore> scores) {

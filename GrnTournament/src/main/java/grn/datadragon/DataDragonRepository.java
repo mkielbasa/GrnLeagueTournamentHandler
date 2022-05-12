@@ -1,12 +1,13 @@
-package grn.riot.lol;
+package grn.datadragon;
 
 import grn.datadragon.DataDragonHandler;
+import grn.riot.lol.ChampionRepository;
 
-public class MetadataRepository {
+public class DataDragonRepository {
 
     private ChampionRepository championRepository;
 
-    public MetadataRepository () {
+    public DataDragonRepository() {
         DataDragonHandler dDragonHandler = new DataDragonHandler();
         dDragonHandler.updateFiles();
         this.championRepository = new ChampionRepository(dDragonHandler.getFile(DataDragonHandler.CHAMPION));
