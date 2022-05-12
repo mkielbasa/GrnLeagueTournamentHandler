@@ -3,6 +3,8 @@ package grn.database.pojo;
 
 import com.example.grntournament.GrnTournamentApplication;
 import grn.database.QueryRow;
+import grn.database.repository.Repositories;
+import grn.database.repository.Repository;
 import grn.riot.lol.Champion;
 import grn.riot.lol.ChampionRepository;
 import org.json.simple.JSONObject;
@@ -20,6 +22,15 @@ public class ChampionMastery {
   private String championIcon;
   private String championName;
 
+  public ChampionMastery (JSONObject jPlayer, Player player) {
+    fromJson(jPlayer);
+    this.playerId = player.getInternalId();
+  }
+
+  public ChampionMastery (QueryRow row) {
+    fromQueryRow(row);
+  }
+
   public void fromJson (JSONObject jPlayer) {
       this.championId = (long)  jPlayer.get("championId");
       this.championLevel = (long) jPlayer.get("championLevel");
@@ -35,7 +46,7 @@ public class ChampionMastery {
     this.lastPlayTime = (Timestamp) row.get(5);
 
     ChampionRepository championRepository =
-            GrnTournamentApplication.getMetadataRepository().getChampionRepository();
+            Repositories.getDataDragonRepository().getChampionRepository();
     this.champion = championRepository.getChampion(championId);
     this.championIcon = champion.getIcon();
     this.championName = champion.getName();

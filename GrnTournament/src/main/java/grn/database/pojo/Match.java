@@ -3,6 +3,7 @@ package grn.database.pojo;
 
 import com.example.grntournament.GrnTournamentApplication;
 import grn.database.QueryRow;
+import grn.database.repository.Repositories;
 import grn.database.repository.TeamRepository;
 import grn.database.service.MatchService;
 import grn.properties.PropertiesHandler;
@@ -36,7 +37,7 @@ public class Match {
     this.matchId = (String) row.get(6);
     this.participants = (int) row.get(7);
 
-    TeamRepository teamRepository = GrnTournamentApplication.getTeamRepository();
+    TeamRepository teamRepository = Repositories.getTeamRepository();
     this.teamAObject = teamRepository.getTeam(teamA);
     this.teamBObject = teamRepository.getTeam(teamB);
     this.teamAName = teamAObject.getName();

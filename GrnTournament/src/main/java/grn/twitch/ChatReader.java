@@ -2,6 +2,7 @@ package grn.twitch;
 
 import com.example.grntournament.GrnTournamentApplication;
 import grn.database.pojo.Team;
+import grn.database.repository.Repositories;
 import grn.database.repository.TeamRepository;
 import grn.database.repository.ViewerScoreRepository;
 import grn.error.ConsoleHandler;
@@ -31,6 +32,7 @@ public class ChatReader {
     }
 
     public static void parse () {
+        ViewerScoreRepository viewerScoreRepository = Repositories.getViewerScoreRepository();
         List<String> messages = read(new File("./GrnTournament/chat_log.txt"));
         String dateTimeFormat = "\\[\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d\\]";
         Map<String, List<String>> viewerMessages = new HashMap<>();
@@ -57,25 +59,26 @@ public class ChatReader {
         }
 
         for (String viewer : viewerMessages.keySet()) {
+
             for (String message : viewerMessages.get(viewer)) {
-                ViewerScoreRepository.maybeAppendScore(viewer, message);
+                viewerScoreRepository.maybeAppendScore(viewer, message);
             }
         }
 
         ConsoleHandler.handleInfo("===Best Scores===");
-        ConsoleHandler.handleInfo(ViewerScoreRepository.getBestViewerScores());
+        ConsoleHandler.handleInfo(viewerScoreRepository.getBestViewerScores());
 
         ConsoleHandler.handleInfo("===Individual Scores===");
         for (String viewer : viewerMessages.keySet()) {
             ConsoleHandler.handleInfo("Viewer: " + viewer);
-            ConsoleHandler.handleInfo(ViewerScoreRepository.getViewerScores(viewer));
+            ConsoleHandler.handleInfo(viewerScoreRepository.getViewerScores(viewer));
         }
 
         ConsoleHandler.handleInfo("===Used aliases===");
-        TeamRepository teamRepository = GrnTournamentApplication.getTeamRepository();
+        TeamRepository teamRepository = Repositories.getTeamRepository();
         for (Team team : teamRepository.getAllTeams()) {
             ConsoleHandler.handleInfo("Team: " + team.getShortName());
-            for (String alias : ViewerScoreRepository.getKeyAliases().get(team.getId())){
+            for (String alias : viewerScoreRepository.getKeyAliases().get(team.getId())){
                 System.out.println(" -> " + alias);
             }
         }

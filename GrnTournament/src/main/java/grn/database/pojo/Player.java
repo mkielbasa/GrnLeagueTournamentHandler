@@ -109,7 +109,7 @@ public class Player {
     return internalId;
   }
 
-  public String getId() {
+  public String getSummonerId() {
     return id;
   }
 

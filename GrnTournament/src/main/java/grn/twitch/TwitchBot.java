@@ -6,6 +6,7 @@ import com.github.twitch4j.TwitchClient;
 import com.github.twitch4j.TwitchClientBuilder;
 import com.github.twitch4j.chat.events.channel.ChannelMessageEvent;
 import grn.database.pojo.*;
+import grn.database.repository.Repositories;
 import grn.database.repository.TeamRepository;
 import grn.database.repository.ViewerScoreRepository;
 import grn.database.service.MatchService;
@@ -57,7 +58,8 @@ public class TwitchBot {
             handleTeam(viewer, message);
             handlePlayer(viewer, message);
         } else {
-            ViewerScoreRepository.maybeAppendScore(viewer, message);
+            ViewerScoreRepository viewerScoreRepository = Repositories.getViewerScoreRepository();
+            viewerScoreRepository.maybeAppendScore(viewer, message);
         }
     }
 
@@ -76,7 +78,8 @@ public class TwitchBot {
         if (!messageLowerCase.startsWith("!kibic"))
             return;
         String response;
-        response = ViewerScoreRepository.getViewerScores(viewer);
+        ViewerScoreRepository viewerScoreRepository = Repositories.getViewerScoreRepository();
+        response = viewerScoreRepository.getViewerScores(viewer);
         sendMessage(response);
     }
 
@@ -86,7 +89,8 @@ public class TwitchBot {
         if (!messageLowerCase.startsWith("!kibicetop"))
             return;
         String response;
-        response = ViewerScoreRepository.getBestViewerScores();
+        ViewerScoreRepository viewerScoreRepository = Repositories.getViewerScoreRepository();
+        response = viewerScoreRepository.getBestViewerScores();
         sendMessage(response);
     }
 
@@ -104,7 +108,7 @@ public class TwitchBot {
         if (!messageLowerCase.startsWith("!tabela"))
             return;
         List<MatchStats> matchStats = MatchService.getMatchStats();
-        TeamRepository teamRepository = GrnTournamentApplication.getTeamRepository();
+        TeamRepository teamRepository = Repositories.getTeamRepository();
         for (MatchStats matchStat : matchStats) {
             Team team = teamRepository.getTeam(matchStat.getTeamId());
             Player player = team.getPlayers().get(0);
@@ -145,7 +149,7 @@ public class TwitchBot {
         messageLowerCase = messageLowerCase.trim();
         if (!messageLowerCase.startsWith("!mecze"))
             return;
-        MatchController matchController = GrnTournamentApplication.getMatchController();
+        MatchController matchController = Repositories.getMatchRepository();
         List<Match> matches = matchController.getAllMatches();
         StringBuilder sb = new StringBuilder();
         sb.append("Szacowane godziny i kolejność meczy: ");
@@ -169,7 +173,7 @@ public class TwitchBot {
         messageLowerCase = messageLowerCase.trim();
         if (!messageLowerCase.startsWith("!konkurs"))
             return;
-        MatchController matchController = GrnTournamentApplication.getMatchController();
+        MatchController matchController = Repositories.getMatchRepository();
         Match currentMatch = matchController.getCurrentMatch();
         if (currentMatch == null)  {
             sendMessage("W tej chwili nie ma na co głosować (brak meczu).");
@@ -178,11 +182,12 @@ public class TwitchBot {
         long teamA = currentMatch.getTeamA();
         long teamB = currentMatch.getTeamB();
 
+        ViewerScoreRepository viewerScoreRepository = Repositories.getViewerScoreRepository();
         StringBuilder sb = new StringBuilder();
         sb.append("Obecne słowa kluczowe to:\n");
-        sb.append(ViewerScoreRepository.getKeywords(teamA));
+        sb.append(viewerScoreRepository.getKeywords(teamA));
         sb.append(" oraz ");
-        sb.append(ViewerScoreRepository.getKeywords(teamB));
+        sb.append(viewerScoreRepository.getKeywords(teamB));
         sb.append(". Wielkość liter nie ma znaczenia.");
         sendMessage(sb.toString());
     }
@@ -198,7 +203,7 @@ public class TwitchBot {
             return;
         }
         String team = parts[1];
-        TeamRepository teamRepository = GrnTournamentApplication.getTeamRepository();
+        TeamRepository teamRepository = Repositories.getTeamRepository();
         Team foundTeam = teamRepository.getTeamByWord(team);
         if (foundTeam == null) {
             sendMessage("Nie znaleziono drużyny " + team + "...");
@@ -222,7 +227,7 @@ public class TwitchBot {
             return;
         }
         String player = parts[1];
-        TeamRepository teamRepository = GrnTournamentApplication.getTeamRepository();
+        TeamRepository teamRepository = Repositories.getTeamRepository();
         Player foundPlayer = teamRepository.getPlayerByWord(player);
         if (foundPlayer == null) {
             sendMessage("Gracz " + foundPlayer + " nie bierze udział w turnieju...");
@@ -250,7 +255,7 @@ public class TwitchBot {
     }
 
     private static String getCurrentMatch () {
-        MatchController matchController = GrnTournamentApplication.getMatchController();
+        MatchController matchController = Repositories.getMatchRepository();
         Match currentMatch = matchController.getCurrentMatch();
         if (currentMatch == null) {
             return "W tej chwili nie będzie rozgrywany mecz.";

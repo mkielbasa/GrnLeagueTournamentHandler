@@ -10,13 +10,13 @@ import grn.riot.lol.MatchController;
 
 import java.util.*;
 
-public class ViewerScoreRepository {
+public class ViewerScoreRepository implements Repository {
 
-    private static Map<String, Map<Long,ViewerScore>> scores = new HashMap<>();
-    private static Map<Long, Set<String>> keyAliases = new HashMap<>();
+    private Map<String, Map<Long,ViewerScore>> scores = new HashMap<>();
+    private Map<Long, Set<String>> keyAliases = new HashMap<>();
 
-    public static void init () {
-        TeamRepository teamRepository = GrnTournamentApplication.getTeamRepository();
+    public void init () {
+        TeamRepository teamRepository = Repositories.getTeamRepository();
         for (Team team : teamRepository.getAllTeams()) {
             long teamId = team.getId();
             Set<String> aliases = new LinkedHashSet<>();
@@ -35,14 +35,14 @@ public class ViewerScoreRepository {
         }
     }
 
-    public static void reload () {
+    public void reload () {
         scores.clear();
         List<ViewerScore> currentScores = ViewerScoreService.getAllScores();
         for (ViewerScore score : currentScores)
             updateScore(score);
     }
 
-    public static void updateScore(ViewerScore score) {
+    public void updateScore(ViewerScore score) {
         String viewer = score.getViewer();
         long teamId = score.getTeamId();
         if (! scores.containsKey(viewer))
@@ -50,7 +50,7 @@ public class ViewerScoreRepository {
         scores.get(viewer).put(teamId, score);
     }
 
-    public static ViewerScore getScore (String viewer, long teamId) {
+    public ViewerScore getScore (String viewer, long teamId) {
         if (!scores.containsKey(viewer))
             return null;
         if (!scores.get(viewer).containsKey(teamId))
@@ -58,7 +58,7 @@ public class ViewerScoreRepository {
         return scores.get(viewer).get(teamId);
     }
 
-    public static String getKeywords (long teamId) {
+    public String getKeywords (long teamId) {
         StringBuilder sb = new StringBuilder();
         Iterator<String> iterator = keyAliases.get(teamId).iterator();
         while (iterator.hasNext()) {
@@ -69,9 +69,9 @@ public class ViewerScoreRepository {
         return sb.toString();
     }
 
-    public static String getBestViewerScores () {
+    public String getBestViewerScores () {
         StringBuilder sb = new StringBuilder();
-        TeamRepository teamRepository = GrnTournamentApplication.getTeamRepository();
+        TeamRepository teamRepository = Repositories.getTeamRepository();
         for (Team team : teamRepository.getAllTeams()) {
             sb.append("Kibice " + team.getShortName() + ": ");
             List<ViewerScore> teamViewerScores =  getViewerScoresForTeam(team.getId());
@@ -92,7 +92,7 @@ public class ViewerScoreRepository {
         return sb.toString();
     }
 
-    public static List<ViewerScore> getViewerScoresForTeam (long teamId) {
+    public List<ViewerScore> getViewerScoresForTeam (long teamId) {
         List<ViewerScore> viewerScores = new ArrayList<>();
         for (String viewer : scores.keySet()) {
             if  (!scores.get(viewer).containsKey(teamId))
@@ -103,14 +103,14 @@ public class ViewerScoreRepository {
         return viewerScores;
     }
 
-    public static String getViewerScores (String viewer) {
+    public String getViewerScores (String viewer) {
         StringBuilder sb = new StringBuilder();
         Map<Long,ViewerScore> score = scores.get(viewer);
         if (score == null)
             return "Jeszcze nie kibicowałaś/kibicowałeś. " +
                     "Słowa kluczowe bieżącego meczu sprawdź za pomocą !konkurs. " +
                     "Kibicuj za ich pomocą na czacie! Słowa kluczowe zmieniają się co mecz.";
-        TeamRepository teamRepository = GrnTournamentApplication.getTeamRepository();
+        TeamRepository teamRepository = Repositories.getTeamRepository();
         sb.append("Wyniki kibicowania dla " + viewer + ":\n");
         for (Team team : teamRepository.getAllTeams()) {
             ViewerScore vs = score.get(team.getId());
@@ -121,8 +121,8 @@ public class ViewerScoreRepository {
         return sb.toString();
     }
 
-    public static void maybeAppendScore (String viewer, String message) {
-        MatchController matchController = GrnTournamentApplication.getMatchController();
+    public void maybeAppendScore (String viewer, String message) {
+        MatchController matchController = Repositories.getMatchRepository();
         Match currentMatch = matchController.getCurrentMatch();
         long teamId = getTeamIdFromMessage(message);
         if (teamId < 0)
@@ -138,7 +138,7 @@ public class ViewerScoreRepository {
         appendScore(viewerScore);
     }
 
-    public static long getTeamIdFromMessage (String msg) {
+    public long getTeamIdFromMessage (String msg) {
         for (long teamId : keyAliases.keySet()) {
             for (String keyword : keyAliases.get(teamId)) {
                 String lowerCaseMsg = msg.toLowerCase(Locale.ROOT);
@@ -150,7 +150,7 @@ public class ViewerScoreRepository {
         return -1;
     }
 
-    public static void appendScore (ViewerScore score) {
+    public void appendScore (ViewerScore score) {
         ViewerScore currentScore = getScore(score.getViewer(), score.getTeamId());
         if (currentScore == null) {
             currentScore = new ViewerScore();
@@ -163,7 +163,7 @@ public class ViewerScoreRepository {
         updateScore(currentScore);
     }
 
-    public static void saveScores () {
+    public void saveScores () {
         List<ViewerScore> currentScores = ViewerScoreService.getAllScores();
         for (String viewer : scores.keySet()) {
             Map<Long, ViewerScore> teamScores = scores.get(viewer);
@@ -176,11 +176,11 @@ public class ViewerScoreRepository {
         }
     }
 
-    public static Map<Long, Set<String>> getKeyAliases() {
+    public Map<Long, Set<String>> getKeyAliases() {
         return keyAliases;
     }
 
-    private static boolean containsScore (ViewerScore score, List<ViewerScore> scores) {
+    private boolean containsScore (ViewerScore score, List<ViewerScore> scores) {
         for (ViewerScore vs : scores)
             if (vs.getViewer().equals(score.getViewer())
                     && vs.getTeamId() == score.getTeamId())

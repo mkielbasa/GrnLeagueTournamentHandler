@@ -16,15 +16,43 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PlayerRepository {
+public class PlayerRepository implements Repository {
     private Map<Long, Player> players = new HashMap<>();
     private static final File TEAMS_FILE = new File("./GrnTournament/players.conf");
 
+    private TeamRepository teamRepository;
+
     public PlayerRepository (TeamRepository teamRepository) {
-        buildPlayerProfiles(teamRepository);
+        this.teamRepository = teamRepository;
     }
 
-    private void loadPlayerProfiles (TeamRepository teamRepository) {
+    @Override
+    public void init() {
+        reloadPlayerProfiles();
+    }
+
+    @Override
+    public void reload() {
+        reloadPlayerProfiles();
+    }
+
+    private void reloadPlayerProfiles() {
+        ConsoleHandler.handleInfo("Building players repository");
+        players.clear();
+        //Read players and their assigment to teams
+        Map<String, String> playersAndTeams = PlayerReader.read(TEAMS_FILE);
+        for (String summoner : playersAndTeams.keySet()) {
+            Team team = getPlayerTeam(summoner, teamRepository, playersAndTeams);
+            //Skip players that are not assigned to any team
+            if (team == null)
+                continue;
+            initPlayer(summoner, team);
+        }
+        initPlayerStats();
+        buildPlayersBestStats();
+    }
+
+    private void initPlayerStats() {
         for (Player player : PlayerService.getAllPlayers()) {
             this.players.put(player.getInternalId(), player);
             Team team = teamRepository.getTeam(player.getTeamId());
@@ -35,40 +63,35 @@ public class PlayerRepository {
         }
     }
 
-    private void buildPlayerProfiles (TeamRepository teamRepository) {
-        ConsoleHandler.handleInfo("Building players repository");
-        //Read players and their assigment to teams
-        Map<String, String> playersAndTeams = PlayerReader.read(TEAMS_FILE);
-        for (String summoner : playersAndTeams.keySet()) {
-            Team team = getPlayerTeam(summoner, teamRepository, playersAndTeams);
-            //Skip players that are not assigned to any team
-            if (team == null)
-                continue;
-            buildPlayerProfile(summoner, team);
-        }
-        loadPlayerProfiles(teamRepository);
-        buildPlayersBestStats();
-    }
-
     private void buildPlayersBestStats () {
         for (Player player : players.values()) {
             List<PlayerStats> playerStats = PlayerService.getLeagues(player);
             if (playerStats.isEmpty()) {
-                PlayerStats ps = new PlayerStats();
-                ps.setPlayerId(player.getInternalId());
-                ps.setRank("UNRANKED");
-                playerStats.add(ps);
+                long playerId = player.getInternalId();
+                playerStats.add(buildUnranked(playerId));
             }
-            PlayerStats higherStats = playerStats.get(0);
-            int highestRank = PlayerRank.getRankValue(higherStats.getTier());
-            for (PlayerStats ps : playerStats) {
-                String tier = ps.getTier();
-                int rank = PlayerRank.getRankValue(tier);
-                if (rank > highestRank)
-                    higherStats = ps;
-            }
-            player.setPlayerStats(higherStats);
+            PlayerStats bestRank = findHighestRank(playerStats);
+            player.setPlayerStats(bestRank);
         }
+    }
+
+    private PlayerStats buildUnranked (long playerId) {
+        PlayerStats stats = new PlayerStats();
+        stats.setPlayerId(playerId);
+        stats.setRank("UNRANKED");
+        return stats;
+    }
+
+    private PlayerStats findHighestRank (List<PlayerStats> playerStats) {
+        PlayerStats bestRank = playerStats.get(0);
+        int highestRank = PlayerRank.getRankValue(bestRank.getTier());
+        for (PlayerStats ps : playerStats) {
+            String tier = ps.getTier();
+            int rank = PlayerRank.getRankValue(tier);
+            if (rank > highestRank)
+                bestRank = ps;
+        }
+        return bestRank;
     }
 
     private Team getPlayerTeam (String summonerName, TeamRepository teamRepository,
@@ -77,7 +100,7 @@ public class PlayerRepository {
         return teamRepository.getTeam(teamName);
     }
 
-    private Player buildPlayerProfile(String summoner, Team team) {
+    private Player initPlayer (String summoner, Team team) {
         JSONObject jSummoner = SummonerEndpoint.getSummonerByName(summoner);
         Player player = new Player();
         player.fromJson(jSummoner);
@@ -87,24 +110,23 @@ public class PlayerRepository {
         return player;
     }
 
-    public void updatePlayerMaestries () {
+    public void initMaestries() {
         for (Player player : players.values()) {
             PlayerService.clearMasteries(player);
-            JSONArray jMaestries = ChampionMasteryEndpoint.getChampionMaestries(player.getId());
+            String summonerId = player.getSummonerId();
+            JSONArray jMaestries = ChampionMasteryEndpoint.getChampionMaestries(summonerId);
             for (Object jObject : jMaestries.toArray()) {
                 JSONObject jMaestry = (JSONObject) jObject;
-                ChampionMastery championMastery = new ChampionMastery();
-                championMastery.fromJson(jMaestry);
-                championMastery.setPlayerId(player.getInternalId());
+                ChampionMastery championMastery = new ChampionMastery(jMaestry, player);
                 PlayerService.addMastery(championMastery);
             }
         }
     }
 
-    public void updatePlayerLeagues() {
+    public void initLeagues() {
         for (Player player : players.values()) {
             PlayerService.clearLeagues(player);
-            JSONArray jLeagues = LeagueEndpoint.getLeagueEntries(player.getId());
+            JSONArray jLeagues = LeagueEndpoint.getLeagueEntries(player.getSummonerId());
             for (Object jObject : jLeagues.toArray()) {
                 JSONObject jLeague =  (JSONObject) jObject;
                 PlayerStats playerStats = new PlayerStats();

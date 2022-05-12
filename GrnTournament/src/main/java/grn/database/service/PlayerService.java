@@ -41,7 +41,7 @@ public class PlayerService {
                 "summonerLevel", "summonerId");
         insert.setValues(player.getAccountId(), player.getPUuid(),
                 player.getName(), player.getTeamId(), player.getProfileIconId(), player.getRevisionDate(),
-                player.getSummonerLevel(), player.getId());
+                player.getSummonerLevel(), player.getSummonerId());
         insert.execute();
     }
 
@@ -66,11 +66,7 @@ public class PlayerService {
         Query query = new Query(sql);
         query.setParams(playerId);
         List<QueryRow> rows = query.execute();
-        for (QueryRow row : rows) {
-            ChampionMastery mastery = new ChampionMastery();
-            mastery.fromQueryRow(row);
-            masteries.add(mastery);
-        }
+        rows.stream().forEach(r -> masteries.add(new ChampionMastery(r)));
         return masteries;
     }
 

@@ -3,6 +3,7 @@ package com.example.grntournament.controlloer;
 import com.example.grntournament.GrnTournamentApplication;
 import grn.database.pojo.*;
 import grn.database.repository.PlayerRepository;
+import grn.database.repository.Repositories;
 import grn.database.repository.TeamRepository;
 import grn.database.service.MatchService;
 import grn.error.ConsoleHandler;
@@ -23,7 +24,7 @@ public class HttpController {
 
     @GetMapping("/matches")
     public ModelAndView getMatches () {
-        TeamRepository teamRepository = GrnTournamentApplication.getTeamRepository();
+        TeamRepository teamRepository = Repositories.getTeamRepository();
         List<Team> teams = teamRepository.getAllTeams();
         ModelAndView mav = new ModelAndView("matches");
         mav.addObject("teamA", teams.get (0));
@@ -39,7 +40,7 @@ public class HttpController {
 
     @GetMapping("/allMatches")
     public ModelAndView getAllMatches () {
-        MatchController matchController = GrnTournamentApplication.getMatchController();
+        MatchController matchController = Repositories.getMatchRepository();
         List<Match> matches = matchController.getAllMatches();
         ModelAndView mav = new ModelAndView("allmatches");
         mav.addObject("matches", matches);
@@ -48,7 +49,7 @@ public class HttpController {
 
     @GetMapping("/currentMatch")
     public ModelAndView getCurrentMatch () {
-        MatchController matchController = GrnTournamentApplication.getMatchController();
+        MatchController matchController = Repositories.getMatchRepository();
         Match currentMatch = matchController.getCurrentMatch();
         ModelAndView mav = new ModelAndView("currentMatch");
         Team teamA = currentMatch.getTeamAObject();
@@ -62,8 +63,8 @@ public class HttpController {
 
     @GetMapping("/player")
     public ModelAndView getPlayer (@RequestParam String id) {
-        PlayerRepository playerRepository = GrnTournamentApplication.getPlayerRepository();
-        TeamRepository teamRepository = GrnTournamentApplication.getTeamRepository();
+        PlayerRepository playerRepository = Repositories.getPlayerRepository();
+        TeamRepository teamRepository = Repositories.getTeamRepository();
         long internalId = Long.parseLong(id);
         Player player = playerRepository.get(internalId);
         Team team = teamRepository.getTeam(player.getTeamId());
@@ -85,7 +86,7 @@ public class HttpController {
     @GetMapping("/table")
     public ModelAndView getMatchTable () {
         List<MatchStats> matchStats = MatchService.getMatchStats();
-        TeamRepository teamRepository = GrnTournamentApplication.getTeamRepository();
+        TeamRepository teamRepository = Repositories.getTeamRepository();
         for (MatchStats matchStat : matchStats) {
             Team team = teamRepository.getTeam(matchStat.getTeamId());
             Player player = team.getPlayers().get(0);
@@ -116,7 +117,7 @@ public class HttpController {
     @GetMapping("/winner")
     public ModelAndView getWinner () {
         List<MatchStats> matchStats = MatchService.getMatchStats();
-        TeamRepository teamRepository = GrnTournamentApplication.getTeamRepository();
+        TeamRepository teamRepository = Repositories.getTeamRepository();
         for (MatchStats matchStat : matchStats) {
             Team team = teamRepository.getTeam(matchStat.getTeamId());
             Player player = team.getPlayers().get(0);

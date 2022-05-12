@@ -2,6 +2,7 @@ package com.example.grntournament.controlloer;
 
 import com.example.grntournament.GrnTournamentApplication;
 import grn.database.repository.PlayerRepository;
+import grn.database.repository.Repositories;
 import grn.database.repository.ViewerScoreRepository;
 import grn.database.service.ViewerScoreService;
 import grn.error.ConsoleHandler;
@@ -15,7 +16,7 @@ public class WebController {
 
     @GetMapping("/reloadMatches")
     public String reloadMatches () {
-        MatchController matchController = GrnTournamentApplication.getMatchController();
+        MatchController matchController = Repositories.getMatchRepository();
         matchController.finishCurrentMatch();
         ConsoleHandler.handleInfo("MatchesReloaded");
         SoundPlayer.playSound("./GrnTournament/ding.wav");
@@ -24,9 +25,9 @@ public class WebController {
 
     @GetMapping("/reloadPlayers")
     public String reloadPlayers () {
-        PlayerRepository playerRepository = GrnTournamentApplication.getPlayerRepository();
-        playerRepository.updatePlayerMaestries();
-        playerRepository.updatePlayerLeagues();
+        PlayerRepository playerRepository = Repositories.getPlayerRepository();
+        playerRepository.initMaestries();
+        playerRepository.initLeagues();
         ConsoleHandler.handleInfo("PlayersReloaded");
         SoundPlayer.playSound("./GrnTournament/ding.wav");
         return "Reloaded";
@@ -42,7 +43,8 @@ public class WebController {
 
     @GetMapping("stop")
     public String stop () {
-        ViewerScoreRepository.saveScores();
+        ViewerScoreRepository viewerScoreRepository = Repositories.getViewerScoreRepository();
+        viewerScoreRepository.saveScores();
         System.exit(0);
         return "STOPPED";
     }

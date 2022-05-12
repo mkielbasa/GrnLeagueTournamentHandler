@@ -7,6 +7,8 @@ import grn.database.pojo.Player;
 import grn.database.pojo.PlayerMatchStats;
 import grn.database.pojo.Team;
 import grn.database.repository.PlayerRepository;
+import grn.database.repository.Repositories;
+import grn.database.repository.Repository;
 import grn.database.repository.TeamRepository;
 import grn.database.service.MatchService;
 import grn.error.ConsoleHandler;
@@ -20,11 +22,16 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MatchController {
+public class MatchController implements Repository {
 
     public Match currentMatch;
 
     public void init () {
+        reloadMatches();
+    }
+
+    @Override
+    public void reload() {
         reloadMatches();
     }
 
@@ -42,7 +49,7 @@ public class MatchController {
             return;
         }
         currentMatch = nonFinishedMatches.get(0);;
-        TeamRepository teamRepository = GrnTournamentApplication.getTeamRepository();
+        TeamRepository teamRepository = Repositories.getTeamRepository();
         Team teamA = teamRepository.getTeam(currentMatch.getTeamA());
         Team teamB = teamRepository.getTeam(currentMatch.getTeamB());
         ConsoleHandler.handleInfo("Current match : " + teamA.getShortName() + " vs " + teamB.getShortName());
@@ -53,7 +60,7 @@ public class MatchController {
             ConsoleHandler.handleWarning("Current match is wrong");
             return;
         }
-        TeamRepository teamRepository = GrnTournamentApplication.getTeamRepository();
+        TeamRepository teamRepository = Repositories.getTeamRepository();
         Team teamA = teamRepository.getTeam(currentMatch.getTeamA());
         Team teamB = teamRepository.getTeam(currentMatch.getTeamB());
         String tournamentMatchId = findTournamentMatchId(teamA, teamB);
@@ -128,7 +135,7 @@ public class MatchController {
 
     private List<PlayerMatchStats> buildPlayerMatchStats (JSONObject jStats, long matchInternalId) {
         List<PlayerMatchStats> stats = new ArrayList<>();
-        PlayerRepository playerRepository = GrnTournamentApplication.getPlayerRepository();
+        PlayerRepository playerRepository = Repositories.getPlayerRepository();
         JSONObject jInfo = (JSONObject) jStats.get("info");
         long matchDuration = (long) jInfo.get("gameDuration");
         JSONArray jParticipants = (JSONArray) jInfo.get("participants");
