@@ -1,5 +1,6 @@
 package grn.http;
 
+import grn.endpoint.RequestResult;
 import grn.error.ConsoleHandler;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -14,45 +15,29 @@ import java.util.Map;
 
 public class HttpRequester {
 
-    public static Object doRequest (String url, String... params) {
+    public static RequestResult doRequest (String url, String... params) throws IOException {
         String formattedUrl = String.format(url, params);
-        String response = HttpRequester.doRequest(formattedUrl);
-        JSONParser parser = new JSONParser();
-        try {
-            return parser.parse(response);
-        } catch (ParseException e) {
-            ConsoleHandler.handleException(e);
-        }
-        return null;
+        return HttpRequester.doRequest(formattedUrl);
     }
 
-    private static String doRequest (String path) {
-        try {
-            URL url = new URL(path);
-            HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
-            con.setDoOutput(true);
-            con.setRequestProperty("Content-Type", "application/json");
-            con.connect();
-            int status = con.getResponseCode();
-            ConsoleHandler.handleInfo("Request code " + status + " for " + path);
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            StringBuffer content = new StringBuffer();
-            while ((inputLine = in.readLine()) != null) {
-                content.append(inputLine);
-            }
-            in.close();
-            con.disconnect();
-            return content.toString();
-        } catch (ProtocolException e) {
-            ConsoleHandler.handleException(e);
-        } catch (MalformedURLException e) {
-            ConsoleHandler.handleException(e);
-        } catch (IOException e) {
-            ConsoleHandler.handleException(e);
+    private static RequestResult doRequest (String path) throws IOException {
+        URL url = new URL(path);
+        HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+        con.setDoOutput(true);
+        con.setRequestProperty("Content-Type", "application/json");
+        con.connect();
+        int status = con.getResponseCode();
+        ConsoleHandler.handleInfo("Request code " + status + " for " + path);
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer content = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+            content.append(inputLine);
         }
-        return null;
+        in.close();
+        con.disconnect();
+        return new RequestResult(status, content.toString());
     }
 
 }

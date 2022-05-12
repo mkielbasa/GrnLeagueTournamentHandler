@@ -1,6 +1,5 @@
 package grn.riot.lol;
 
-import com.example.grntournament.GrnTournamentApplication;
 import grn.database.QueryRow;
 import grn.database.pojo.Match;
 import grn.database.pojo.Player;
@@ -11,10 +10,13 @@ import grn.database.repository.Repositories;
 import grn.database.repository.Repository;
 import grn.database.repository.TeamRepository;
 import grn.database.service.MatchService;
+import grn.endpoint.MatchesEndpoint;
+import grn.endpoint.RequestResult;
 import grn.error.ConsoleHandler;
+import grn.exception.OutdatedApiKeyException;
 import grn.properties.PropertiesHandler;
 import grn.properties.json.JsonFileReader;
-import grn.riot.lol.endpoint.MatchEndpoint;
+import grn.endpoint.MatchEndpoint;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -55,7 +57,7 @@ public class MatchController implements Repository {
         ConsoleHandler.handleInfo("Current match : " + teamA.getShortName() + " vs " + teamB.getShortName());
     }
 
-    public void finishCurrentMatch () {
+    public void finishCurrentMatch () throws OutdatedApiKeyException {
         if (currentMatch == null || currentMatch.isFinished()) {
             ConsoleHandler.handleWarning("Current match is wrong");
             return;
@@ -77,9 +79,11 @@ public class MatchController implements Repository {
         reloadMatches();
     }
 
-    private String findTournamentMatchId (Team teamA, Team teamB) {
+    private String findTournamentMatchId (Team teamA, Team teamB) throws OutdatedApiKeyException {
         for (Player p : teamA.getPlayers()) {
-            List<String> matchIds = MatchEndpoint.getMatchIds(p.getPUuid());
+            MatchesEndpoint mEndpoint = new MatchesEndpoint(p.getPUuid());
+            RequestResult result = mEndpoint.doRequest();
+            List<String> matchIds = (List<String>) result.parseJSON();
             if (matchIds.isEmpty())
                 continue;
             String lastMatchId = matchIds.get(0);
@@ -89,8 +93,10 @@ public class MatchController implements Repository {
         return null;
     }
 
-    private boolean isTournamentMatch (Team teamA, Team teamB, String matchId) {
-        JSONObject jStats = MatchEndpoint.getMatchDetails(matchId);
+    private boolean isTournamentMatch (Team teamA, Team teamB, String matchId) throws OutdatedApiKeyException {
+        MatchEndpoint mEndpoint = new MatchEndpoint(matchId);
+        RequestResult result = mEndpoint.doRequest();
+        JSONObject jStats = (JSONObject) result.parseJSON();
         JSONObject jInfo = (JSONObject) jStats.get("info");
         JSONArray jParticipants = (JSONArray) jInfo.get("participants");
         int participantCount = 0;
@@ -118,8 +124,10 @@ public class MatchController implements Repository {
         return currentMatch;
     }
 
-    public List<String> getMatchIds (Player player) {
-        return MatchEndpoint.getMatchIds(player.getPUuid());
+    public List<String> getMatchIds (Player player) throws OutdatedApiKeyException {
+        MatchesEndpoint mEndpoint = new MatchesEndpoint(player.getPUuid());
+        RequestResult result = mEndpoint.doRequest();
+        return (List<String>) result.parseJSON();
     }
 
     public List<PlayerMatchStats> getMockPlayerMatchStats (long matchInternalId) {
@@ -128,8 +136,10 @@ public class MatchController implements Repository {
         return buildPlayerMatchStats(jStats, matchInternalId);
     }
 
-    public List<PlayerMatchStats> getPlayerMatchStats (String matchId, long matchInternalId) {
-        JSONObject jStats = MatchEndpoint.getMatchDetails(matchId);
+    public List<PlayerMatchStats> getPlayerMatchStats (String matchId, long matchInternalId) throws OutdatedApiKeyException {
+        MatchEndpoint mEndpoint = new MatchEndpoint(matchId);
+        RequestResult result = mEndpoint.doRequest();
+        JSONObject jStats = (JSONObject) result.parseJSON();
         return buildPlayerMatchStats(jStats, matchInternalId);
     }
 
@@ -168,7 +178,7 @@ public class MatchController implements Repository {
         MatchService.finishMatch(matchInternalId, matchId);
     }
 
-    private void registerMatchStats (String matchId, long matchInternalId) {
+    private void registerMatchStats (String matchId, long matchInternalId) throws OutdatedApiKeyException {
         ConsoleHandler.handleInfo("Match " + matchId);
         if (!matchId.equals("NO-ID")) {
             List<PlayerMatchStats> playerMatchStats = getPlayerMatchStats(matchId, matchInternalId);

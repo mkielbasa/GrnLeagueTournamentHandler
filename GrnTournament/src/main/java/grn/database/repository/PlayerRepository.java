@@ -2,11 +2,13 @@ package grn.database.repository;
 
 import grn.database.pojo.*;
 import grn.database.service.PlayerService;
+import grn.endpoint.RequestResult;
 import grn.error.ConsoleHandler;
+import grn.exception.OutdatedApiKeyException;
 import grn.file.PlayerReader;
-import grn.riot.lol.endpoint.ChampionMasteryEndpoint;
-import grn.riot.lol.endpoint.LeagueEndpoint;
-import grn.riot.lol.endpoint.SummonerEndpoint;
+import grn.endpoint.ChampionMasteryEndpoint;
+import grn.endpoint.LeagueEndpoint;
+import grn.endpoint.SummonerEndpoint;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -27,16 +29,16 @@ public class PlayerRepository implements Repository {
     }
 
     @Override
-    public void init() {
+    public void init() throws OutdatedApiKeyException {
         reloadPlayerProfiles();
     }
 
     @Override
-    public void reload() {
+    public void reload() throws OutdatedApiKeyException {
         reloadPlayerProfiles();
     }
 
-    private void reloadPlayerProfiles() {
+    private void reloadPlayerProfiles() throws OutdatedApiKeyException {
         ConsoleHandler.handleInfo("Building players repository");
         players.clear();
         //Read players and their assigment to teams
@@ -100,8 +102,10 @@ public class PlayerRepository implements Repository {
         return teamRepository.getTeam(teamName);
     }
 
-    private Player initPlayer (String summoner, Team team) {
-        JSONObject jSummoner = SummonerEndpoint.getSummonerByName(summoner);
+    private Player initPlayer (String summoner, Team team) throws OutdatedApiKeyException {
+        SummonerEndpoint sEndpoint = new SummonerEndpoint(summoner);
+        RequestResult result = sEndpoint.doRequest();
+        JSONObject jSummoner = (JSONObject) result.parseJSON();
         Player player = new Player();
         player.fromJson(jSummoner);
         player.setTeamId(team.getId());
@@ -110,11 +114,13 @@ public class PlayerRepository implements Repository {
         return player;
     }
 
-    public void initMaestries() {
+    public void initMaestries() throws OutdatedApiKeyException {
         for (Player player : players.values()) {
             PlayerService.clearMasteries(player);
             String summonerId = player.getSummonerId();
-            JSONArray jMaestries = ChampionMasteryEndpoint.getChampionMaestries(summonerId);
+            ChampionMasteryEndpoint cEndpoint = new ChampionMasteryEndpoint(summonerId);
+            RequestResult result = cEndpoint.doRequest();
+            JSONArray jMaestries = (JSONArray) result.parseJSON();
             for (Object jObject : jMaestries.toArray()) {
                 JSONObject jMaestry = (JSONObject) jObject;
                 ChampionMastery championMastery = new ChampionMastery(jMaestry, player);
@@ -123,10 +129,12 @@ public class PlayerRepository implements Repository {
         }
     }
 
-    public void initLeagues() {
+    public void initLeagues() throws OutdatedApiKeyException {
         for (Player player : players.values()) {
             PlayerService.clearLeagues(player);
-            JSONArray jLeagues = LeagueEndpoint.getLeagueEntries(player.getSummonerId());
+            LeagueEndpoint lEndpoint = new LeagueEndpoint(player.getSummonerId());
+            RequestResult result = lEndpoint.doRequest();
+            JSONArray jLeagues = (JSONArray) result.parseJSON();
             for (Object jObject : jLeagues.toArray()) {
                 JSONObject jLeague =  (JSONObject) jObject;
                 PlayerStats playerStats = new PlayerStats();

@@ -1,6 +1,8 @@
 package grn.database.repository;
 
 import grn.datadragon.DataDragonRepository;
+import grn.error.ConsoleHandler;
+import grn.exception.OutdatedApiKeyException;
 import grn.riot.lol.MatchController;
 
 public class Repositories {
@@ -12,11 +14,20 @@ public class Repositories {
     private static ViewerScoreRepository viewerScoreRepository;
 
     public static void init () {
-        dataDragonRepository.init();
-        teamRepository.init();
-        playerRepository.init();
-        matchRepository.init();
-        viewerScoreRepository.init();
+        try {
+            dataDragonRepository = new DataDragonRepository();
+            dataDragonRepository.init();
+            teamRepository = new TeamRepository();
+            teamRepository.init();
+            playerRepository = new PlayerRepository(teamRepository);
+            playerRepository.init();
+            matchRepository = new MatchController();
+            matchRepository.init();
+            viewerScoreRepository = new ViewerScoreRepository();
+            viewerScoreRepository.init();
+        } catch (OutdatedApiKeyException e) {
+            ConsoleHandler.handleException(e);
+        }
     }
 
     public static PlayerRepository getPlayerRepository () {
