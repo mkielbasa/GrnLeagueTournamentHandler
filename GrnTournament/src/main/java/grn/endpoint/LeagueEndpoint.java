@@ -11,6 +11,7 @@ public class LeagueEndpoint extends EndpointRequest {
     public LeagueEndpoint (String summonerId) {
         super();
         this.summonerId = summonerId;
+        this.params = buildParams();
     }
 
     @Override
@@ -25,6 +26,6 @@ public class LeagueEndpoint extends EndpointRequest {
 
     @Override
     protected String buildEndpointKey() {
-        return "LEAGUE";
+        return "RIOT";
     }
 }

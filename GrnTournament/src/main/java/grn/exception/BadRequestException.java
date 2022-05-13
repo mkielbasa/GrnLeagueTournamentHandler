@@ -2,7 +2,7 @@ package grn.exception;
 
 public class BadRequestException extends EndpointException{
 
-    public BadRequestException () {
-        super("Bad request!");
+    public BadRequestException (String url) {
+        super(url, "Bad request!");
     }
 }

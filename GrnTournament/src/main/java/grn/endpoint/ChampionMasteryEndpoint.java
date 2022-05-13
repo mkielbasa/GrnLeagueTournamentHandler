@@ -11,6 +11,7 @@ public class ChampionMasteryEndpoint extends EndpointRequest {
     public ChampionMasteryEndpoint(String summonerId) {
         super();
         this.summonerId = summonerId;
+        this.params = buildParams();
     }
 
     @Override
@@ -25,6 +26,6 @@ public class ChampionMasteryEndpoint extends EndpointRequest {
 
     @Override
     protected String buildEndpointKey() {
-        return "CHAMPION-MASTERY";
+        return "RIOT";
     }
 }

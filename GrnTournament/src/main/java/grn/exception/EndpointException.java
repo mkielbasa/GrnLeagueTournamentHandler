@@ -2,7 +2,9 @@ package grn.exception;
 
 public class EndpointException extends  Exception {
 
-    public EndpointException (String message) {
-        super(message);
+    private String url;
+
+    public EndpointException (String url, String message) {
+        super(message + "(" + url + ")");
     }
 }

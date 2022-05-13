@@ -10,12 +10,14 @@ import java.io.IOException;
 
 public abstract class EndpointRequest {
 
+    public static final int CALLS_AMOUNT_EXCEEDED = 429;
+    public static final int NOT_FOUND = 404;
     public static final int OUTDATED_API_KEY = 403;
     public static final int BAD_REQUEST = 400;
 
     protected String apiKey;
-    private String url;
-    private String[] params;
+    protected String url;
+    protected String[] params;
 
     protected String endpointKey;
 

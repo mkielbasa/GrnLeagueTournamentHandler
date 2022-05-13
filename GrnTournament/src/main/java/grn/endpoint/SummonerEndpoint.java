@@ -1,11 +1,22 @@
 package grn.endpoint;
 
+import grn.error.ConsoleHandler;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 public class SummonerEndpoint extends EndpointRequest{
 
     private String summoner;
 
     public SummonerEndpoint (String summoner) {
-        this.summoner = summoner;
+        super();
+        try {
+            this.summoner = URLEncoder.encode(summoner, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            ConsoleHandler.handleException(e);
+        }
+        this.params = buildParams();
     }
 
     @Override
@@ -20,6 +31,6 @@ public class SummonerEndpoint extends EndpointRequest{
 
     @Override
     protected String buildEndpointKey() {
-        return "SUMMONER";
+        return "RIOT";
     }
 }

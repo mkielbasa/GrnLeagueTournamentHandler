@@ -3,9 +3,7 @@ package grn.http;
 import grn.endpoint.EndpointRequest;
 import grn.endpoint.RequestResult;
 import grn.error.ConsoleHandler;
-import grn.exception.BadRequestException;
-import grn.exception.EndpointException;
-import grn.exception.OutdatedApiKeyException;
+import grn.exception.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -26,8 +24,7 @@ public class HttpRequester {
 
     private static final int ENDPOINT_LIMIT = 50;
 
-    private static long keyMinute;
-    private static Map<String, Integer> endpointCalls = new HashMap<>();
+    private static int endpointCalls = 0;
 
     public static void init () {
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
@@ -35,18 +32,34 @@ public class HttpRequester {
     }
 
     private static void resetKeyMinute () {
-        keyMinute = System.currentTimeMillis();
-        endpointCalls.clear();
+        endpointCalls = readCalls();
         ConsoleHandler.handleInfo("Resetting key minutes...");
     }
 
+    private static int readCalls () {
+        int calls = 0;
+        try {
+            File file = new File("./GrnTournament/calls.log");
+            if (!file.exists())
+                return calls;
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            if ((line = br.readLine()) != null) {
+                calls = Integer.parseInt(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return calls;
+    }
+
     public static RequestResult doRequest (String url, String endpointKey, String... params) throws EndpointException {
-        awaitTimers(endpointKey);
         String formattedUrl = String.format(url, params);
         try {
+            awaitTimers(endpointKey);
             return doRequest(formattedUrl);
         } catch (IOException e) {
-            throw new OutdatedApiKeyException();
+            throw new OutdatedApiKeyException(formattedUrl);
         }
     }
 
@@ -59,9 +72,13 @@ public class HttpRequester {
         con.connect();
         int status = con.getResponseCode();
         if (status == EndpointRequest.OUTDATED_API_KEY)
-            throw new OutdatedApiKeyException();
+            throw new OutdatedApiKeyException(path);
         if (status == EndpointRequest.BAD_REQUEST)
-            throw new BadRequestException();
+            throw new BadRequestException(path);
+        if (status == EndpointRequest.NOT_FOUND)
+            throw new NotFoundException(path);
+        if (status == EndpointRequest.CALLS_AMOUNT_EXCEEDED)
+            throw new CallsAmountExceeded(path);
         ConsoleHandler.handleInfo("Request code " + status + " for " + path);
         BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
         String inputLine;
@@ -76,24 +93,24 @@ public class HttpRequester {
 
     private static void awaitTimers (String endpointKey) {
         try {
-            int calls = 0;
-            if (endpointCalls.containsKey(endpointKey))
-                calls = endpointCalls.get(endpointKey);
-            if (calls >= ENDPOINT_LIMIT) {
-                long timeLeft = System.currentTimeMillis() - keyMinute;
-                long seconds = timeLeft / 1000;
+            if (endpointCalls >= ENDPOINT_LIMIT) {
+                long seconds = 60;
                 while (seconds > 0) {
-                    ConsoleHandler.handleWarning("Exceeded enpoint " + endpointKey + " limit. Awaiting " + seconds + "...");
-                    Thread.sleep(seconds * 1000);
+                    if (seconds % 10 == 0)
+                        ConsoleHandler.handleWarning("Exceeded enpoint " + endpointKey + " limit. Awaiting " + seconds + "...");
+                    TimeUnit.SECONDS.sleep(1);
                     seconds--;
                 }
                 resetKeyMinute();
             } else {
-                calls++;
-                endpointCalls.put(endpointKey, calls);
+                endpointCalls++;
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public static int getEndpointCalls() {
+        return endpointCalls;
     }
 }

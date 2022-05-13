@@ -4,7 +4,9 @@ import grn.database.pojo.*;
 import grn.database.service.PlayerService;
 import grn.endpoint.RequestResult;
 import grn.error.ConsoleHandler;
+import grn.exception.BadRequestException;
 import grn.exception.EndpointException;
+import grn.exception.NotFoundException;
 import grn.exception.OutdatedApiKeyException;
 import grn.file.PlayerReader;
 import grn.endpoint.ChampionMasteryEndpoint;
@@ -104,44 +106,59 @@ public class PlayerRepository implements Repository {
     }
 
     private Player initPlayer (String summoner, Team team) throws EndpointException {
-        SummonerEndpoint sEndpoint = new SummonerEndpoint(summoner);
-        RequestResult result = sEndpoint.doRequest();
-        JSONObject jSummoner = (JSONObject) result.parseJSON();
-        Player player = new Player();
-        player.fromJson(jSummoner);
-        player.setTeamId(team.getId());
-        if (!PlayerService.playerRegistered(player.getPUuid()))
-            PlayerService.register(player);
-        return player;
+        try {
+            SummonerEndpoint sEndpoint = new SummonerEndpoint(summoner);
+            RequestResult result = sEndpoint.doRequest();
+            JSONObject jSummoner = (JSONObject) result.parseJSON();
+            Player player = new Player();
+            player.fromJson(jSummoner);
+            player.setTeamId(team.getId());
+            if (!PlayerService.playerRegistered(player.getPUuid()))
+                PlayerService.register(player);
+            return player;
+        } catch (NotFoundException e) {
+            ConsoleHandler.handleWarning("Player " + summoner + " not found (probably has changed name)");
+            return null;
+        }
     }
 
     public void initMaestries() throws EndpointException {
         for (Player player : players.values()) {
             PlayerService.clearMasteries(player);
             String summonerId = player.getSummonerId();
-            ChampionMasteryEndpoint cEndpoint = new ChampionMasteryEndpoint(summonerId);
-            RequestResult result = cEndpoint.doRequest();
-            JSONArray jMaestries = (JSONArray) result.parseJSON();
-            for (Object jObject : jMaestries.toArray()) {
-                JSONObject jMaestry = (JSONObject) jObject;
-                ChampionMastery championMastery = new ChampionMastery(jMaestry, player);
-                PlayerService.addMastery(championMastery);
+            try {
+                ChampionMasteryEndpoint cEndpoint = new ChampionMasteryEndpoint(summonerId);
+                RequestResult result = cEndpoint.doRequest();
+                JSONArray jMaestries = (JSONArray) result.parseJSON();
+                for (Object jObject : jMaestries.toArray()) {
+                    JSONObject jMaestry = (JSONObject) jObject;
+                    ChampionMastery championMastery = new ChampionMastery(jMaestry, player);
+                    PlayerService.addMastery(championMastery);
+                }
+            } catch (BadRequestException e) {
+                ConsoleHandler.handleWarning("Player " + player.getName() + "(" + player.getPUuid() + ") doesn't exists anymore!");
+                ConsoleHandler.handleException(e);
             }
         }
     }
 
     public void initLeagues() throws EndpointException {
         for (Player player : players.values()) {
-            PlayerService.clearLeagues(player);
-            LeagueEndpoint lEndpoint = new LeagueEndpoint(player.getSummonerId());
-            RequestResult result = lEndpoint.doRequest();
-            JSONArray jLeagues = (JSONArray) result.parseJSON();
-            for (Object jObject : jLeagues.toArray()) {
-                JSONObject jLeague =  (JSONObject) jObject;
-                PlayerStats playerStats = new PlayerStats();
-                playerStats.fromJson(jLeague);
-                playerStats.setPlayerId(player.getInternalId());
-                PlayerService.addLeague(playerStats);
+            try {
+                PlayerService.clearLeagues(player);
+                LeagueEndpoint lEndpoint = new LeagueEndpoint(player.getSummonerId());
+                RequestResult result = lEndpoint.doRequest();
+                JSONArray jLeagues = (JSONArray) result.parseJSON();
+                for (Object jObject : jLeagues.toArray()) {
+                    JSONObject jLeague =  (JSONObject) jObject;
+                    PlayerStats playerStats = new PlayerStats();
+                    playerStats.fromJson(jLeague);
+                    playerStats.setPlayerId(player.getInternalId());
+                    PlayerService.addLeague(playerStats);
+                }
+            } catch (BadRequestException e) {
+                ConsoleHandler.handleWarning("Player " + player.getName() + "(" + player.getPUuid() + ") doesn't exists anymore!");
+                ConsoleHandler.handleException(e);
             }
         }
     }

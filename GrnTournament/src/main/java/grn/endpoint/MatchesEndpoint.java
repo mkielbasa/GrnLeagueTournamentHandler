@@ -5,7 +5,9 @@ public class MatchesEndpoint extends EndpointRequest{
     private String puuid;
 
     public MatchesEndpoint (String puuid) {
+        super();
         this.puuid = puuid;
+        this.params = buildParams();
     }
 
     @Override
@@ -20,6 +22,6 @@ public class MatchesEndpoint extends EndpointRequest{
 
     @Override
     protected String buildEndpointKey() {
-        return "MATCH";
+        return "RIOT";
     }
 }
