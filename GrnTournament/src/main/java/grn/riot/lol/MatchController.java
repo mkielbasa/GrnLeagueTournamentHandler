@@ -13,6 +13,7 @@ import grn.database.service.MatchService;
 import grn.endpoint.MatchesEndpoint;
 import grn.endpoint.RequestResult;
 import grn.error.ConsoleHandler;
+import grn.exception.EndpointException;
 import grn.exception.OutdatedApiKeyException;
 import grn.properties.PropertiesHandler;
 import grn.properties.json.JsonFileReader;
@@ -57,7 +58,7 @@ public class MatchController implements Repository {
         ConsoleHandler.handleInfo("Current match : " + teamA.getShortName() + " vs " + teamB.getShortName());
     }
 
-    public void finishCurrentMatch () throws OutdatedApiKeyException {
+    public void finishCurrentMatch () throws EndpointException {
         if (currentMatch == null || currentMatch.isFinished()) {
             ConsoleHandler.handleWarning("Current match is wrong");
             return;
@@ -79,7 +80,7 @@ public class MatchController implements Repository {
         reloadMatches();
     }
 
-    private String findTournamentMatchId (Team teamA, Team teamB) throws OutdatedApiKeyException {
+    private String findTournamentMatchId (Team teamA, Team teamB) throws EndpointException {
         for (Player p : teamA.getPlayers()) {
             MatchesEndpoint mEndpoint = new MatchesEndpoint(p.getPUuid());
             RequestResult result = mEndpoint.doRequest();
@@ -93,7 +94,7 @@ public class MatchController implements Repository {
         return null;
     }
 
-    private boolean isTournamentMatch (Team teamA, Team teamB, String matchId) throws OutdatedApiKeyException {
+    private boolean isTournamentMatch (Team teamA, Team teamB, String matchId) throws EndpointException {
         MatchEndpoint mEndpoint = new MatchEndpoint(matchId);
         RequestResult result = mEndpoint.doRequest();
         JSONObject jStats = (JSONObject) result.parseJSON();
@@ -124,7 +125,7 @@ public class MatchController implements Repository {
         return currentMatch;
     }
 
-    public List<String> getMatchIds (Player player) throws OutdatedApiKeyException {
+    public List<String> getMatchIds (Player player) throws EndpointException {
         MatchesEndpoint mEndpoint = new MatchesEndpoint(player.getPUuid());
         RequestResult result = mEndpoint.doRequest();
         return (List<String>) result.parseJSON();
@@ -136,7 +137,7 @@ public class MatchController implements Repository {
         return buildPlayerMatchStats(jStats, matchInternalId);
     }
 
-    public List<PlayerMatchStats> getPlayerMatchStats (String matchId, long matchInternalId) throws OutdatedApiKeyException {
+    public List<PlayerMatchStats> getPlayerMatchStats (String matchId, long matchInternalId) throws EndpointException {
         MatchEndpoint mEndpoint = new MatchEndpoint(matchId);
         RequestResult result = mEndpoint.doRequest();
         JSONObject jStats = (JSONObject) result.parseJSON();
@@ -178,7 +179,7 @@ public class MatchController implements Repository {
         MatchService.finishMatch(matchInternalId, matchId);
     }
 
-    private void registerMatchStats (String matchId, long matchInternalId) throws OutdatedApiKeyException {
+    private void registerMatchStats (String matchId, long matchInternalId) throws EndpointException {
         ConsoleHandler.handleInfo("Match " + matchId);
         if (!matchId.equals("NO-ID")) {
             List<PlayerMatchStats> playerMatchStats = getPlayerMatchStats(matchId, matchInternalId);

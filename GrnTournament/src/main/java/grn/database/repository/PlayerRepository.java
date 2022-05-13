@@ -4,6 +4,7 @@ import grn.database.pojo.*;
 import grn.database.service.PlayerService;
 import grn.endpoint.RequestResult;
 import grn.error.ConsoleHandler;
+import grn.exception.EndpointException;
 import grn.exception.OutdatedApiKeyException;
 import grn.file.PlayerReader;
 import grn.endpoint.ChampionMasteryEndpoint;
@@ -29,16 +30,16 @@ public class PlayerRepository implements Repository {
     }
 
     @Override
-    public void init() throws OutdatedApiKeyException {
+    public void init() throws EndpointException {
         reloadPlayerProfiles();
     }
 
     @Override
-    public void reload() throws OutdatedApiKeyException {
+    public void reload() throws EndpointException {
         reloadPlayerProfiles();
     }
 
-    private void reloadPlayerProfiles() throws OutdatedApiKeyException {
+    private void reloadPlayerProfiles() throws EndpointException {
         ConsoleHandler.handleInfo("Building players repository");
         players.clear();
         //Read players and their assigment to teams
@@ -102,7 +103,7 @@ public class PlayerRepository implements Repository {
         return teamRepository.getTeam(teamName);
     }
 
-    private Player initPlayer (String summoner, Team team) throws OutdatedApiKeyException {
+    private Player initPlayer (String summoner, Team team) throws EndpointException {
         SummonerEndpoint sEndpoint = new SummonerEndpoint(summoner);
         RequestResult result = sEndpoint.doRequest();
         JSONObject jSummoner = (JSONObject) result.parseJSON();
@@ -114,7 +115,7 @@ public class PlayerRepository implements Repository {
         return player;
     }
 
-    public void initMaestries() throws OutdatedApiKeyException {
+    public void initMaestries() throws EndpointException {
         for (Player player : players.values()) {
             PlayerService.clearMasteries(player);
             String summonerId = player.getSummonerId();
@@ -129,7 +130,7 @@ public class PlayerRepository implements Repository {
         }
     }
 
-    public void initLeagues() throws OutdatedApiKeyException {
+    public void initLeagues() throws EndpointException {
         for (Player player : players.values()) {
             PlayerService.clearLeagues(player);
             LeagueEndpoint lEndpoint = new LeagueEndpoint(player.getSummonerId());

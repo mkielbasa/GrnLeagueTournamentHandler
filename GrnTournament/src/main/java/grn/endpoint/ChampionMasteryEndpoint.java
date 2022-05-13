@@ -22,4 +22,9 @@ public class ChampionMasteryEndpoint extends EndpointRequest {
     protected String buildURL() {
         return "https://eun1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/%s?api_key=%s";
     }
+
+    @Override
+    protected String buildEndpointKey() {
+        return "CHAMPION-MASTERY";
+    }
 }

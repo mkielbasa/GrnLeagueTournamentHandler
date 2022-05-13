@@ -17,4 +17,9 @@ public class SummonerEndpoint extends EndpointRequest{
     protected String buildURL() {
         return "https://eun1.api.riotgames.com/lol/summoner/v4/summoners/by-name/%s?api_key=%s";
     }
+
+    @Override
+    protected String buildEndpointKey() {
+        return "SUMMONER";
+    }
 }

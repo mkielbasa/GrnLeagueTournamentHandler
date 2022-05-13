@@ -22,4 +22,9 @@ public class LeagueEndpoint extends EndpointRequest {
     protected String buildURL() {
         return "https://eun1.api.riotgames.com/lol/league/v4/entries/by-summoner/%s?api_key=%s";
     }
+
+    @Override
+    protected String buildEndpointKey() {
+        return "LEAGUE";
+    }
 }

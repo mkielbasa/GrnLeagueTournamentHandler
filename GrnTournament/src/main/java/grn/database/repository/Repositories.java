@@ -2,6 +2,7 @@ package grn.database.repository;
 
 import grn.datadragon.DataDragonRepository;
 import grn.error.ConsoleHandler;
+import grn.exception.EndpointException;
 import grn.exception.OutdatedApiKeyException;
 import grn.riot.lol.MatchController;
 
@@ -25,7 +26,7 @@ public class Repositories {
             matchRepository.init();
             viewerScoreRepository = new ViewerScoreRepository();
             viewerScoreRepository.init();
-        } catch (OutdatedApiKeyException e) {
+        } catch (EndpointException e) {
             ConsoleHandler.handleException(e);
         }
     }

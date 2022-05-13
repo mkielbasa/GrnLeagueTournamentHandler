@@ -6,6 +6,7 @@ import grn.database.repository.Repositories;
 import grn.database.repository.ViewerScoreRepository;
 import grn.database.service.ViewerScoreService;
 import grn.error.ConsoleHandler;
+import grn.exception.EndpointException;
 import grn.exception.OutdatedApiKeyException;
 import grn.riot.lol.MatchController;
 import grn.sound.SoundPlayer;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class WebController {
 
     @GetMapping("/reloadMatches")
-    public String reloadMatches () throws OutdatedApiKeyException {
+    public String reloadMatches () throws EndpointException {
         MatchController matchController = Repositories.getMatchRepository();
         matchController.finishCurrentMatch();
         ConsoleHandler.handleInfo("MatchesReloaded");
@@ -25,7 +26,7 @@ public class WebController {
     }
 
     @GetMapping("/reloadPlayers")
-    public String reloadPlayers () throws OutdatedApiKeyException {
+    public String reloadPlayers () throws EndpointException {
         PlayerRepository playerRepository = Repositories.getPlayerRepository();
         playerRepository.initMaestries();
         playerRepository.initLeagues();
