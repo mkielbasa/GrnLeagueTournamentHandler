@@ -27,12 +27,13 @@ public class HttpRequester {
     private static int endpointCalls = 0;
 
     public static void init () {
+        endpointCalls = readCalls();
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
         executor.scheduleAtFixedRate(() -> resetKeyMinute(), 0, 60, TimeUnit.SECONDS);
     }
 
     private static void resetKeyMinute () {
-        endpointCalls = readCalls();
+        endpointCalls = 0;
         ConsoleHandler.handleInfo("Resetting key minutes...");
     }
 

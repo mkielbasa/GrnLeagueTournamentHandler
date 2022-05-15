@@ -2,16 +2,13 @@ package grn.database.repository;
 
 import grn.database.pojo.*;
 import grn.database.service.PlayerService;
-import grn.endpoint.RequestResult;
+import grn.endpoint.*;
 import grn.error.ConsoleHandler;
 import grn.exception.BadRequestException;
 import grn.exception.EndpointException;
 import grn.exception.NotFoundException;
 import grn.exception.OutdatedApiKeyException;
 import grn.file.PlayerReader;
-import grn.endpoint.ChampionMasteryEndpoint;
-import grn.endpoint.LeagueEndpoint;
-import grn.endpoint.SummonerEndpoint;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -118,6 +115,10 @@ public class PlayerRepository implements Repository {
             return player;
         } catch (NotFoundException e) {
             ConsoleHandler.handleWarning("Player " + summoner + " not found (probably has changed name)");
+            Player p = PlayerService.getPlayer(summoner);
+            if (p==null)
+                return null;
+            ConsoleHandler.handleWarning("Probably new name is: " + getProbablyNewName(p.getPUuid()));
             return null;
         }
     }
@@ -137,9 +138,17 @@ public class PlayerRepository implements Repository {
                 }
             } catch (BadRequestException e) {
                 ConsoleHandler.handleWarning("Player " + player.getName() + "(" + player.getPUuid() + ") doesn't exists anymore!");
-                ConsoleHandler.handleException(e);
+                ConsoleHandler.handleWarning("Probably new name is: " + getProbablyNewName(player.getPUuid()));
             }
         }
+    }
+
+    private String getProbablyNewName (String puuid) throws EndpointException {
+        SummonerUUIDEndpoint sEndpoint = new SummonerUUIDEndpoint(puuid);
+        RequestResult result = sEndpoint.doRequest();
+        JSONObject jObject = (JSONObject) result.parseJSON();
+        String gameName = (String) jObject.get("name");
+        return gameName;
     }
 
     public void initLeagues() throws EndpointException {
@@ -158,7 +167,7 @@ public class PlayerRepository implements Repository {
                 }
             } catch (BadRequestException e) {
                 ConsoleHandler.handleWarning("Player " + player.getName() + "(" + player.getPUuid() + ") doesn't exists anymore!");
-                ConsoleHandler.handleException(e);
+                ConsoleHandler.handleWarning("Probably new name is: " + getProbablyNewName(player.getPUuid()));
             }
         }
     }

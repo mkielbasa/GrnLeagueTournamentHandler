@@ -26,6 +26,19 @@ public class PlayerService {
         return players;
     }
 
+    public static Player getPlayer (String name) {
+        String sql = "select * from tournament.player where name = ?";
+        Query query = new Query(sql);
+        query.setParams(name);
+        List<QueryRow> rows = query.execute();
+        if (!rows.isEmpty()) {
+            Player player = new Player();
+            player.fromQueryRow(rows.get(0));
+            return player;
+        }
+        return null;
+    }
+
     public static boolean playerRegistered (String pUUID) {
         String sql = "select * from tournament.player where pUUID = ?";
         Query query = new Query(sql);
