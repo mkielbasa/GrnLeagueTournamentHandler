@@ -22,6 +22,12 @@ import java.util.List;
 @Controller
 public class HttpController {
 
+    @GetMapping("/index")
+    public ModelAndView getIndex () {
+        ModelAndView mav = new ModelAndView("index");
+        return mav;
+    }
+
     @GetMapping("/matches")
     public ModelAndView getMatches () {
         TeamRepository teamRepository = Repositories.getTeamRepository();

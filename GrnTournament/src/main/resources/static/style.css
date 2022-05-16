@@ -1,3 +1,57 @@
+.app-container {
+    margin: auto;
+    left: 25%;
+    right: 25%;
+    padding: 10px;
+    position: absolute;
+}
+
+.app-logo-container {
+    display: inline-block;
+}
+
+.app-logo {
+    height: 300px;
+    width: 300px;
+}
+
+.entry-container {
+    position: relative;
+    margin: auto;
+    left: 40%;
+    height: 110px;
+    transform: translateY(-100%);
+}
+
+.entry-icon-container {
+    display: inline-block;
+}
+
+.entry-text-container {
+    display: inline-block;
+    font-family: "Staatliches", sans-serif;
+    font-size: 60px;
+    color: #fffb00;
+    padding: 20px;
+    text-shadow: 3px 3px 3px #343434;
+    transform: translateY(-30%);
+}
+
+.entry-logo {
+    height: 100px;
+    width: 100px;
+}
+
+.app-title-container {
+    display: inline-block;
+    font-family: "Staatliches", sans-serif;
+    font-size: 80px;
+    color: #fffb00;
+    padding: 20px;
+    text-shadow: 3px 3px 3px #343434;
+    transform: translateY(-90%);
+}
+
 .team-tables {
     margin: auto;
     width: 50%;

@@ -2,13 +2,16 @@ package com.example.grntournament;
 
 import grn.database.ConnectionEstablisher;
 import grn.database.repository.Repositories;
+import grn.error.ConsoleHandler;
 import grn.file.TextFileWriter;
 import grn.http.HttpRequester;
 import grn.twitch.TwitchBot;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.awt.*;
 import java.io.File;
+import java.net.URI;
 
 @SpringBootApplication
 public class GrnTournamentApplication {
@@ -21,6 +24,17 @@ public class GrnTournamentApplication {
         HttpRequester.init();
         Repositories.init();
         TwitchBot.init();
+        launchIndex();
+    }
+
+    private static void launchIndex () {
+        System.setProperty("java.awt.headless", "false");
+        Desktop desktop = Desktop.getDesktop();
+        try{
+            desktop.browse(new URI("http://localhost:8080/index"));
+        } catch(Exception e){
+            ConsoleHandler.handleException(e);
+        }
     }
 
     private static class JVMShutdownHook extends Thread {
