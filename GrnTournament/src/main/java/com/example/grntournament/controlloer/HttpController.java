@@ -6,12 +6,13 @@ import grn.database.repository.PlayerRepository;
 import grn.database.repository.Repositories;
 import grn.database.repository.TeamRepository;
 import grn.database.service.MatchService;
+import grn.database.service.PlayerService;
 import grn.error.ConsoleHandler;
+import grn.exception.EndpointException;
 import grn.riot.lol.MatchController;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
@@ -25,6 +26,49 @@ public class HttpController {
     @GetMapping("/index")
     public ModelAndView getIndex () {
         ModelAndView mav = new ModelAndView("index");
+        return mav;
+    }
+
+    @GetMapping("/players")
+    public ModelAndView getPlayers () {
+        PlayerRepository playerRepository = Repositories.getPlayerRepository();
+        List<Player> players = playerRepository.getAll();
+        ModelAndView mav = new ModelAndView("players");
+        mav.addObject("players", players);
+        return mav;
+    }
+
+    @GetMapping("/editPlayer")
+    public String getEditPlayer (@RequestParam String id, Model model) {
+        PlayerRepository playerRepository = Repositories.getPlayerRepository();
+        TeamRepository teamRepository = Repositories.getTeamRepository();
+        long internalId = Long.parseLong(id);
+        List<Team> teams = teamRepository.getAllTeams();
+        Player player = playerRepository.get(internalId);
+        model.addAttribute("player", player);
+        model.addAttribute("teams", teams);
+        return "playerEdit";
+    }
+
+    @PostMapping("/editPlayer")
+    public String getEditPlayerSubmit(@ModelAttribute Player player, Model model) throws EndpointException {
+        PlayerRepository playerRepository = Repositories.getPlayerRepository();
+        TeamRepository teamRepository = Repositories.getTeamRepository();
+        List<Team> teams = teamRepository.getAllTeams();
+        model.addAttribute("player", player);
+        model.addAttribute("teams", teams);
+        PlayerService.update(player);
+        teamRepository.reload();
+        playerRepository.reload();
+        return "playerEdit";
+    }
+
+    @GetMapping("/teams")
+    public ModelAndView getTeams () {
+        TeamRepository teamRepository = Repositories.getTeamRepository();
+        List<Team> teams = teamRepository.getAllTeams();
+        ModelAndView mav = new ModelAndView("teams");
+        mav.addObject("teams", teams);
         return mav;
     }
 

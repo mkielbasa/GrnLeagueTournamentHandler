@@ -1,9 +1,6 @@
 package grn.database.service;
 
-import grn.database.Delete;
-import grn.database.Insert;
-import grn.database.Query;
-import grn.database.QueryRow;
+import grn.database.*;
 import grn.database.pojo.ChampionMastery;
 import grn.database.pojo.Player;
 import grn.database.pojo.PlayerStats;
@@ -111,5 +108,12 @@ public class PlayerService {
             playerStats.add(playerStat);
         }
         return playerStats;
+    }
+
+    public static void update (Player player) {
+        String sql = "update tournament.player set name=?,teamid=? where id=?";
+        Update update = new Update(sql);
+        update.setParams(player.getName(), player.getTeamId(), player.getInternalId());
+        update.execute();
     }
 }

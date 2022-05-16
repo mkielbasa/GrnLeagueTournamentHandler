@@ -2,6 +2,8 @@ package grn.database.pojo;
 
 
 import grn.database.QueryRow;
+import grn.database.repository.Repositories;
+import grn.database.repository.TeamRepository;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ public class Player {
   private String tierIcon;
   private String tier;
   private String profileIcon;
+  private String teamIcon;
   private String winRatio;
   private List<ChampionMastery> masteries = new ArrayList<>();
 
@@ -46,6 +49,15 @@ public class Player {
       this.summonerLevel = (long) row.get(8);
       this.id = (String) row.get(9);
       this.profileIcon = "/profileicon/" + profileIconId + ".png";
+      updateTeamIcon();
+  }
+
+  private void updateTeamIcon () {
+      TeamRepository teamRepository = Repositories.getTeamRepository();
+      Team team = teamRepository.getTeam(teamId);
+      if (team == null)
+          return;
+      teamIcon = team.getIcon();
   }
 
   public String getWinRatio () {
@@ -57,6 +69,10 @@ public class Player {
       double ratio = ((double)wins/(double)matches) * 100;
       return String.format("%,.2f", ratio) + "%";
   }
+
+    public String getTeamIcon() {
+        return teamIcon;
+    }
 
     public String getProfileIcon() {
         return profileIcon;
@@ -133,4 +149,51 @@ public class Player {
     this.teamId = teamId;
   }
 
+    public void setInternalId(long internalId) {
+        this.internalId = internalId;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setAccountId(String accountId) {
+        this.accountId = accountId;
+    }
+
+    public void setpUuid(String pUuid) {
+        this.pUuid = pUuid;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setProfileIconId(long profileIconId) {
+        this.profileIconId = profileIconId;
+    }
+
+    public void setRevisionDate(long revisionDate) {
+        this.revisionDate = revisionDate;
+    }
+
+    public void setSummonerLevel(long summonerLevel) {
+        this.summonerLevel = summonerLevel;
+    }
+
+    public void setTier(String tier) {
+        this.tier = tier;
+    }
+
+    public void setProfileIcon(String profileIcon) {
+        this.profileIcon = profileIcon;
+    }
+
+    public void setTeamIcon(String teamIcon) {
+        this.teamIcon = teamIcon;
+    }
+
+    public void setWinRatio(String winRatio) {
+        this.winRatio = winRatio;
+    }
 }
