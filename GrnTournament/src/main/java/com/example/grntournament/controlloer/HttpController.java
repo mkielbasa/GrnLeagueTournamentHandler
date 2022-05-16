@@ -84,6 +84,36 @@ public class HttpController {
         return "teamEdit";
     }
 
+    @GetMapping("/createTeam")
+    public String getCreateTeam (Model model) {
+        Team team = new Team();
+        model.addAttribute("team", team);
+        return "teamCreate";
+    }
+
+    @PostMapping("/createTeam")
+    public String getCreateTeamSubmit (@ModelAttribute Team team, Model model) throws EndpointException {
+        PlayerRepository playerRepository = Repositories.getPlayerRepository();
+        TeamRepository teamRepository = Repositories.getTeamRepository();
+        team.setIcon(team.getShortName()+".png");
+        model.addAttribute("team", team);
+        TeamService.register(team);
+        teamRepository.reload();
+        playerRepository.reload();
+        return "teamCreate";
+    }
+
+    @GetMapping("/deleteTeam")
+    public String getDeleteTeam (@RequestParam String id) throws EndpointException {
+        PlayerRepository playerRepository = Repositories.getPlayerRepository();
+        TeamRepository teamRepository = Repositories.getTeamRepository();
+        long internalId = Long.parseLong(id);
+        TeamService.unregister (internalId);
+        teamRepository.reload();
+        playerRepository.reload();
+        return "index";
+    }
+
     @GetMapping("/teams")
     public ModelAndView getTeams () {
         TeamRepository teamRepository = Repositories.getTeamRepository();

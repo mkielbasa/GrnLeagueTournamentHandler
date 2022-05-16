@@ -1,9 +1,6 @@
 package grn.database.service;
 
-import grn.database.Insert;
-import grn.database.Query;
-import grn.database.QueryRow;
-import grn.database.Update;
+import grn.database.*;
 import grn.database.pojo.Player;
 import grn.database.pojo.Team;
 
@@ -45,5 +42,12 @@ public class TeamService {
         Update update = new Update(sql);
         update.setParams(team.getName(), team.getShortName(), team.getId());
         update.execute();
+    }
+
+    public static void unregister(long internalId) {
+        String sql = "delete from tournament.team where id=?";
+        Delete delete = new Delete(sql);
+        delete.setParams(internalId);
+        delete.execute();
     }
 }
