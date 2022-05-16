@@ -19,8 +19,7 @@
         </div>
         <div class="form">
             <p></p><a href="http://localhost:8080/teams">Return</a></p>
-            <form action="#" th:action="@{/editTeam}" th:object="${team}" method="post">
-                <p>Id: <input type="text" th:field="*{id}" /></p>
+            <form action="#" th:action="@{/createTeam}" th:object="${team}" method="post">
                 <p>Name: <input type="text" th:field="*{name}" /></p>
                 <p>Short name: <input type="text" th:field="*{shortName}" /></p>
                 <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
