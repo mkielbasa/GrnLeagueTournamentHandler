@@ -3,6 +3,7 @@ package grn.database.service;
 import grn.database.Insert;
 import grn.database.Query;
 import grn.database.QueryRow;
+import grn.database.Update;
 import grn.database.pojo.Player;
 import grn.database.pojo.Team;
 
@@ -37,5 +38,12 @@ public class TeamService {
         insert.setColumns("name", "shortName", "icon");
         insert.setValues(team.getName(), team.getShortName(), team.getIcon());
         insert.execute();
+    }
+
+    public static void update(Team team) {
+        String sql = "update tournament.team set name=?,shortName=? where id=?";
+        Update update = new Update(sql);
+        update.setParams(team.getName(), team.getShortName(), team.getId());
+        update.execute();
     }
 }

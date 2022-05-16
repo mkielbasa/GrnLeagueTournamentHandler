@@ -20,7 +20,7 @@ public class Team {
     this.id = (long) row.get(1);
     this.name = (String) row.get(2);
     this.shortName = (String) row.get(3);
-    this.icon = (String) row.get(4);
+    this.icon = shortName + ".png";
   }
 
   public boolean containsPlayer (String pUUID) {

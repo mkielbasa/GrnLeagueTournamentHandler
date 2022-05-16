@@ -7,6 +7,7 @@ import grn.database.repository.Repositories;
 import grn.database.repository.TeamRepository;
 import grn.database.service.MatchService;
 import grn.database.service.PlayerService;
+import grn.database.service.TeamService;
 import grn.error.ConsoleHandler;
 import grn.exception.EndpointException;
 import grn.riot.lol.MatchController;
@@ -61,6 +62,26 @@ public class HttpController {
         teamRepository.reload();
         playerRepository.reload();
         return "playerEdit";
+    }
+
+    @GetMapping("/editTeam")
+    public String getEditTeam (@RequestParam String id, Model model) {
+        TeamRepository teamRepository = Repositories.getTeamRepository();
+        long internalId = Long.parseLong(id);
+        Team team = teamRepository.getTeam(internalId);
+        model.addAttribute("team", team);
+        return "teamEdit";
+    }
+
+    @PostMapping("/editTeam")
+    public String getEditTeamSubmit (@ModelAttribute Team team, Model model) throws EndpointException {
+        PlayerRepository playerRepository = Repositories.getPlayerRepository();
+        TeamRepository teamRepository = Repositories.getTeamRepository();
+        model.addAttribute("team", team);
+        TeamService.update (team);
+        teamRepository.reload();
+        playerRepository.reload();
+        return "teamEdit";
     }
 
     @GetMapping("/teams")
