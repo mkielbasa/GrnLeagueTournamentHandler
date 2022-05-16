@@ -7,8 +7,6 @@ import grn.error.ConsoleHandler;
 import grn.exception.BadRequestException;
 import grn.exception.EndpointException;
 import grn.exception.NotFoundException;
-import grn.exception.OutdatedApiKeyException;
-import grn.file.PlayerReader;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -41,20 +39,14 @@ public class PlayerRepository implements Repository {
     private void reloadPlayerProfiles() throws EndpointException {
         ConsoleHandler.handleInfo("Building players repository");
         players.clear();
-        //Read players and their assigment to teams
-        Map<String, String> playersAndTeams = PlayerReader.read(TEAMS_FILE);
-        for (String summoner : playersAndTeams.keySet()) {
-            Team team = getPlayerTeam(summoner, teamRepository, playersAndTeams);
-            //Skip players that are not assigned to any team
-            if (team == null)
-                continue;
-            initPlayer(summoner, team);
-        }
-        initPlayerStats();
-        buildPlayersBestStats();
+        List<Player> allPlayers = PlayerService.getAllPlayers();
+        for (Player player : allPlayers)
+            players.put(player.getInternalId(), player);
+        loadPlayerStats();
+        loadPlayersBestStats();
     }
 
-    private void initPlayerStats() {
+    private void loadPlayerStats() {
         for (Player player : PlayerService.getAllPlayers()) {
             this.players.put(player.getInternalId(), player);
             Team team = teamRepository.getTeam(player.getTeamId());
@@ -65,7 +57,7 @@ public class PlayerRepository implements Repository {
         }
     }
 
-    private void buildPlayersBestStats () {
+    private void loadPlayersBestStats() {
         for (Player player : players.values()) {
             List<PlayerStats> playerStats = PlayerService.getLeagues(player);
             if (playerStats.isEmpty()) {
@@ -94,12 +86,6 @@ public class PlayerRepository implements Repository {
                 bestRank = ps;
         }
         return bestRank;
-    }
-
-    private Team getPlayerTeam (String summonerName, TeamRepository teamRepository,
-                                   Map<String, String> playersAndTeams) {
-        String teamName = playersAndTeams.get(summonerName);
-        return teamRepository.getTeam(teamName);
     }
 
     private Player initPlayer (String summoner, Team team) throws EndpointException {

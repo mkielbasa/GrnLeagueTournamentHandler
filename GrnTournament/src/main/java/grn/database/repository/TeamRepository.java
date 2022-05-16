@@ -4,7 +4,6 @@ import grn.database.pojo.Player;
 import grn.database.pojo.Team;
 import grn.database.service.TeamService;
 import grn.error.ConsoleHandler;
-import grn.file.TeamReader;
 
 import java.io.File;
 import java.util.*;
@@ -26,13 +25,6 @@ public class TeamRepository implements Repository {
     private void reloadTeams() {
         ConsoleHandler.handleInfo("Building teams repository");
         teams.clear();
-        List<String> teamsNames = TeamReader.read(TEAMS_FILE);
-        for (String teamName : teamsNames) {
-            Team team = new Team();
-            team.setName(teamName);
-            if (! TeamService.teamRegistered(teamName))
-                TeamService.register(team);
-        }
         List<Team> registeredTeams = TeamService.getAllTeams();
         for (Team team :registeredTeams)
             teams.put(team.getId(), team);
