@@ -1,3 +1,11 @@
+a:hover {
+    color: hotpink;
+}
+
+a:visited {
+    color: #fffb00;
+}
+
 .app-container {
     margin: auto;
     left: 25%;
@@ -31,6 +39,16 @@
     display: inline-block;
     font-family: "Staatliches", sans-serif;
     font-size: 60px;
+    color: #fffb00;
+    padding: 20px;
+    text-shadow: 3px 3px 3px #343434;
+    transform: translateY(-30%);
+}
+
+.entry-text-small-container {
+    display: inline-block;
+    font-family: "Staatliches", sans-serif;
+    font-size: 20px;
     color: #fffb00;
     padding: 20px;
     text-shadow: 3px 3px 3px #343434;
