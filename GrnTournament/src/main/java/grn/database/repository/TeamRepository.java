@@ -31,7 +31,16 @@ public class TeamRepository implements Repository {
     }
 
     public List<Team> getAllTeams () {
-        return new ArrayList<>(teams.values());
+        List<Team> allTeams = new ArrayList<>();
+        List<Team> inactive = new ArrayList<>();
+        for (Team team : teams.values()) {
+            if (team.isActive())
+                allTeams.add(team);
+            else
+                inactive.add(team);
+        }
+        allTeams.addAll(inactive);
+        return allTeams;
     }
 
     public Team getTeam (String teamName) {

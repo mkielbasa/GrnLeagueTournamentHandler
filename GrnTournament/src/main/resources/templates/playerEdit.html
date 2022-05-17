@@ -26,6 +26,7 @@
                 <select th:field="*{teamId}">
                     <option th:each="t : ${teams}" th:value="${t.id}" th:text="${t.name}">
                 </select>
+                <input type="checkbox" name="active" th:text="Active" th:value="${player.active}"/>
                 <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
             </form>
         </div>

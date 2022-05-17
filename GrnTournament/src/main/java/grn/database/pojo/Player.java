@@ -27,6 +27,7 @@ public class Player {
   private String teamIcon;
   private String winRatio;
   private int tierValue;
+  private boolean active;
   private List<ChampionMastery> masteries = new ArrayList<>();
 
   public void fromJson (JSONObject jPlayer) {
@@ -37,6 +38,7 @@ public class Player {
       this.profileIconId = (long) jPlayer.get("profileIconId");
       this.revisionDate = (long) jPlayer.get("revisionDate");
       this.summonerLevel = (long) jPlayer.get("summonerLevel");
+      this.active = true;
   }
 
   public void fromQueryRow (QueryRow row) {
@@ -49,6 +51,7 @@ public class Player {
       this.revisionDate = (long) row.get(7);
       this.summonerLevel = (long) row.get(8);
       this.id = (String) row.get(9);
+      this.active = (Boolean) row.get(10);
       this.profileIcon = "/profileicon/" + profileIconId + ".png";
       updateTeamIcon();
   }
@@ -61,7 +64,15 @@ public class Player {
       teamIcon = team.getIcon();
   }
 
-  public String getWinRatio () {
+  public void toggleActive () {
+      this.active = !active;
+  }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public String getWinRatio () {
       if (playerStats == null)
           return "???";
       long wins = playerStats.getWins();

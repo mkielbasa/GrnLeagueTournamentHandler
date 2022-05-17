@@ -13,6 +13,7 @@ public class Team {
   private String shortName;
   private String icon;
   private String winRatio;
+  private boolean active;
 
   private List<Player> players = new ArrayList<>();
 
@@ -20,6 +21,7 @@ public class Team {
     this.id = (long) row.get(1);
     this.name = (String) row.get(2);
     this.shortName = (String) row.get(3);
+    this.active = (Boolean) row.get(5);
     this.icon = shortName + ".png";
   }
 
@@ -28,6 +30,14 @@ public class Team {
       if (player.getPUuid().equals(pUUID))
         return true;
     return false;
+  }
+
+  public void toggleActive () {
+    this.active = !active;
+  }
+
+  public boolean isActive() {
+    return active;
   }
 
   public int getTeamTierValue () {

@@ -111,9 +111,9 @@ public class PlayerService {
     }
 
     public static void update (Player player) {
-        String sql = "update tournament.player set name=?,teamid=? where id=?";
+        String sql = "update tournament.player set name=?,teamid=?,active=? where id=?";
         Update update = new Update(sql);
-        update.setParams(player.getName(), player.getTeamId(), player.getInternalId());
+        update.setParams(player.getName(), player.getTeamId(), player.isActive(), player.getInternalId());
         update.execute();
     }
 

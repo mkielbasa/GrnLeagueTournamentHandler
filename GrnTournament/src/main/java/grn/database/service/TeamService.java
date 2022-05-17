@@ -38,9 +38,9 @@ public class TeamService {
     }
 
     public static void update(Team team) {
-        String sql = "update tournament.team set name=?,shortName=? where id=?";
+        String sql = "update tournament.team set name=?,shortName=?,active=? where id=?";
         Update update = new Update(sql);
-        update.setParams(team.getName(), team.getShortName(), team.getId());
+        update.setParams(team.getName(), team.getShortName(), team.isActive(), team.getId());
         update.execute();
     }
 

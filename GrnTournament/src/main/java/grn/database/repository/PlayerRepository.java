@@ -183,11 +183,18 @@ public class PlayerRepository implements Repository {
     }
 
     public List<Player> getAllByTeams () {
+        List<Player> inactive = new ArrayList<>();
         List<Player> playerList = new ArrayList<>();
         TeamRepository teamRepository = Repositories.getTeamRepository();
-        for (Team team : teamRepository.getAllTeams())
-            for (Player player : team.getPlayers())
-                playerList.add(player);
+        for (Team team : teamRepository.getAllTeams()) {
+            for (Player player : team.getPlayers()) {
+                if (player.isActive())
+                    playerList.add(player);
+                else
+                    inactive.add(player);
+            }
+        }
+        playerList.addAll(inactive);
         return playerList;
     }
 
