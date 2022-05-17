@@ -88,7 +88,19 @@ public class PlayerRepository implements Repository {
         return bestRank;
     }
 
-    private Player initPlayer (String summoner, Team team) throws EndpointException {
+    public void checkPlayers () throws EndpointException {
+        for (Player player : players.values()) {
+            try {
+                SummonerEndpoint sEndpoint = new SummonerEndpoint(player.getName());
+                sEndpoint.doRequest();
+            } catch (NotFoundException e) {
+                ConsoleHandler.handleWarning("Player " + player.getName() + " not found (probably has changed name)");
+                ConsoleHandler.handleWarning("Probably new name is: " + getProbablyNewName(player.getPUuid()));
+            }
+        }
+    }
+
+    public Player initPlayer (String summoner, Team team) throws EndpointException {
         try {
             SummonerEndpoint sEndpoint = new SummonerEndpoint(summoner);
             RequestResult result = sEndpoint.doRequest();
@@ -111,21 +123,25 @@ public class PlayerRepository implements Repository {
 
     public void initMaestries() throws EndpointException {
         for (Player player : players.values()) {
-            PlayerService.clearMasteries(player);
-            String summonerId = player.getSummonerId();
-            try {
-                ChampionMasteryEndpoint cEndpoint = new ChampionMasteryEndpoint(summonerId);
-                RequestResult result = cEndpoint.doRequest();
-                JSONArray jMaestries = (JSONArray) result.parseJSON();
-                for (Object jObject : jMaestries.toArray()) {
-                    JSONObject jMaestry = (JSONObject) jObject;
-                    ChampionMastery championMastery = new ChampionMastery(jMaestry, player);
-                    PlayerService.addMastery(championMastery);
-                }
-            } catch (BadRequestException e) {
-                ConsoleHandler.handleWarning("Player " + player.getName() + "(" + player.getPUuid() + ") doesn't exists anymore!");
-                ConsoleHandler.handleWarning("Probably new name is: " + getProbablyNewName(player.getPUuid()));
+            initMaestries(player);
+        }
+    }
+
+    public void initMaestries(Player player) throws EndpointException {
+        PlayerService.clearMasteries(player);
+        String summonerId = player.getSummonerId();
+        try {
+            ChampionMasteryEndpoint cEndpoint = new ChampionMasteryEndpoint(summonerId);
+            RequestResult result = cEndpoint.doRequest();
+            JSONArray jMaestries = (JSONArray) result.parseJSON();
+            for (Object jObject : jMaestries.toArray()) {
+                JSONObject jMaestry = (JSONObject) jObject;
+                ChampionMastery championMastery = new ChampionMastery(jMaestry, player);
+                PlayerService.addMastery(championMastery);
             }
+        } catch (BadRequestException e) {
+            ConsoleHandler.handleWarning("Player " + player.getName() + "(" + player.getPUuid() + ") doesn't exists anymore!");
+            ConsoleHandler.handleWarning("Probably new name is: " + getProbablyNewName(player.getPUuid()));
         }
     }
 
@@ -139,9 +155,14 @@ public class PlayerRepository implements Repository {
 
     public void initLeagues() throws EndpointException {
         for (Player player : players.values()) {
-            try {
-                PlayerService.clearLeagues(player);
-                LeagueEndpoint lEndpoint = new LeagueEndpoint(player.getSummonerId());
+            initLeagues(player);
+        }
+    }
+
+    public void initLeagues(Player player) throws EndpointException {
+        try {
+            PlayerService.clearLeagues(player);
+            LeagueEndpoint lEndpoint = new LeagueEndpoint(player.getSummonerId());
                 RequestResult result = lEndpoint.doRequest();
                 JSONArray jLeagues = (JSONArray) result.parseJSON();
                 for (Object jObject : jLeagues.toArray()) {
@@ -154,12 +175,20 @@ public class PlayerRepository implements Repository {
             } catch (BadRequestException e) {
                 ConsoleHandler.handleWarning("Player " + player.getName() + "(" + player.getPUuid() + ") doesn't exists anymore!");
                 ConsoleHandler.handleWarning("Probably new name is: " + getProbablyNewName(player.getPUuid()));
-            }
         }
     }
 
     public List<Player> getAll () {
         return new ArrayList<>(players.values());
+    }
+
+    public List<Player> getAllByTeams () {
+        List<Player> playerList = new ArrayList<>();
+        TeamRepository teamRepository = Repositories.getTeamRepository();
+        for (Team team : teamRepository.getAllTeams())
+            for (Player player : team.getPlayers())
+                playerList.add(player);
+        return playerList;
     }
 
     public Player get (long internalId) {

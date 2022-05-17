@@ -110,6 +110,14 @@ a:visited {
     text-shadow: 3px 3px 3px #343434;
 }
 
+.option {
+    font-family: "Staatliches", sans-serif;
+    font-size: 30px;
+    color: #fffb00;
+    padding: 20px;
+    text-shadow: 3px 3px 3px #343434;
+}
+
 .app-title-container {
     display: inline-block;
     font-family: "Staatliches", sans-serif;

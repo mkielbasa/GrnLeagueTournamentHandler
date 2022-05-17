@@ -116,4 +116,19 @@ public class PlayerService {
         update.setParams(player.getName(), player.getTeamId(), player.getInternalId());
         update.execute();
     }
+
+    public static void unregister(long internalId) {
+        String sql = "delete from tournament.playerstats where playerid=?";
+        Delete delete = new Delete(sql);
+        delete.setParams(internalId);
+        delete.execute();
+        sql = "delete from tournament.championmastery where playerid=?";
+        delete = new Delete(sql);
+        delete.setParams(internalId);
+        delete.execute();
+        sql = "delete from tournament.player where id=?";
+        delete = new Delete(sql);
+        delete.setParams(internalId);
+        delete.execute();
+    }
 }

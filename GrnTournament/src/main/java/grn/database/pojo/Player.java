@@ -26,6 +26,7 @@ public class Player {
   private String profileIcon;
   private String teamIcon;
   private String winRatio;
+  private int tierValue;
   private List<ChampionMastery> masteries = new ArrayList<>();
 
   public void fromJson (JSONObject jPlayer) {
@@ -70,6 +71,10 @@ public class Player {
       return String.format("%,.2f", ratio) + "%";
   }
 
+    public int getTierValue() {
+        return tierValue;
+    }
+
     public String getTeamIcon() {
         return teamIcon;
     }
@@ -103,6 +108,8 @@ public class Player {
         this.tierIcon = PlayerRank.getRankIcon(playerStats.getTier());
         this.tier = playerStats.getTier() + " " + playerStats.getRank();
         this.winRatio = getWinRatio();
+        int rankValue = PlayerRank.getRankValue(playerStats.getTier());
+        this.tierValue = (rankValue*400) + (int)playerStats.getLeaguePoints();
     }
 
     public String getTier() {

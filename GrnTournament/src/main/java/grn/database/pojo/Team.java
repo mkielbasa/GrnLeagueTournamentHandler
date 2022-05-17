@@ -30,6 +30,13 @@ public class Team {
     return false;
   }
 
+  public int getTeamTierValue () {
+      int tierValue = 0;
+      for (Player player : players)
+        tierValue += player.getTierValue();
+      return tierValue;
+  }
+
   public String getWinratio () {
     long wins = 0;
     long loses = 0;

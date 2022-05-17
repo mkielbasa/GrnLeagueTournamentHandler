@@ -33,7 +33,7 @@ public class HttpController {
     @GetMapping("/players")
     public ModelAndView getPlayers () {
         PlayerRepository playerRepository = Repositories.getPlayerRepository();
-        List<Player> players = playerRepository.getAll();
+        List<Player> players = playerRepository.getAllByTeams();
         ModelAndView mav = new ModelAndView("players");
         mav.addObject("players", players);
         return mav;
@@ -111,6 +111,47 @@ public class HttpController {
         TeamService.unregister (internalId);
         teamRepository.reload();
         playerRepository.reload();
+        return "index";
+    }
+
+    @GetMapping("/deletePlayer")
+    public String getDeletePlayer (@RequestParam String id) throws EndpointException {
+        PlayerRepository playerRepository = Repositories.getPlayerRepository();
+        TeamRepository teamRepository = Repositories.getTeamRepository();
+        long internalId = Long.parseLong(id);
+        PlayerService.unregister (internalId);
+        teamRepository.reload();
+        playerRepository.reload();
+        return "index";
+    }
+    @GetMapping("/createPlayer")
+    public String getCreatePlayer (Model model) {
+        TeamRepository teamRepository = Repositories.getTeamRepository();
+        List<Team> teams = teamRepository.getAllTeams();
+        Player player = new Player();
+        model.addAttribute("player", player);
+        model.addAttribute("teams", teams);
+        return "playerCreate";
+    }
+
+    @PostMapping("/createPlayer")
+    public String getCreatePlayerSubmit (@ModelAttribute Player player, Model model) throws EndpointException {
+        PlayerRepository playerRepository = Repositories.getPlayerRepository();
+        TeamRepository teamRepository = Repositories.getTeamRepository();
+        List<Team> teams = teamRepository.getAllTeams();
+        Team team = teamRepository.getTeam(player.getTeamId());
+        model.addAttribute("player", player);
+        model.addAttribute("teams", teams);
+        playerRepository.initPlayer(player.getName(), team);
+        teamRepository.reload();
+        playerRepository.reload();
+        return "playerCreate";
+    }
+
+    @GetMapping("/checkPlayers")
+    public String getCheckPlayers () throws EndpointException {
+        PlayerRepository playerRepository = Repositories.getPlayerRepository();
+        playerRepository.checkPlayers();
         return "index";
     }
 

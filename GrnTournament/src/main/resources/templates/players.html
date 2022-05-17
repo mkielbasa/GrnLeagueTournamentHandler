@@ -17,6 +17,9 @@
         <div class="app-title-container">
             Control panel
         </div>
+        <div class="option">
+            <a href="http://localhost:8080/createPlayer">Register new player</a> | <a href="http://localhost:8080/checkPlayers">Check players</a>
+        </div>
         <table>
             <tr th:each="player : ${players}">
                 <td>
@@ -25,7 +28,9 @@
                 <td>
                     <img class="entry-logo" th:src="@{${player.tierIcon}}"/>
                 </td>
-                <td class="entry-text-container" th:text="${player.name}"></td>
+                <td class="entry-text-small-container" th:text="${player.tier}"></td>
+                <td class="entry-text-small-container" th:text="${player.name}"></td>
+                <td class="entry-text-small-container" th:text="${player.tierValue}"></td>
                 <td>
                     <img class="entry-logo" th:src="@{${player.teamIcon}}"/>
                 </td>
@@ -36,7 +41,7 @@
                     <a th:href="@{/editPlayer(id=${player.internalId})}"><img class="entry-logo" src="edit.png"/></a>
                 </td>
                 <td>
-                    <img class="entry-logo" src="delete.png"/>
+                    <a th:href="@{/deletePlayer(id=${player.internalId})}"><img class="entry-logo" src="delete.png"/></a>
                 </td>
             </tr>
         </table>

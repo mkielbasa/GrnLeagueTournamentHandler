@@ -17,7 +17,7 @@
         <div class="app-title-container">
             Control panel
         </div>
-        <div>
+        <div class="option">
             <a href="http://localhost:8080/createTeam">Register new team</a>
         </div>
         <table>
@@ -29,6 +29,7 @@
                 <td class="entry-text-small-container" th:text="${team.shortName}"></td>
                 </td>
                 <td class="entry-text-small-container" th:text="${team.name}"></td>
+                <td class="entry-text-small-container" th:text="${team.getTeamTierValue()}"></td>
                 <td>
                     <img class="entry-logo" src="active.png"/>
                 </td>
