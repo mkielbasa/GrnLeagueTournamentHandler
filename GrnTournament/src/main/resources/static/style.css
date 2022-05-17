@@ -1,9 +1,13 @@
+a {
+    color: #063f00;
+}
+
 a:hover {
-    color: hotpink;
+    color: #a5ff69;
 }
 
 a:visited {
-    color: #fffb00;
+    color: #063f00;
 }
 
 .app-container {
@@ -39,9 +43,8 @@ a:visited {
     display: inline-block;
     font-family: "Staatliches", sans-serif;
     font-size: 60px;
-    color: #fffb00;
-    padding: 20px;
-    text-shadow: 3px 3px 3px #343434;
+    color: #063f00;
+    padding: 5px;
     transform: translateY(-30%);
 }
 
@@ -49,9 +52,8 @@ a:visited {
     display: inline-block;
     font-family: "Staatliches", sans-serif;
     font-size: 20px;
-    color: #fffb00;
-    padding: 20px;
-    text-shadow: 3px 3px 3px #343434;
+    color: #063f00;
+    padding: 5px;
     transform: translateY(-30%);
 }
 
