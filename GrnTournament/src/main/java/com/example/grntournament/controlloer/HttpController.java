@@ -164,6 +164,34 @@ public class HttpController {
         return mav;
     }
 
+    @GetMapping("/teamTiers")
+    public ModelAndView getTeamsTiers () {
+        TeamRepository teamRepository = Repositories.getTeamRepository();
+        List<Team> higherTierTeams = teamRepository.getHigherTierTeams();
+        List<Team> lowerTierTeams = teamRepository.getLowerTierTeams();
+        List<Team> uncategorizedTeams = teamRepository.getUncategorizedTeams();
+        ModelAndView mav = new ModelAndView("teamsTiers");
+        mav.addObject("higherTierTeams", higherTierTeams);
+        mav.addObject("lowerTierTeams", lowerTierTeams);
+        mav.addObject("uncategorizedTeams", uncategorizedTeams);
+        mav.addObject("averageTier", "Average tier: " +teamRepository.getAverageTeamTier());
+        return mav;
+    }
+    @GetMapping("/teamTiersAverage")
+    public ModelAndView getTeamsTiersAverage () {
+        TeamRepository teamRepository = Repositories.getTeamRepository();
+        List<Team> higherTierTeams = teamRepository.getAboveAverageTeams();
+        List<Team> lowerTierTeams = teamRepository.getBelowAverageTeams();
+        List<Team> uncategorizedTeams = new ArrayList<>();
+        ModelAndView mav = new ModelAndView("teamsTiers");
+        mav.addObject("higherTierTeams", higherTierTeams);
+        mav.addObject("lowerTierTeams", lowerTierTeams);
+        mav.addObject("uncategorizedTeams", uncategorizedTeams);
+        mav.addObject("averageTier", "Average tier: " +teamRepository.getAverageTeamTier());
+        return mav;
+    }
+
+
     @GetMapping("/matches")
     public ModelAndView getMatches () {
         TeamRepository teamRepository = Repositories.getTeamRepository();

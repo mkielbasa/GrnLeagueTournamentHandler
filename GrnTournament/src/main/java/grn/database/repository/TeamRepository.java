@@ -43,6 +43,90 @@ public class TeamRepository implements Repository {
         return allTeams;
     }
 
+    public int getAverageTeamTier () {
+        int sum = 0;
+        int count = 0;
+        for (Team team : teams.values()) {
+            if (team.isActive()) {
+                sum += team.getTeamTierValue();
+                count++;
+            }
+        }
+        return sum/count;
+    }
+
+    public List<Team> getAboveAverageTeams () {
+        int averageTier = getAverageTeamTier();
+        List<Team> filtered = new ArrayList<>();
+        for (Team team : teams.values())
+            if (team.getTeamTierValue() >= averageTier)
+                filtered.add(team);
+        return filtered;
+    }
+
+    public List<Team> getBelowAverageTeams () {
+        int averageTier = getAverageTeamTier();
+        List<Team> filtered = new ArrayList<>();
+        for (Team team : teams.values())
+            if (team.getTeamTierValue() <= averageTier)
+                filtered.add(team);
+        return filtered;
+    }
+
+    public List<Team> getUncategorizedTeams() {
+        List<Team> higherTierTeams = getHigherTierTeams();
+        List<Team> lowerTierTeams = getLowerTierTeams();
+        List<Team> uncategorizedTeams = new ArrayList<>();
+        for (Team team : teams.values()) {
+            boolean higher = higherTierTeams.contains(team);
+            boolean lower = lowerTierTeams.contains(team);
+            if (!higher && !lower)
+                uncategorizedTeams.add(team);
+        }
+        return uncategorizedTeams;
+    }
+
+    public List<Team> getHigherTierTeams () {
+        Team bestTeam = getBestTeam();
+        int highestTierValue = bestTeam.getTeamTierValue();
+        int margin = (int)(highestTierValue * 0.33);
+        return getTeamsWithTierMargin(highestTierValue, margin, true);
+    }
+
+    public List<Team> getLowerTierTeams () {
+        Team worstTeam = getWorstTeam();
+        int worstTierValue = worstTeam.getTeamTierValue();
+        int margin = (int)(worstTierValue * 0.33);
+        return getTeamsWithTierMargin(worstTierValue, margin, false);
+    }
+
+    public List<Team> getTeamsWithTierMargin(int tierValue, int margin, boolean higher) {
+        List<Team> filtered = new ArrayList<>();
+        for (Team team : teams.values()) {
+            if (higher) {
+                if (team.getTeamTierValue() >= (tierValue - margin))
+                    filtered.add(team);
+            } else {
+                if (team.getTeamTierValue() <= (tierValue + margin))
+                    filtered.add(team);
+            }
+        }
+        return filtered;
+    }
+
+    public Team getWorstTeam () {
+        List<Team> teams = getAllTeams();
+        Collections.sort(teams);
+        return teams.get(0);
+    }
+
+    public Team getBestTeam () {
+        List<Team> teams = getAllTeams();
+        Collections.sort(teams);
+        Collections.reverse(teams);
+        return teams.get(0);
+    }
+
     public Team getTeam (String teamName) {
         for (Team team : teams.values()) {
             if (team.getName().equals(teamName))

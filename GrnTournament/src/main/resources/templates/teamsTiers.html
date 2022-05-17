@@ -1,0 +1,77 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+            xmlns:th="http://www.thymeleaf.org"
+            xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+            xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Staatliches">
+    <link th:href="@{/style.css}" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="app-container">
+        <div class="app-logo-container">
+            <img class="app-logo" src="GrnLeague.png"/>
+        </div>
+        <div class="app-title-container">
+            Control panel
+        </div>
+        <div class="option">
+            <a href="http://localhost:8080/">Control panel</a>
+        </div>
+        <h1 class="entry-text-container" th:text="${averageTier}"> </h1>
+        <h1 class="entry-text-container">Higher tier Teams: </h1>
+        <table>
+            <tr th:each="team : ${higherTierTeams}">
+                <td>
+                    <img class="entry-logo" th:src="@{${team.icon}}"/>
+                </td>
+                <td>
+                <td class="entry-text-small-container" th:text="${team.shortName}"></td>
+                </td>
+                <td class="entry-text-small-container" th:text="${team.name}"></td>
+                <td class="entry-text-small-container" th:text="${team.getTeamTierValue()}"></td>
+                <td>
+                    <img th:if="${team.active}" class="entry-logo" src="active.png"/>
+                    <img th:unless="${team.active}" class="entry-logo" src="inactive.png"/>
+                </td>
+            </tr>
+        </table>
+        <h1 class="entry-text-container">Lower tier Teams: </h1>
+        <table>
+            <tr th:each="team : ${lowerTierTeams}">
+                <td>
+                    <img class="entry-logo" th:src="@{${team.icon}}"/>
+                </td>
+                <td>
+                <td class="entry-text-small-container" th:text="${team.shortName}"></td>
+                </td>
+                <td class="entry-text-small-container" th:text="${team.name}"></td>
+                <td class="entry-text-small-container" th:text="${team.getTeamTierValue()}"></td>
+                <td>
+                    <img th:if="${team.active}" class="entry-logo" src="active.png"/>
+                    <img th:unless="${team.active}" class="entry-logo" src="inactive.png"/>
+                </td>
+            </tr>
+        </table>
+        <h1 class="entry-text-container">Uncategorized tier Teams: </h1>
+        <table>
+            <tr th:each="team : ${uncategorizedTeams}">
+                <td>
+                    <img class="entry-logo" th:src="@{${team.icon}}"/>
+                </td>
+                <td>
+                <td class="entry-text-small-container" th:text="${team.shortName}"></td>
+                </td>
+                <td class="entry-text-small-container" th:text="${team.name}"></td>
+                <td class="entry-text-small-container" th:text="${team.getTeamTierValue()}"></td>
+                <td>
+                    <img th:if="${team.active}" class="entry-logo" src="active.png"/>
+                    <img th:unless="${team.active}" class="entry-logo" src="inactive.png"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

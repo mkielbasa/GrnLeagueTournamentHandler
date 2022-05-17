@@ -4,12 +4,13 @@ package grn.database.pojo;
 import grn.database.QueryRow;
 import grn.database.repository.Repositories;
 import grn.database.repository.TeamRepository;
+import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Player {
+public class Player implements Comparable<Player>{
 
   private long internalId;
   private String id;
@@ -213,5 +214,10 @@ public class Player {
 
     public void setWinRatio(String winRatio) {
         this.winRatio = winRatio;
+    }
+
+    @Override
+    public int compareTo(@NotNull Player p) {
+        return Integer.compare(tierValue, p.tierValue);
     }
 }

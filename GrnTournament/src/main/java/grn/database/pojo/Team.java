@@ -2,11 +2,13 @@ package grn.database.pojo;
 
 
 import grn.database.QueryRow;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class Team {
+public class Team implements  Comparable<Team> {
 
   private long id;
   private String name;
@@ -41,9 +43,15 @@ public class Team {
   }
 
   public int getTeamTierValue () {
+      Collections.sort(players);
+      Collections.reverse(players);
       int tierValue = 0;
-      for (Player player : players)
+      for (int i=0; i<players.size(); i++) {
+        if (i >= 5)
+          continue;
+        Player player = players.get(i);
         tierValue += player.getTierValue();
+      }
       return tierValue;
   }
 
@@ -109,5 +117,18 @@ public class Team {
 
   public void updateWinRatio() {
     this.winRatio = getWinratio();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+      Team that = (Team) o;
+      return id == that.id;
+  }
+
+  @Override
+  public int compareTo(@NotNull Team t) {
+    return Integer.compare(getTeamTierValue(), t.getTeamTierValue());
   }
 }
