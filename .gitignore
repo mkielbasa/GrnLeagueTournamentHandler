@@ -23,3 +23,9 @@
 hs_err_pid*
 .idea
 .mvn
+
+*.png
+*.json
+*.txt
+*.wav
+web.xml
