@@ -1,4 +1,4 @@
-package grn.riot.lol;
+package grn.database.pojo;
 
 import grn.properties.json.JsonParser;
 import org.json.simple.JSONObject;

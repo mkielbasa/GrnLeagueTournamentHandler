@@ -1,12 +1,9 @@
 package grn.database.pojo;
 
 
-import com.example.grntournament.GrnTournamentApplication;
 import grn.database.QueryRow;
 import grn.database.repository.Repositories;
-import grn.database.repository.Repository;
-import grn.riot.lol.Champion;
-import grn.riot.lol.ChampionRepository;
+import grn.database.repository.ChampionRepository;
 import org.json.simple.JSONObject;
 
 import java.sql.Timestamp;

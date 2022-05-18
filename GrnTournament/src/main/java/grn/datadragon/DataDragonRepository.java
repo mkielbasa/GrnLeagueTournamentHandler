@@ -1,7 +1,7 @@
 package grn.datadragon;
 
 import grn.database.repository.Repository;
-import grn.riot.lol.ChampionRepository;
+import grn.database.repository.ChampionRepository;
 
 public class DataDragonRepository implements Repository {
 

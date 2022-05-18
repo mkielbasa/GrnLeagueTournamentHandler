@@ -1,9 +1,10 @@
-package grn.riot.lol;
+package grn.database.repository;
 
 
 import grn.error.ConsoleHandler;
 import grn.properties.json.JsonFileReader;
 import grn.properties.json.JsonParser;
+import grn.database.pojo.Champion;
 import org.json.simple.JSONObject;
 
 import java.io.File;
