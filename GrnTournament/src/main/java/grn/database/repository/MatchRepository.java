@@ -1,6 +1,7 @@
 package grn.database.repository;
 
 import grn.database.pojo.Match;
+import grn.matchengine.CupEngine;
 import grn.matchengine.LeagueEngine;
 import grn.matchengine.MatchEngine;
 import grn.matchengine.MatchType;
@@ -13,7 +14,7 @@ public class MatchRepository implements Repository {
     public Match currentMatch;
 
     public void init () {
-        MatchEngine engine = new LeagueEngine(8);
+        MatchEngine engine = new CupEngine(MatchType.BO5, 8);
         engine.clearMatches();
         engine.initializeMatches();
     }
