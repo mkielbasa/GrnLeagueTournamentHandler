@@ -33,7 +33,7 @@ public class PlayerRank {
             if (rank.equals(tier))
                 return key;
         }
-        return -1;
+        return 0;
     }
 
     public static int getSubRankValue (String tier) {
