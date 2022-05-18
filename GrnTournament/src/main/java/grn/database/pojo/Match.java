@@ -49,10 +49,16 @@ public class Match {
     this.teamBShortName = teamBObject.getShortName();
     this.teamBIcon = teamBObject.getIcon();
     this.result = "vs";
-    if (finished) {
-      this.result = MatchService.getMatchResult(id, teamA, teamB);
-    }
   }
+
+  public int getTeamAScore() {
+    return teamAScore;
+  }
+
+  public int getTeamBScore() {
+    return teamBScore;
+  }
+
   public Team getTeamAObject() {
     return teamAObject;
   }

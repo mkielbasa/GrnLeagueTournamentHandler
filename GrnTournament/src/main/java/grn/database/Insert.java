@@ -56,6 +56,22 @@ public class Insert {
         }
     }
 
+    public long executeReturning () {
+        Connection conn = ConnectionEstablisher.getConnection();
+        String sql = buildSQL() + " RETURNING ID";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            setParams(ps);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next())
+                return rs.getLong(1);
+            else
+                return 0;
+        } catch (SQLException e) {
+            ConsoleHandler.handleException(e);
+        }
+        return 0;
+    }
+
     private void setParams(PreparedStatement ps) {
         try {
             for (int i = 0; i < params.size(); i++)

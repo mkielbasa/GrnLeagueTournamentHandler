@@ -43,6 +43,15 @@ public class TeamRepository implements Repository {
         return allTeams;
     }
 
+    public List<Team> getAllActiveTeams () {
+        List<Team> allTeams = new ArrayList<>();
+        for (Team team : teams.values()) {
+            if (team.isActive())
+                allTeams.add(team);
+        }
+        return allTeams;
+    }
+
     public int getAverageTeamTier () {
         int sum = 0;
         int count = 0;

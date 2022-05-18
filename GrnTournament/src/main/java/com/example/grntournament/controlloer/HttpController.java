@@ -252,67 +252,16 @@ public class HttpController {
 
     @GetMapping("/table")
     public ModelAndView getMatchTable () {
-        List<MatchStats> matchStats = MatchService.getMatchStats();
-        TeamRepository teamRepository = Repositories.getTeamRepository();
-        for (MatchStats matchStat : matchStats) {
-            Team team = teamRepository.getTeam(matchStat.getTeamId());
-            Player player = team.getPlayers().get(0);
-            long matchesDuration = MatchService.getMatchesDuration(player.getInternalId());
-            long minutes = matchesDuration / 60;
-            matchStat.setGoldForMinute(matchStat.getGoldEarned()/minutes);
-            matchStat.setTeamName(team.getShortName());
-            matchStat.setTeamIcon(team.getIcon());
-        }
-
-        for (Team team : teamRepository.getAllTeams()) {
-            if (!teamExists(matchStats, team)) {
-                MatchStats matchStat = new MatchStats();
-                matchStat.setTeamId(team.getId());
-                matchStat.setTeamName(team.getShortName());
-                matchStat.setTeamIcon(team.getIcon());
-                matchStats.add(matchStat);
-            }
-        }
-        Collections.sort(matchStats);
-        Collections.reverse(matchStats);
-
         ModelAndView mav = new ModelAndView("table");
-        mav.addObject("matchStats", matchStats);
+        mav.addObject("matchStats", null);
         return mav;
     }
 
     @GetMapping("/winner")
     public ModelAndView getWinner () {
-        List<MatchStats> matchStats = MatchService.getMatchStats();
-        TeamRepository teamRepository = Repositories.getTeamRepository();
-        for (MatchStats matchStat : matchStats) {
-            Team team = teamRepository.getTeam(matchStat.getTeamId());
-            Player player = team.getPlayers().get(0);
-            long matchesDuration = MatchService.getMatchesDuration(player.getInternalId());
-            long minutes = matchesDuration / 60;
-            matchStat.setGoldForMinute(matchStat.getGoldEarned()/minutes);
-            matchStat.setTeamName(team.getShortName());
-            matchStat.setTeamIcon(team.getIcon());
-        }
-
-        for (Team team : teamRepository.getAllTeams()) {
-            if (!teamExists(matchStats, team)) {
-                MatchStats matchStat = new MatchStats();
-                matchStat.setTeamId(team.getId());
-                matchStat.setTeamName(team.getShortName());
-                matchStat.setTeamIcon(team.getIcon());
-                matchStats.add(matchStat);
-            }
-        }
-        Collections.sort(matchStats);
-        Collections.reverse(matchStats);
-
-        MatchStats winnerStats = matchStats.get(0);
-        Team winner = teamRepository.getTeam(winnerStats.getTeamId());
-
         ModelAndView mav = new ModelAndView("winner");
-        mav.addObject("winnerIcon", winner.getIcon());
-        mav.addObject("winnerName", winner.getName());
+        mav.addObject("winnerIcon", null);
+        mav.addObject("winnerName", null);
         return mav;
     }
 

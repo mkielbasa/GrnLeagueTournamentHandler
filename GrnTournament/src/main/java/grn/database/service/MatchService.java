@@ -18,113 +18,32 @@ public class MatchService {
         delete.execute();
     }
 
-    public static void clearMatchStats () {
-        String sql = "delete from tournament.playermatchstats";
-        Delete delete = new Delete(sql);
-        delete.execute();
+    public static long registerMatch (long parentId) {
+        Insert insert = new Insert("tournament.match");
+        insert.setColumns("finished", "parent");
+        insert.setValues(false, parentId);
+        return insert.executeReturning();
     }
 
-    public static void addMatchStats (PlayerMatchStats pms) {
-        Insert insert = new Insert("tournament.playermatchstats");
-        insert.setColumns("playerid", "teamId", "matchid",
-                "assists", "baronkills", "champlevel", "championId",
-                "damagedealttobuildings", "damagedealttoobjectives", "damagedealttoturrets",
-                "damageselfmitigated", "deaths", "detectorwardsplaced", "dragonKills", "firstbloodkill",
-                "firsttowerkill", "goldearned", "goldspent", "individualposition", "inhibitorkills",
-                "inhibitortakedowns", "inhibitorslost",
-                "item0", "item1", "item2", "item3", "item4", "item5", "item6",
-                "kills", "magicdamagedealt", "magicdamagedealttochampions", "neutralminionskilled",
-                "objectivesstolen", "physicaldamagedealt", "physicaldamagedealttochampions", "profileicon",
-                "spell1casts", "spell2casts", "spell3casts", "spell4casts", "totaldamagedealt",
-                "totaldamagedealttochampions", "totalheal", "totalhealsonteammates", "totalminionskilled",
-                "totaltimeccdealt", "totaltimespentdead", "truedamagedealt", "truedamagedealttochampions",
-                "turretkills", "visionscore", "nexuskills", "matchduration");
-        insert.setValues(pms.getPlayerId(), pms.getTeamId(), pms.getMatchId(),
-                pms.getAssists(), pms.getBaronKills(), pms.getChampLevel(), pms.getChampionId(),
-                pms.getDamageDealtToBuildings(), pms.getDamageDealtToObjectives(), pms.getDamageDealtToTurrets(),
-                pms.getDamageSelfMitigated(), pms.getDeaths(), pms.getDetectorWardsPlaced(),
-                pms.getDragonKills(), pms.getFirstBloodKill(), pms.getFirstTowerKill(), pms.getGoldEarned(),
-                pms.getGoldSpent(), pms.getIndividualPosition(), pms.getInhibitorKills(), pms.getInhibitorTakedowns(),
-                pms.getInhibitorsLost(), pms.getItem0(), pms.getItem1(), pms.getItem2(), pms.getItem3(),
-                pms.getItem4(), pms.getItem5(), pms.getItem6(), pms.getKills(), pms.getMagicDamageDealt(),
-                pms.getMagicDamageDealtToChampions(), pms.getNeutralMinionsKilled(), pms.getObjectivesStolen(),
-                pms.getPhysicalDamageDealt(), pms.getPhysicalDamageDealtToChampions(), pms.getProfileIcon(),
-                pms.getSpell1Casts(), pms.getSpell2Casts(), pms.getSpell3Casts(), pms.getSpell4Casts(),
-                pms.getTotalDamageDealt(), pms.getTotalDamageDealtToChampions(), pms.getTotalHeal(),
-                pms.getTotalHealsOnTeammates(), pms.getTotalMinionsKilled(), pms.getTotalTimeCcDealt(),
-                pms.getTotalTimeSpentDead(), pms.getTrueDamageDealt(), pms.getTrueDamageDealtToChampions(),
-                pms.getTurretKills(), pms.getVisionScore(), pms.getNexusKills(), pms.getMatchDuration());
-        insert.execute();
-    }
-
-    public static List<QueryRow> getAllMatches () {
-        String sql = "select * from tournament.match order by queue asc";
-        Query query = new Query(sql);
-        return query.execute();
-    }
-
-    public static List<QueryRow> getFinishedMatches () {
-        String sql = "select * from tournament.match where finished = true order by queue asc";
-        Query query = new Query(sql);
-        return query.execute();
-    }
-
-    public static List<QueryRow> getNonFinishedMatches () {
-        String sql = "select * from tournament.match where finished = false order by queue asc";
-        Query query = new Query(sql);
-        return query.execute();
-    }
-
-    public static void finishMatch (long id, String matchId) {
-        String sql = "update tournament.match set finished=true, matchid = ? where id = ?";
+    public static void updateTeam (long matchId, Team  team, String side) {
+        String sql = "update tournament match set " + side + "=? where id=?";
         Update update = new Update(sql);
-        update.setParams(matchId, id);
+        update.setParams(team.getId(), matchId);
         update.execute();
     }
 
-    public static String getMatchResult (long id, long teamAId, long teamBId) {
-        String sql = "select teamid, sum(nexuskills) from tournament.playermatchstats where matchid = ? and teamid = ? group by teamid";
-        Query query = new Query(sql);
-        query.setParams(id);
-        query.setParams(teamAId);
-        List<QueryRow> rows = query.execute();
-        if (rows.size() != 1)
-            return "???";
-        QueryRow teamA = rows.get(0);
-        long resultTeamA = (long) teamA.get(2);
-        query = new Query(sql);
-        query.setParams(id);
-        query.setParams(teamBId);
-        rows = query.execute();
-        if (rows.size() != 1)
-            return "???";
-        QueryRow teamB = rows.get(0);
-        long resultTeamB = (long) teamB.get(2);
-        return resultTeamA + " : " + resultTeamB;
+    public static void updateScore (long matchId, int teamAScore, int teamBScore) {
+        String sql = "update tournament match set teamascore=?,teambscore=? where id=?";
+        Update update = new Update(sql);
+        update.setParams(teamAScore, teamBScore, matchId);
+        update.execute();
     }
 
-    public static List<MatchStats> getMatchStats () {
-        List<MatchStats> matchStats = new ArrayList<>();
-        String sql = "select teamid, sum(nexuskills), sum(goldearned) from tournament.playermatchstats group by teamid";
-        Query query = new Query(sql);
-        List<QueryRow> rows = query.execute();
-        for (QueryRow row : rows) {
-            MatchStats matchStat = new MatchStats();
-            matchStat.fromQueryRow(row);
-            matchStats.add(matchStat);
-        }
-        return matchStats;
+    public static void finishMatch (long matchId, Team winner) {
+        String sql = "update tournament match set finished=?,winner=? where id=?";
+        Update update = new Update(sql);
+        update.setParams(true, winner.getId(), matchId);
+        update.execute();
     }
 
-    public static long getMatchesDuration (long playerId) {
-        String sql = "select sum(matchduration) from tournament.playermatchstats where playerid = ?";
-        Query query = new Query(sql);
-        query.setParams(playerId);
-        List<QueryRow> rows = query.execute();
-        if (rows.size() == 1) {
-            BigDecimal bd = (BigDecimal) rows.get(0).get(1);
-            return bd.longValue();
-        }
-        return 0;
-    }
 }

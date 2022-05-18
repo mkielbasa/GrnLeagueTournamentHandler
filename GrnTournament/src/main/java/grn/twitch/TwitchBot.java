@@ -51,7 +51,6 @@ public class TwitchBot {
             handleUserBestScores(viewer,message);
             handleCurrentMatch(viewer, message);
             handleGetKeywords(viewer, message);
-            handleTable(viewer, message);
             handleTeam(viewer, message);
             handlePlayer(viewer, message);
         } else {
@@ -97,48 +96,6 @@ public class TwitchBot {
         if (!messageLowerCase.startsWith("!mecz"))
             return;
         sendMessage(getCurrentMatch());
-    }
-
-    private static void handleTable (String viewer, String message) {
-        String messageLowerCase = message.toLowerCase(Locale.ROOT);
-        messageLowerCase = messageLowerCase.trim();
-        if (!messageLowerCase.startsWith("!tabela"))
-            return;
-        List<MatchStats> matchStats = MatchService.getMatchStats();
-        TeamRepository teamRepository = Repositories.getTeamRepository();
-        for (MatchStats matchStat : matchStats) {
-            Team team = teamRepository.getTeam(matchStat.getTeamId());
-            Player player = team.getPlayers().get(0);
-            long matchesDuration = MatchService.getMatchesDuration(player.getInternalId());
-            long minutes = matchesDuration / 60;
-            matchStat.setGoldForMinute(matchStat.getGoldEarned()/minutes);
-            matchStat.setTeamName(team.getShortName());
-            matchStat.setTeamIcon(team.getIcon());
-        }
-
-        for (Team team : teamRepository.getAllTeams()) {
-            if (!teamExists(matchStats, team)) {
-                MatchStats matchStat = new MatchStats();
-                matchStat.setTeamId(team.getId());
-                matchStat.setTeamName(team.getShortName());
-                matchStat.setTeamIcon(team.getIcon());
-                matchStats.add(matchStat);
-            }
-        }
-        Collections.sort(matchStats);
-        Collections.reverse(matchStats);
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("Bieżąca tabela: ");
-        int i = 1;
-        for (MatchStats matchStat : matchStats) {
-            sb.append(i + ". ");
-            sb.append(matchStat.getTeamName() + " Pkt: " + matchStat.getWins() + " Gold/Min:" + matchStat.getGoldForMinute());
-            sb.append(";  ");
-            i++;
-        }
-
-        sendMessage(sb.toString());
     }
 
     private static boolean teamExists (List<MatchStats> matchStats, Team team) {
