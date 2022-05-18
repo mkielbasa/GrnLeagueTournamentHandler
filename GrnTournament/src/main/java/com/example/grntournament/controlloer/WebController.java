@@ -16,15 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class WebController {
 
-    @GetMapping("/reloadMatches")
-    public String reloadMatches () throws EndpointException {
-        MatchController matchController = Repositories.getMatchRepository();
-        matchController.finishCurrentMatch();
-        ConsoleHandler.handleInfo("MatchesReloaded");
-        SoundPlayer.playSound("./GrnTournament/ding.wav");
-        return "Reloaded";
-    }
-
     @GetMapping("/reloadPlayers")
     public String reloadPlayers () throws EndpointException {
         PlayerRepository playerRepository = Repositories.getPlayerRepository();

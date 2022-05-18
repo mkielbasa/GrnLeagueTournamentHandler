@@ -30,165 +30,19 @@ public class MatchController implements Repository {
     public Match currentMatch;
 
     public void init () {
-        reloadMatches();
+
     }
 
     @Override
     public void reload() {
-        reloadMatches();
-    }
 
-    private void reloadMatches () {
-        List<QueryRow> rows = MatchService.getNonFinishedMatches();
-        List<Match> nonFinishedMatches = new ArrayList<>();
-        for (QueryRow row : rows) {
-            Match match = new Match();
-            match.fromQueryRow(row);
-            nonFinishedMatches.add(match);
-        }
-        if (nonFinishedMatches.isEmpty()) {
-            ConsoleHandler.handleWarning("Non finished matches is empty. Tournament is done");
-            currentMatch = null;
-            return;
-        }
-        currentMatch = nonFinishedMatches.get(0);;
-        TeamRepository teamRepository = Repositories.getTeamRepository();
-        Team teamA = teamRepository.getTeam(currentMatch.getTeamA());
-        Team teamB = teamRepository.getTeam(currentMatch.getTeamB());
-        ConsoleHandler.handleInfo("Current match : " + teamA.getShortName() + " vs " + teamB.getShortName());
-    }
-
-    public void finishCurrentMatch () throws EndpointException {
-        if (currentMatch == null || currentMatch.isFinished()) {
-            ConsoleHandler.handleWarning("Current match is wrong");
-            return;
-        }
-        TeamRepository teamRepository = Repositories.getTeamRepository();
-        Team teamA = teamRepository.getTeam(currentMatch.getTeamA());
-        Team teamB = teamRepository.getTeam(currentMatch.getTeamB());
-        String tournamentMatchId = findTournamentMatchId(teamA, teamB);
-        if (tournamentMatchId == null) {
-            ConsoleHandler.handleWarning("Tournament match not found " +
-                    teamA.getShortName() + " vs " + teamB.getShortName());
-            tournamentMatchId = "NO-ID";
-            if (PropertiesHandler.instance().isDebug())
-                registerMockMatchStats(tournamentMatchId, currentMatch.getId());
-            reloadMatches();
-            return;
-        }
-        registerMatchStats(tournamentMatchId, currentMatch.getId());
-        reloadMatches();
-    }
-
-    private String findTournamentMatchId (Team teamA, Team teamB) throws EndpointException {
-        for (Player p : teamA.getPlayers()) {
-            MatchesEndpoint mEndpoint = new MatchesEndpoint(p.getPUuid());
-            RequestResult result = mEndpoint.doRequest();
-            List<String> matchIds = (List<String>) result.parseJSON();
-            if (matchIds.isEmpty())
-                continue;
-            String lastMatchId = matchIds.get(0);
-            if (isTournamentMatch(teamA, teamB, lastMatchId))
-                return lastMatchId;
-        }
-        return null;
-    }
-
-    private boolean isTournamentMatch (Team teamA, Team teamB, String matchId) throws EndpointException {
-        MatchEndpoint mEndpoint = new MatchEndpoint(matchId);
-        RequestResult result = mEndpoint.doRequest();
-        JSONObject jStats = (JSONObject) result.parseJSON();
-        JSONObject jInfo = (JSONObject) jStats.get("info");
-        JSONArray jParticipants = (JSONArray) jInfo.get("participants");
-        int participantCount = 0;
-        for (Object jObject : jParticipants.toArray()) {
-            JSONObject jParticipant = (JSONObject) jObject;
-            String pUUID = (String) jParticipant.get("puuid");
-            if (teamA.containsPlayer(pUUID) || teamB.containsPlayer(pUUID))
-                participantCount++;
-        }
-        return participantCount == currentMatch.getParticipants();
     }
 
     public List<Match> getAllMatches () {
-        List<QueryRow> rows = MatchService.getAllMatches();
-        List<Match> matches = new ArrayList<>();
-        for (QueryRow row : rows) {
-            Match match = new Match();
-            match.fromQueryRow(row);
-            matches.add(match);
-        }
-        return matches;
+        return new ArrayList<>();
     }
 
     public Match getCurrentMatch() {
         return currentMatch;
     }
-
-    public List<String> getMatchIds (Player player) throws EndpointException {
-        MatchesEndpoint mEndpoint = new MatchesEndpoint(player.getPUuid());
-        RequestResult result = mEndpoint.doRequest();
-        return (List<String>) result.parseJSON();
-    }
-
-    public List<PlayerMatchStats> getMockPlayerMatchStats (long matchInternalId) {
-        File file = new File(PropertiesHandler.instance().getMockMatch());
-        JSONObject jStats = JsonFileReader.read(file);
-        return buildPlayerMatchStats(jStats, matchInternalId);
-    }
-
-    public List<PlayerMatchStats> getPlayerMatchStats (String matchId, long matchInternalId) throws EndpointException {
-        MatchEndpoint mEndpoint = new MatchEndpoint(matchId);
-        RequestResult result = mEndpoint.doRequest();
-        JSONObject jStats = (JSONObject) result.parseJSON();
-        return buildPlayerMatchStats(jStats, matchInternalId);
-    }
-
-    private List<PlayerMatchStats> buildPlayerMatchStats (JSONObject jStats, long matchInternalId) {
-        List<PlayerMatchStats> stats = new ArrayList<>();
-        PlayerRepository playerRepository = Repositories.getPlayerRepository();
-        JSONObject jInfo = (JSONObject) jStats.get("info");
-        long matchDuration = (long) jInfo.get("gameDuration");
-        JSONArray jParticipants = (JSONArray) jInfo.get("participants");
-        for (Object jObject : jParticipants.toArray()) {
-            JSONObject jParticipant = (JSONObject) jObject;
-            String summonerName = (String) jParticipant.get("summonerName");
-            ConsoleHandler.handleInfo("Player: " + summonerName);
-            String pUUID = (String) jParticipant.get("puuid");
-            if (!playerRepository.containsPlayer(pUUID))
-                continue;
-            Player player = playerRepository.get(pUUID);
-            PlayerMatchStats playerMatchStats = new PlayerMatchStats();
-            playerMatchStats.fromJson(jParticipant);
-            playerMatchStats.setPlayerId(player.getInternalId());
-            playerMatchStats.setTeamId(player.getTeamId());
-            playerMatchStats.setMatchId(matchInternalId);
-            playerMatchStats.setMatchDuration(matchDuration);
-            stats.add(playerMatchStats);
-        }
-        return stats;
-    }
-
-    private void registerMockMatchStats (String matchId, long matchInternalId) {
-        ConsoleHandler.handleInfo("Match " + matchId);
-        List<PlayerMatchStats> playerMatchStats = getMockPlayerMatchStats(matchInternalId);
-        for (PlayerMatchStats playerMatchStat : playerMatchStats) {
-            ConsoleHandler.handleInfo("Adding match info " + matchId);
-            MatchService.addMatchStats(playerMatchStat);
-        }
-        MatchService.finishMatch(matchInternalId, matchId);
-    }
-
-    private void registerMatchStats (String matchId, long matchInternalId) throws EndpointException {
-        ConsoleHandler.handleInfo("Match " + matchId);
-        if (!matchId.equals("NO-ID")) {
-            List<PlayerMatchStats> playerMatchStats = getPlayerMatchStats(matchId, matchInternalId);
-            for (PlayerMatchStats playerMatchStat : playerMatchStats) {
-                ConsoleHandler.handleInfo("Adding match info " + matchId);
-                MatchService.addMatchStats(playerMatchStat);
-            }
-        }
-        MatchService.finishMatch(matchInternalId, matchId);
-    }
-
 }

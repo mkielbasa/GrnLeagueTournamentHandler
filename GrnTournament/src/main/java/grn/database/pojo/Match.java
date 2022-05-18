@@ -14,12 +14,13 @@ public class Match {
   private long teamA;
   private long teamB;
   private boolean finished;
-  private int queue;
-  private String matchId;
-  private int participants;
+  private long parentId;
+  private long winner;
+  private int teamAScore;
+  private int teamBScore;
+
   private Team teamAObject;
   private Team teamBObject;
-  private String time;
   private String teamAName;
   private String teamBName;
   private String teamAShortName;
@@ -33,9 +34,10 @@ public class Match {
     this.teamA = (long) row.get(2);
     this.teamB = (long) row.get(3);
     this.finished = (boolean) row.get(4);
-    this.queue = (int) row.get(5);
-    this.matchId = (String) row.get(6);
-    this.participants = (int) row.get(7);
+    this.parentId = (long) row.get(5);
+    this.winner = (long) row.get(6);
+    this.teamAScore = (int) row.get(7);
+    this.teamBScore = (int) row.get(8);
 
     TeamRepository teamRepository = Repositories.getTeamRepository();
     this.teamAObject = teamRepository.getTeam(teamA);
@@ -46,26 +48,11 @@ public class Match {
     this.teamBName = teamBObject.getName();
     this.teamBShortName = teamBObject.getShortName();
     this.teamBIcon = teamBObject.getIcon();
-    this.time = buildTime();
     this.result = "vs";
     if (finished) {
       this.result = MatchService.getMatchResult(id, teamA, teamB);
     }
   }
-
-  private String buildTime () {
-    int startTime = PropertiesHandler.instance().getTournamentStartHour();
-    int matchTime = PropertiesHandler.instance().getMatchTime();
-    int minutesOffset = (queue - 1) * matchTime;
-    int hours = startTime;
-    int minutes = minutesOffset;
-    if (minutesOffset >= 60) {
-      hours = (minutesOffset / 60) + startTime;
-      minutes = minutesOffset % 60;
-    }
-    return "" + (hours < 10 ? "0" + hours : hours) + ":" + (minutes < 10 ? "0" + minutes : minutes);
-  }
-
   public Team getTeamAObject() {
     return teamAObject;
   }
@@ -80,14 +67,6 @@ public class Match {
 
   public void setTeamBObject(Team teamBObject) {
     this.teamBObject = teamBObject;
-  }
-
-  public String getTime() {
-    return time;
-  }
-
-  public void setTime(String time) {
-    this.time = time;
   }
 
   public String getTeamAName() {
@@ -126,7 +105,6 @@ public class Match {
     this.id = id;
   }
 
-
   public long getTeamA() {
     return teamA;
   }
@@ -134,7 +112,6 @@ public class Match {
   public void setTeamA(long teamA) {
     this.teamA = teamA;
   }
-
 
   public long getTeamB() {
     return teamB;
@@ -144,7 +121,6 @@ public class Match {
     this.teamB = teamB;
   }
 
-
   public boolean isFinished() {
     return finished;
   }
@@ -153,29 +129,4 @@ public class Match {
     this.finished = finished;
   }
 
-
-  public int getQueue() {
-    return queue;
-  }
-
-  public void setQueue(int queue) {
-    this.queue = queue;
-  }
-
-
-  public String getMatchId() {
-    return matchId;
-  }
-
-  public void setMatchId(String matchId) {
-    this.matchId = matchId;
-  }
-
-  public int getParticipants() {
-    return participants;
-  }
-
-  public void setParticipants(int participants) {
-    this.participants = participants;
-  }
 }

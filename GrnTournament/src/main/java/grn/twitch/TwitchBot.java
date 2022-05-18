@@ -54,7 +54,6 @@ public class TwitchBot {
             handleCurrentMatch(viewer, message);
             handleGetKeywords(viewer, message);
             handleTable(viewer, message);
-            handleMatchQueue(viewer, message);
             handleTeam(viewer, message);
             handlePlayer(viewer, message);
         } else {
@@ -141,23 +140,6 @@ public class TwitchBot {
             i++;
         }
 
-        sendMessage(sb.toString());
-    }
-
-    private static void handleMatchQueue (String viewer, String message) {
-        String messageLowerCase = message.toLowerCase(Locale.ROOT);
-        messageLowerCase = messageLowerCase.trim();
-        if (!messageLowerCase.startsWith("!mecze"))
-            return;
-        MatchController matchController = Repositories.getMatchRepository();
-        List<Match> matches = matchController.getAllMatches();
-        StringBuilder sb = new StringBuilder();
-        sb.append("Szacowane godziny i kolejność meczy: ");
-        for (Match match : matches) {
-            sb.append(match.getTime() + ": " +
-                    match.getTeamAShortName() + " " + match.getResult() + " " + match.getTeamBShortName());
-            sb.append(";   ");
-        }
         sendMessage(sb.toString());
     }
 
