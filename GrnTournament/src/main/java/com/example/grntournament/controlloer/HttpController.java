@@ -1,6 +1,5 @@
 package com.example.grntournament.controlloer;
 
-import com.example.grntournament.GrnTournamentApplication;
 import grn.database.pojo.*;
 import grn.database.repository.PlayerRepository;
 import grn.database.repository.Repositories;
@@ -8,16 +7,14 @@ import grn.database.repository.TeamRepository;
 import grn.database.service.MatchService;
 import grn.database.service.PlayerService;
 import grn.database.service.TeamService;
-import grn.error.ConsoleHandler;
 import grn.exception.EndpointException;
-import grn.riot.lol.MatchController;
+import grn.database.repository.MatchRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -210,7 +207,7 @@ public class HttpController {
 
     @GetMapping("/allMatches")
     public ModelAndView getAllMatches () {
-        MatchController matchController = Repositories.getMatchRepository();
+        MatchRepository matchController = Repositories.getMatchRepository();
         List<Match> matches = matchController.getAllMatches();
         ModelAndView mav = new ModelAndView("allmatches");
         mav.addObject("matches", matches);
@@ -219,7 +216,7 @@ public class HttpController {
 
     @GetMapping("/currentMatch")
     public ModelAndView getCurrentMatch () {
-        MatchController matchController = Repositories.getMatchRepository();
+        MatchRepository matchController = Repositories.getMatchRepository();
         Match currentMatch = matchController.getCurrentMatch();
         ModelAndView mav = new ModelAndView("currentMatch");
         Team teamA = currentMatch.getTeamAObject();

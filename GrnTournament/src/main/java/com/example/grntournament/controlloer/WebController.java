@@ -1,14 +1,11 @@
 package com.example.grntournament.controlloer;
 
-import com.example.grntournament.GrnTournamentApplication;
 import grn.database.repository.PlayerRepository;
 import grn.database.repository.Repositories;
 import grn.database.repository.ViewerScoreRepository;
 import grn.database.service.ViewerScoreService;
 import grn.error.ConsoleHandler;
 import grn.exception.EndpointException;
-import grn.exception.OutdatedApiKeyException;
-import grn.riot.lol.MatchController;
 import grn.sound.SoundPlayer;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

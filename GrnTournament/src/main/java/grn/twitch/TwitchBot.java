@@ -1,6 +1,5 @@
 package grn.twitch;
 
-import com.example.grntournament.GrnTournamentApplication;
 import com.github.philippheuer.credentialmanager.domain.OAuth2Credential;
 import com.github.twitch4j.TwitchClient;
 import com.github.twitch4j.TwitchClientBuilder;
@@ -11,8 +10,7 @@ import grn.database.repository.TeamRepository;
 import grn.database.repository.ViewerScoreRepository;
 import grn.database.service.MatchService;
 import grn.properties.PropertiesHandler;
-import grn.riot.lol.Champion;
-import grn.riot.lol.MatchController;
+import grn.database.repository.MatchRepository;
 
 import java.util.*;
 
@@ -155,7 +153,7 @@ public class TwitchBot {
         messageLowerCase = messageLowerCase.trim();
         if (!messageLowerCase.startsWith("!konkurs"))
             return;
-        MatchController matchController = Repositories.getMatchRepository();
+        MatchRepository matchController = Repositories.getMatchRepository();
         Match currentMatch = matchController.getCurrentMatch();
         if (currentMatch == null)  {
             sendMessage("W tej chwili nie ma na co głosować (brak meczu).");
@@ -237,7 +235,7 @@ public class TwitchBot {
     }
 
     private static String getCurrentMatch () {
-        MatchController matchController = Repositories.getMatchRepository();
+        MatchRepository matchController = Repositories.getMatchRepository();
         Match currentMatch = matchController.getCurrentMatch();
         if (currentMatch == null) {
             return "W tej chwili nie będzie rozgrywany mecz.";
