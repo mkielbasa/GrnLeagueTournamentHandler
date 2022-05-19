@@ -29,7 +29,7 @@
                     <img class="entry-logo" th:src="@{${player.tierIcon}}"/>
                 </td>
                 <td class="entry-text-small-container" th:text="${player.tier}"></td>
-                <td class="entry-text-small-container" th:text="${player.name}"></td>
+                <td class="entry-text-small-container"><a th:text="${player.name}" th:href="@{/player(id=${player.internalId})}"></a></td>
                 <td class="entry-text-small-container" th:text="${player.tierValue}"></td>
                 <td>
                     <img class="entry-logo" th:src="@{${player.teamIcon}}"/>
