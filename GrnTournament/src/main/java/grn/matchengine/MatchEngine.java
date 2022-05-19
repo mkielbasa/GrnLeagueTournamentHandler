@@ -31,14 +31,6 @@ public abstract class MatchEngine {
 
     }
 
-    public void setTeamA (Team team, Match match) {
-        MatchService.updateTeam(match.getId(), team, "teama");
-    }
-
-    public void setTeamB (Team team, Match match) {
-        MatchService.updateTeam(match.getId(), team, "teamb");
-    }
-
     public void updateScore (Match match, int teamAScore, int teamBScore) {
         MatchService.updateScore(match.getId(), teamAScore, teamBScore);
     }

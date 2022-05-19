@@ -188,6 +188,86 @@ public class HttpController {
         return mav;
     }
 
+    @GetMapping("/tree4")
+    public ModelAndView getTree4 () {
+        MatchRepository matchRepository = Repositories.getMatchRepository();
+        Match finalMatch = matchRepository.getFinalMatch(1);
+        ModelAndView mav = new ModelAndView("tree4");
+        mav.addObject("final", finalMatch);
+        List<Match> starter1 = matchRepository.getMatchesWithParent(1, finalMatch);
+        mav.addObject("starter1", starter1.get(0));
+        mav.addObject("starter2", starter1.get(1));
+        return mav;
+    }
+
+    @GetMapping("/tree8")
+    public ModelAndView getTree8 () {
+        ModelAndView mav = new ModelAndView("tree8");
+        mav.addObject("final", null);
+        mav.addObject("semi-final-1", null);
+        mav.addObject("semi-final-2", null);
+        mav.addObject("starter-1", null);
+        mav.addObject("starter-2", null);
+        mav.addObject("starter-3", null);
+        mav.addObject("starter-4", null);
+        return mav;
+    }
+
+    @GetMapping("/editMatch")
+    public String getEditMatch (@RequestParam String id, Model model) {
+        MatchRepository matchRepository = Repositories.getMatchRepository();
+        TeamRepository teamRepository = Repositories.getTeamRepository();
+        List<Team> teams = teamRepository.getAllTeams();
+        long internalId = Long.parseLong(id);
+        Match match = matchRepository.getMatch(internalId);
+        model.addAttribute("match", match);
+        model.addAttribute("teams", teams);
+        return "matchEdit";
+    }
+
+    @PostMapping("/editMatch")
+    public String getEditMatchSubmit (@ModelAttribute Match match, Model model) throws EndpointException {
+        MatchRepository matchRepository = Repositories.getMatchRepository();
+        TeamRepository teamRepository = Repositories.getTeamRepository();
+        List<Team> teams = teamRepository.getAllTeams();
+        model.addAttribute("match", match);
+        model.addAttribute("teams", teams);
+        MatchService.updateTeam(match.getId(), match.getTeamA(), "teama");
+        MatchService.updateTeam(match.getId(), match.getTeamB(), "teamb");
+        matchRepository.reload();
+        return "matchEdit";
+    }
+
+    @GetMapping("/updateMatchScore")
+    public String getUpdateMatchScore (@RequestParam String id,
+                                       @RequestParam String scoreA, @RequestParam String scoreB) {
+        MatchRepository matchRepository = Repositories.getMatchRepository();
+        long internalId = Long.parseLong(id);
+        int sA = Integer.parseInt(scoreA);
+        int sB = Integer.parseInt(scoreB);
+        MatchService.updateScore(internalId, sA, sB);
+        Match match = matchRepository.getMatch(internalId);
+        Match parentMatch = matchRepository.getMatch(match.getParent());
+        if (sA == 3) {
+            MatchService.finishMatch(internalId, match.getTeamAObject());
+            if (parentMatch != null) {
+                if (parentMatch.getTeamAObject() == null)
+                    MatchService.updateTeam(parentMatch.getId(), match.getTeamA(), "teama");
+                else if (parentMatch.getTeamBObject() == null)
+                    MatchService.updateTeam(parentMatch.getId(), match.getTeamA(), "teamb");
+            }
+        } else if (sB == 3) {
+            MatchService.finishMatch(internalId, match.getTeamBObject());
+            if (parentMatch != null) {
+                if (parentMatch.getTeamAObject() == null)
+                    MatchService.updateTeam(parentMatch.getId(), match.getTeamB(), "teama");
+                else if (parentMatch.getTeamBObject() == null)
+                    MatchService.updateTeam(parentMatch.getId(), match.getTeamB(), "teamb");
+            }
+        }
+        matchRepository.reload();
+        return "index";
+    }
 
     @GetMapping("/matches")
     public ModelAndView getMatches () {

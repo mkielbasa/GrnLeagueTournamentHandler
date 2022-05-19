@@ -1,0 +1,36 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+            xmlns:th="http://www.thymeleaf.org"
+            xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+            xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Staatliches">
+    <link th:href="@{/style.css}" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="app-container">
+        <div class="app-logo-container">
+            <img class="app-logo" src="GrnLeague.png"/>
+        </div>
+        <div class="app-title-container">
+            Control panel
+        </div>
+        <div class="form">
+            <form action="#" th:action="@{/editMatch}" th:object="${match}" method="post">
+                <p>Id: <input type="text" th:field="*{id}" /></p>
+                Team A:
+                <select th:field="*{teamA}">
+                    <option th:each="t : ${teams}" th:value="${t.id}" th:text="${t.name}">
+                </select>
+                Team B:
+                <select th:field="*{teamB}">
+                    <option th:each="t : ${teams}" th:value="${t.id}" th:text="${t.name}">
+                </select>
+                <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

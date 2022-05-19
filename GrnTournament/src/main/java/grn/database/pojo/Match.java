@@ -18,6 +18,7 @@ public class Match {
   private long winner;
   private int teamAScore;
   private int teamBScore;
+  private int group;
 
   private Team teamAObject;
   private Team teamBObject;
@@ -31,24 +32,34 @@ public class Match {
 
   public void fromQueryRow (QueryRow row) {
     this.id = (long) row.get(1);
-    this.teamA = (long) row.get(2);
-    this.teamB = (long) row.get(3);
+    if (row.get(2) != null)
+      this.teamA = (long) row.get(2);
+    if (row.get(3) != null)
+      this.teamB = (long) row.get(3);
     this.finished = (boolean) row.get(4);
     this.parentId = (long) row.get(5);
-    this.winner = (long) row.get(6);
-    this.teamAScore = (int) row.get(7);
-    this.teamBScore = (int) row.get(8);
+    if (row.get(6) != null)
+      this.winner = (long) row.get(6);
+    if (row.get(7) != null)
+      this.teamAScore = (int) row.get(7);
+    if (row.get(8) != null)
+      this.teamBScore = (int) row.get(8);
+    this.group = (int) row.get(9);
 
     TeamRepository teamRepository = Repositories.getTeamRepository();
     this.teamAObject = teamRepository.getTeam(teamA);
     this.teamBObject = teamRepository.getTeam(teamB);
-    this.teamAName = teamAObject.getName();
-    this.teamAShortName = teamAObject.getShortName();
-    this.teamAIcon = teamAObject.getIcon();
-    this.teamBName = teamBObject.getName();
-    this.teamBShortName = teamBObject.getShortName();
-    this.teamBIcon = teamBObject.getIcon();
-    this.result = "vs";
+    if (teamAObject != null) {
+      this.teamAName = teamAObject.getName();
+      this.teamAShortName = teamAObject.getShortName();
+      this.teamAIcon = teamAObject.getIcon();
+    }
+    if (teamBObject != null) {
+      this.teamBName = teamBObject.getName();
+      this.teamBShortName = teamBObject.getShortName();
+      this.teamBIcon = teamBObject.getIcon();
+    }
+    this.result = teamAScore + " - " + teamBScore;
   }
 
   public int getTeamAScore() {
@@ -135,4 +146,11 @@ public class Match {
     this.finished = finished;
   }
 
+  public int getGroup() {
+    return  group;
+  }
+
+  public long getParent() {
+    return parentId;
+  }
 }
