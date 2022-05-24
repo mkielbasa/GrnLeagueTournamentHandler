@@ -1,0 +1,55 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+            xmlns:th="http://www.thymeleaf.org"
+            xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+            xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Staatliches">
+    <link th:href="@{/style.css}" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="app-container">
+        <div class="app-logo-container">
+            <img class="app-logo" src="GrnLeague.png"/>
+        </div>
+        <div class="app-title-container">
+            <a href="http://localhost:8080/">Control panel</a>
+        </div>
+        <div class="tree">
+            <ul>
+               <li>
+                   <div class="entry-text-small-container">
+                       <img th:if="${final.teamAObject}!=null" class="entry-logo" th:src="@{${final.teamAIcon}}"/>
+                       <img th:if="${final.teamAObject}==null" class="entry-logo" src="users.png"/>
+                       <span th:text="${final.result}"/>
+                       <img th:if="${final.teamBObject}!=null" class="entry-logo" th:src="@{${final.teamBIcon}}"/>
+                       <img th:if="${final.teamBObject}==null" class="entry-logo" src="users.png"/>
+                   </div>
+                   <ul>
+                       <li>
+                           <div class="entry-text-small-container">
+                               <img th:if="${starter1.teamAObject}!=null" class="entry-logo" th:src="@{${starter1.teamAIcon}}"/>
+                               <img th:if="${starter1.teamAObject}==null" class="entry-logo" src="users.png"/>
+                               <span th:text="${starter1.result}"/>
+                               <img th:if="${starter1.teamBObject}!=null" class="entry-logo" th:src="@{${starter1.teamBIcon}}"/>
+                               <img th:if="${starter1.teamBObject}==null" class="entry-logo" src="users.png"/>
+                           </div>
+                       </li>
+                       <li>
+                           <div class="entry-text-small-container">
+                               <img th:if="${starter2.teamAObject}!=null" class="entry-logo" th:src="@{${starter2.teamAIcon}}"/>
+                               <img th:if="${starter2.teamAObject}==null" class="entry-logo" src="users.png"/>
+                               <span th:text="${starter2.result}"/>
+                               <img th:if="${starter2.teamBObject}!=null" class="entry-logo" th:src="@{${starter2.teamBIcon}}"/>
+                               <img th:if="${starter2.teamBObject}==null" class="entry-logo" src="users.png"/>
+                           </div>
+                       </li>
+                   </ul>
+               </li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

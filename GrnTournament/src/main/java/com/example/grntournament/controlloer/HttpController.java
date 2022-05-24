@@ -156,9 +156,24 @@ public class HttpController {
     public ModelAndView getTeams () {
         TeamRepository teamRepository = Repositories.getTeamRepository();
         List<Team> teams = teamRepository.getAllTeams();
+        List<Team> activeTeams = teamRepository.getAllActiveTeams();
         ModelAndView mav = new ModelAndView("teams");
-        mav.addObject("teams", teams);
+        buildTeamModelAndView(mav, activeTeams, teams);
         return mav;
+    }
+
+    private void buildTeamModelAndView (ModelAndView mav, List<Team> activeTeams, List<Team> teams) {
+        mav.addObject("teams", teams);
+        mav.addObject("screens", activeTeams.get(0).getScreens());
+        for (int i=0; i<activeTeams.size();i++) {
+            Team team = activeTeams.get(i);
+            String teamLabel = "team" + (i+1);
+            String matchesLabel = teamLabel + "matches";
+            String lpLabel = teamLabel + "lps";
+            mav.addObject(teamLabel, team);
+            mav.addObject(matchesLabel, team.getMatchesHistory());
+            mav.addObject(lpLabel, team.getLpHistory());
+        }
     }
 
     @GetMapping("/teamTiers")
@@ -190,26 +205,53 @@ public class HttpController {
 
     @GetMapping("/tree4")
     public ModelAndView getTree4 () {
+        return buildTree4Model("tree4");
+    }
+
+    @GetMapping("/tree4preview")
+    public ModelAndView getTree4Preview () {
+        return buildTree4Model("tree4preview");
+    }
+
+    private ModelAndView buildTree4Model (String view) {
         MatchRepository matchRepository = Repositories.getMatchRepository();
+        Match currentMatch = matchRepository.getCurrentMatch();
         Match finalMatch = matchRepository.getFinalMatch(1);
-        ModelAndView mav = new ModelAndView("tree4");
+        ModelAndView mav = new ModelAndView(view);
         mav.addObject("final", finalMatch);
         List<Match> starter1 = matchRepository.getMatchesWithParent(1, finalMatch);
         mav.addObject("starter1", starter1.get(0));
         mav.addObject("starter2", starter1.get(1));
+        mav.addObject("currentMatch", currentMatch);
         return mav;
     }
 
     @GetMapping("/tree8")
     public ModelAndView getTree8 () {
-        ModelAndView mav = new ModelAndView("tree8");
-        mav.addObject("final", null);
-        mav.addObject("semi-final-1", null);
-        mav.addObject("semi-final-2", null);
-        mav.addObject("starter-1", null);
-        mav.addObject("starter-2", null);
-        mav.addObject("starter-3", null);
-        mav.addObject("starter-4", null);
+        return buildTree8Model("tree8");
+    }
+
+    @GetMapping("/tree8preview")
+    public ModelAndView getTree8Preview () {
+        return buildTree8Model("tree8preview");
+    }
+
+    public ModelAndView buildTree8Model (String view) {
+        MatchRepository matchRepository = Repositories.getMatchRepository();
+        Match currentMatch = matchRepository.getCurrentMatch();
+        Match finalMatch = matchRepository.getFinalMatch(2);
+        List<Match> semiFinals = matchRepository.getMatchesWithParent(2, finalMatch);
+        List<Match> starters1 = matchRepository.getMatchesWithParent(2, semiFinals.get(0));
+        List<Match> starters2 = matchRepository.getMatchesWithParent(2, semiFinals.get(1));
+        ModelAndView mav = new ModelAndView(view);
+        mav.addObject("final", finalMatch);
+        mav.addObject("semifinal1", semiFinals.get(0));
+        mav.addObject("semifinal2", semiFinals.get(1));
+        mav.addObject("starter1", starters1.get(0));
+        mav.addObject("starter2", starters1.get(1));
+        mav.addObject("starter3", starters2.get(0));
+        mav.addObject("starter4", starters2.get(1));
+        mav.addObject("currentMatch", currentMatch);
         return mav;
     }
 
@@ -269,6 +311,16 @@ public class HttpController {
         return "index";
     }
 
+    @GetMapping("/toggleMatchActive")
+    public String getToggleMatchActive (@RequestParam String id) {
+        MatchRepository matchRepository = Repositories.getMatchRepository();
+        long internalId = Long.parseLong(id);
+        Match match = matchRepository.getMatch(internalId);
+        MatchService.toggleActive(match);
+        matchRepository.reload();
+        return "index";
+    }
+
     @GetMapping("/matches")
     public ModelAndView getMatches () {
         TeamRepository teamRepository = Repositories.getTeamRepository();
@@ -316,17 +368,47 @@ public class HttpController {
         Player player = playerRepository.get(internalId);
         Team team = teamRepository.getTeam(player.getTeamId());
         List<ChampionMastery> maestries = new ArrayList<>();
-        int max = 10;
+        int max = 25;
         for (int i=0; i<player.getMasteries().size(); i++) {
             if (i == max)
                 break;
             maestries.add(player.getMasteries().get(i));
         }
+        List<String> screenLabels = player.getScreens();
+        List<Long> lps = player.getLpHistory();
+        List<Integer> wins = player.getWinHistory();
+        List<Integer> loses = player.getLosesHistory();
+        List<Integer> matches = player.getMatchesHistory();
         ModelAndView mav = new ModelAndView("player");
         mav.addObject("player", player);
         mav.addObject("summonerLevel", "Lvl: " + player.getSummonerLevel());
         mav.addObject("teamIcon", team.getIcon());
         mav.addObject("maestries", maestries);
+        mav.addObject("screens", screenLabels);
+        mav.addObject("wins" , wins);
+        mav.addObject("loses", loses);
+        mav.addObject("matches", matches);
+        mav.addObject("lps", lps);
+        return mav;
+    }
+
+    @GetMapping("/team")
+    public ModelAndView getTeam (@RequestParam String id) {
+        TeamRepository teamRepository = Repositories.getTeamRepository();
+        long internalId = Long.parseLong(id);
+        Team team = teamRepository.getTeam(internalId);
+        List<String> screenLabels = team.getScreens();
+        List<Long> lps = team.getLpHistory();
+        List<Integer> wins = team.getWinHistory();
+        List<Integer> loses = team.getLosesHistory();
+        List<Integer> matches = team.getMatchesHistory();
+        ModelAndView mav = new ModelAndView("team");
+        mav.addObject("team", team);
+        mav.addObject("screens", screenLabels);
+        mav.addObject("wins" , wins);
+        mav.addObject("loses", loses);
+        mav.addObject("matches", matches);
+        mav.addObject("lps", lps);
         return mav;
     }
 

@@ -28,7 +28,9 @@
                 <td>
                 <td class="entry-text-small-container" th:text="${team.shortName}"></td>
                 </td>
-                <td class="entry-text-small-container" th:text="${team.name}"></td>
+                <td class="entry-text-small-container">
+                    <a th:text="${team.name}" th:href="@{/team(id=${team.id})}"></a>
+                </td>
                 <td class="entry-text-small-container" th:text="${team.getTeamTierValue()}"></td>
                 <td>
                     <img th:if="${team.active}" class="entry-logo" src="active.png"/>
@@ -42,6 +44,219 @@
                 </td>
             </tr>
         </table>
+        <div class="player-charts">
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <div>
+                <canvas id="wlChart" height="300px"></canvas>
+            </div>
+            <div>
+                <canvas id="lpChart" height="300px"></canvas>
+            </div>
+        </div>
+        <script>
+            const ctx = document.getElementById('wlChart');
+            const wlChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [(${screens})],
+                    datasets: [
+                        {
+                            label: [(${team1.getShortNameFormat()})],
+                            data: [[${team1matches}]],
+                            borderColor: 'rgba(255, 206, 86, 1)',
+                            backgroundColor: 'rgba(255, 206, 86, 1)',
+                        },
+                        {
+                            label: [(${team2.getShortNameFormat()})],
+                            data: [[${team2matches}]],
+                            borderColor: 'rgb(86,109,255)',
+                            backgroundColor: 'rgb(86,109,255)',
+                        },
+                        {
+                            label: [(${team3.getShortNameFormat()})],
+                            data: [[${team3matches}]],
+                            borderColor: 'rgb(183,91,234)',
+                            backgroundColor: 'rgb(183,91,234)',
+                        },
+                        {
+                            label: [(${team4.getShortNameFormat()})],
+                            data: [[${team4matches}]],
+                            borderColor: 'rgb(63,250,34)',
+                            backgroundColor: 'rgb(63,250,34)',
+                        },
+                        {
+                            label: [(${team5.getShortNameFormat()})],
+                            data: [[${team5matches}]],
+                            borderColor: 'rgb(231,173,31)',
+                            backgroundColor: 'rgb(231,173,31)',
+                        },
+                        {
+                            label: [(${team6.getShortNameFormat()})],
+                            data: [[${team6matches}]],
+                            borderColor: 'rgb(47,207,222)',
+                            backgroundColor: 'rgb(47,207,222)',
+                        },
+                        {
+                            label: [(${team7.getShortNameFormat()})],
+                            data: [[${team7matches}]],
+                            borderColor: 'rgb(207,0,255)',
+                            backgroundColor: 'rgb(207,0,255)',
+                        },
+                        {
+                            label: [(${team8.getShortNameFormat()})],
+                            data: [[${team8matches}]],
+                            borderColor: 'rgba(255, 206, 86, 0.2)',
+                            backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                        },
+                        {
+                            label: [(${team9.getShortNameFormat()})],
+                            data: [[${team9matches}]],
+                            borderColor: 'rgb(103,103,103)',
+                            backgroundColor: 'rgb(103,103,103)',
+                        },
+                        {
+                            label: [(${team10.getShortNameFormat()})],
+                            data: [[${team10matches}]],
+                            borderColor: 'rgb(112,42,12)',
+                            backgroundColor: 'rgb(112,42,12)',
+                        },
+                        {
+                            label: [(${team11.getShortNameFormat()})],
+                            data: [[${team11matches}]],
+                            borderColor: 'rgb(252,105,105)',
+                            backgroundColor: 'rgb(252,105,105)',
+                        },
+                        {
+                            label: [(${team12.getShortNameFormat()})],
+                            data: [[${team12matches}]],
+                            borderColor: 'rgb(0,46,241)',
+                            backgroundColor: 'rgb(0,46,241)',
+                        },
+                        {
+                            label: [(${team13.getShortNameFormat()})],
+                            data: [[${team13matches}]],
+                            borderColor: 'rgb(255,218,0)',
+                            backgroundColor: 'rgb(255,218,0)',
+                        },
+                        {
+                            label: [(${team14.getShortNameFormat()})],
+                            data: [[${team14matches}]],
+                            borderColor: 'rgb(255,92,0)',
+                            backgroundColor: 'rgb(255,92,0)',
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+            const ctx_2 = document.getElementById('lpChart');
+            const lpChart = new Chart(ctx_2, {
+                type: 'line',
+                data: {
+                    labels: [(${screens})],
+                    datasets: [
+                        {
+                            label: [(${team1.getShortNameFormat()})],
+                            data: [[${team1lps}]],
+                            borderColor: 'rgba(255, 206, 86, 1)',
+                            backgroundColor: 'rgba(255, 206, 86, 1)',
+                        },
+                        {
+                            label: [(${team2.getShortNameFormat()})],
+                            data: [[${team2lps}]],
+                            borderColor: 'rgb(86,109,255)',
+                            backgroundColor: 'rgb(86,109,255)',
+                        },
+                        {
+                            label: [(${team3.getShortNameFormat()})],
+                            data: [[${team3lps}]],
+                            borderColor: 'rgb(183,91,234)',
+                            backgroundColor: 'rgb(183,91,234)',
+                        },
+                        {
+                            label: [(${team4.getShortNameFormat()})],
+                            data: [[${team4lps}]],
+                            borderColor: 'rgb(63,250,34)',
+                            backgroundColor: 'rgb(63,250,34)',
+                        },
+                        {
+                            label: [(${team5.getShortNameFormat()})],
+                            data: [[${team5lps}]],
+                            borderColor: 'rgb(231,173,31)',
+                            backgroundColor: 'rgb(231,173,31)',
+                        },
+                        {
+                            label: [(${team6.getShortNameFormat()})],
+                            data: [[${team6lps}]],
+                            borderColor: 'rgb(47,207,222)',
+                            backgroundColor: 'rgb(47,207,222)',
+                        },
+                        {
+                            label: [(${team7.getShortNameFormat()})],
+                            data: [[${team7lps}]],
+                            borderColor: 'rgb(207,0,255)',
+                            backgroundColor: 'rgb(207,0,255)',
+                        },
+                        {
+                            label: [(${team8.getShortNameFormat()})],
+                            data: [[${team8lps}]],
+                            borderColor: 'rgba(255, 206, 86, 0.2)',
+                            backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                        },
+                        {
+                            label: [(${team9.getShortNameFormat()})],
+                            data: [[${team9lps}]],
+                            borderColor: 'rgb(103,103,103)',
+                            backgroundColor: 'rgb(103,103,103)',
+                        },
+                        {
+                            label: [(${team10.getShortNameFormat()})],
+                            data: [[${team10lps}]],
+                            borderColor: 'rgb(112,42,12)',
+                            backgroundColor: 'rgb(112,42,12)',
+                        },
+                        {
+                            label: [(${team11.getShortNameFormat()})],
+                            data: [[${team11lps}]],
+                            borderColor: 'rgb(252,105,105)',
+                            backgroundColor: 'rgb(252,105,105)',
+                        },
+                        {
+                            label: [(${team12.getShortNameFormat()})],
+                            data: [[${team12lps}]],
+                            borderColor: 'rgb(0,46,241)',
+                            backgroundColor: 'rgb(0,46,241)',
+                        },
+                        {
+                            label: [(${team13.getShortNameFormat()})],
+                            data: [[${team13lps}]],
+                            borderColor: 'rgb(255,218,0)',
+                            backgroundColor: 'rgb(255,218,0)',
+                        },
+                        {
+                            label: [(${team14.getShortNameFormat()})],
+                            data: [[${team14lps}]],
+                            borderColor: 'rgb(255,92,0)',
+                            backgroundColor: 'rgb(255,92,0)',
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+        </script>
     </div>
 </body>
 </html>

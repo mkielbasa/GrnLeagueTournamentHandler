@@ -1,15 +1,17 @@
 package grn.database.repository;
 
-import grn.database.pojo.Player;
-import grn.database.pojo.Team;
+import grn.database.pojo.*;
+import grn.database.service.PlayerService;
 import grn.database.service.TeamService;
 import grn.error.ConsoleHandler;
 
 import java.io.File;
+import java.sql.Timestamp;
 import java.util.*;
 
 public class TeamRepository implements Repository {
     private Map<Long, Team> teams = new HashMap<>();
+    private int screensCount = 0;
     private static final File TEAMS_FILE = new File("./GrnTournament/teams.conf");
 
     @Override
@@ -28,6 +30,59 @@ public class TeamRepository implements Repository {
         List<Team> registeredTeams = TeamService.getAllTeams();
         for (Team team :registeredTeams)
             teams.put(team.getId(), team);
+        screensCount = calcScreenCount();
+    }
+
+    private int calcScreenCount() {
+        int maxScreens = 0;
+        for (Team team : teams.values()) {
+            List<String> screens = team.getScreens();
+            int teamScreens = screens.size();
+            if (teamScreens > maxScreens)
+                maxScreens = teamScreens;
+        }
+        return maxScreens;
+    }
+
+    public int getScreensCount() {
+        return screensCount;
+    }
+
+    public void savePlayerHistory () {
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        for (Team team : teams.values()) {
+            TeamHistory teamHistory = new TeamHistory();
+            teamHistory.setTeamId(team.getId());
+            teamHistory.setScreenTime(now);
+            int wins = 0;
+            int loses = 0;
+            List<Player> players = team.getPlayers();
+            for (int i=0; i<players.size(); i++) {
+                Player player = players.get(i);
+                List<PlayerStats> playerStats = PlayerService.getLeagues(player);
+                wins += getWins(playerStats);
+                loses += getLoses(playerStats);
+            }
+            teamHistory.setWins(wins);
+            teamHistory.setLoses(loses);
+            teamHistory.setMatches(wins + loses);
+            teamHistory.setLp(team.getTeamTierValue());
+            TeamService.saveHistory(teamHistory);
+        }
+    }
+
+    private int getWins (List<PlayerStats> playerStats) {
+        int wins = 0;
+        for (PlayerStats playerStat : playerStats)
+            wins += playerStat.getWins();
+        return wins;
+    }
+
+    private int getLoses (List<PlayerStats> playerStats) {
+        int wins = 0;
+        for (PlayerStats playerStat : playerStats)
+            wins += playerStat.getLoses();
+        return wins;
     }
 
     public List<Team> getAllTeams () {

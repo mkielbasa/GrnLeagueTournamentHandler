@@ -2,9 +2,12 @@ package grn.database.service;
 
 import grn.database.*;
 import grn.database.pojo.Player;
+import grn.database.pojo.PlayerHistory;
 import grn.database.pojo.Team;
+import grn.database.pojo.TeamHistory;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class TeamService {
@@ -49,5 +52,29 @@ public class TeamService {
         Delete delete = new Delete(sql);
         delete.setParams(internalId);
         delete.execute();
+    }
+
+    public static void saveHistory (TeamHistory teamHistory) {
+        Insert insert = new Insert("tournament.teamhistory");
+        insert.setColumns("teamid", "lp", "screentime", "wins", "loses", "matches");
+        insert.setValues(teamHistory.getTeamId(), teamHistory.getLp(),
+                teamHistory.getScreenTime().getTime(),
+                teamHistory.getWins(), teamHistory.getLoses(), teamHistory.getMatches());
+        insert.execute();
+    }
+
+    public static LinkedHashMap<Long, TeamHistory> getTeamHistory (long teamId) {
+        LinkedHashMap<Long, TeamHistory> history = new LinkedHashMap<>();
+        String sql = "select * from tournament.teamhistory where teamid=? order by screentime asc";
+        Query query = new Query(sql);
+        query.setParams(teamId);
+        List<QueryRow> rows = query.execute();
+        for (QueryRow row : rows) {
+            TeamHistory teamHistory = new TeamHistory();
+            teamHistory.fromQueryRow(row);
+            long screenTime = teamHistory.getScreenTime().getTime();
+            history.put(screenTime, teamHistory);
+        }
+        return history;
     }
 }

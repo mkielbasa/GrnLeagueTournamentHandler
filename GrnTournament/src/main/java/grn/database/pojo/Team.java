@@ -2,11 +2,14 @@ package grn.database.pojo;
 
 
 import grn.database.QueryRow;
+import grn.database.repository.Repositories;
+import grn.database.repository.TeamRepository;
+import grn.database.service.TeamService;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class Team implements  Comparable<Team> {
 
@@ -16,7 +19,9 @@ public class Team implements  Comparable<Team> {
   private String icon;
   private String winRatio;
   private boolean active;
+  private int extraLP;
 
+  LinkedHashMap<Long, TeamHistory> history = new LinkedHashMap<>();
   private List<Player> players = new ArrayList<>();
 
   public void fromQueryRow(QueryRow row) {
@@ -24,7 +29,85 @@ public class Team implements  Comparable<Team> {
     this.name = (String) row.get(2);
     this.shortName = (String) row.get(3);
     this.active = (Boolean) row.get(5);
+    this.extraLP = (int) row.get(6);
     this.icon = shortName + ".png";
+    this.history = TeamService.getTeamHistory(id);
+  }
+
+  public int getExtraLP() {
+    return extraLP;
+  }
+
+  public LinkedHashMap<Long, TeamHistory> getHistory() {
+    return history;
+  }
+
+  public List<String> getScreens () {
+    List<String> screens = new LinkedList<>();
+    TeamRepository teamRepository = Repositories.getTeamRepository();
+    int screenCount = teamRepository.getScreensCount();
+    int ownScreenCount = history.keySet().size();
+    if (ownScreenCount < screenCount)
+      for (int i=0; i < (screenCount - ownScreenCount); i++)
+        screens.add("'NA'");
+    for (Long time : history.keySet()) {
+      Timestamp t = new Timestamp(time);
+      String s = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(t);
+      screens.add("'" + s + "'");
+    }
+    return screens;
+  }
+
+  public List<Long> getLpHistory () {
+    List<Long> l = new LinkedList<>();
+    TeamRepository teamRepository = Repositories.getTeamRepository();
+    int screenCount = teamRepository.getScreensCount();
+    int ownScreenCount = history.keySet().size();
+    if (ownScreenCount < screenCount)
+      for (int i=0; i < (screenCount - ownScreenCount); i++)
+        l.add(0l);
+    for (TeamHistory ph : history.values())
+      l.add (ph.getLp());
+    return l;
+  }
+
+  public List<Integer> getWinHistory () {
+    List<Integer> l = new LinkedList<>();
+    TeamRepository teamRepository = Repositories.getTeamRepository();
+    int screenCount = teamRepository.getScreensCount();
+    int ownScreenCount = history.keySet().size();
+    if (ownScreenCount < screenCount)
+      for (int i=0; i < (screenCount - ownScreenCount); i++)
+        l.add(0);
+    for (TeamHistory ph : history.values())
+      l.add (ph.getWins());
+    return l;
+  }
+
+  public List<Integer> getLosesHistory () {
+    List<Integer> l = new LinkedList<>();
+    TeamRepository teamRepository = Repositories.getTeamRepository();
+    int screenCount = teamRepository.getScreensCount();
+    int ownScreenCount = history.keySet().size();
+    if (ownScreenCount < screenCount)
+      for (int i=0; i < (screenCount - ownScreenCount); i++)
+        l.add(0);
+    for (TeamHistory ph : history.values())
+      l.add (ph.getLoses());
+    return l;
+  }
+
+  public List<Integer> getMatchesHistory () {
+    List<Integer> l = new LinkedList<>();
+    TeamRepository teamRepository = Repositories.getTeamRepository();
+    int screenCount = teamRepository.getScreensCount();
+    int ownScreenCount = history.keySet().size();
+    if (ownScreenCount < screenCount)
+      for (int i=0; i < (screenCount - ownScreenCount); i++)
+        l.add(0);
+    for (TeamHistory ph : history.values())
+      l.add (ph.getMatches());
+    return l;
   }
 
   public boolean containsPlayer (String pUUID) {
@@ -52,6 +135,7 @@ public class Team implements  Comparable<Team> {
         Player player = players.get(i);
         tierValue += player.getTierValue();
       }
+      tierValue += extraLP;
       return tierValue;
   }
 
@@ -99,6 +183,10 @@ public class Team implements  Comparable<Team> {
 
   public String getShortName() {
     return shortName;
+  }
+
+  public String getShortNameFormat() {
+    return "'" + shortName + "'";
   }
 
   public void setShortName(String shortName) {

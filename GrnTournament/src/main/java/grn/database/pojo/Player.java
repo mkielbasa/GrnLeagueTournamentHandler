@@ -4,11 +4,13 @@ package grn.database.pojo;
 import grn.database.QueryRow;
 import grn.database.repository.Repositories;
 import grn.database.repository.TeamRepository;
+import grn.database.service.PlayerService;
 import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class Player implements Comparable<Player>{
 
@@ -21,6 +23,7 @@ public class Player implements Comparable<Player>{
   private long profileIconId;
   private long revisionDate;
   private long summonerLevel;
+  private List<PlayerStats> allStats;
   private PlayerStats playerStats;
   private String tierIcon;
   private String tier;
@@ -30,6 +33,7 @@ public class Player implements Comparable<Player>{
   private int tierValue;
   private boolean active;
   private List<ChampionMastery> masteries = new ArrayList<>();
+  private Map<Long, PlayerHistory> history = new LinkedHashMap<>();
 
   public void fromJson (JSONObject jPlayer) {
       this.id = (String)jPlayer.get("id");
@@ -54,6 +58,7 @@ public class Player implements Comparable<Player>{
       this.id = (String) row.get(9);
       this.active = (Boolean) row.get(10);
       this.profileIcon = "/profileicon/" + profileIconId + ".png";
+      this.history = PlayerService.getPlayerHistory(internalId);
       updateTeamIcon();
   }
 
@@ -65,7 +70,61 @@ public class Player implements Comparable<Player>{
       teamIcon = team.getIcon();
   }
 
-  public void toggleActive () {
+  public List<String> getScreens () {
+      List<String> screens = new LinkedList<>();
+      for (Long time : history.keySet()) {
+          Timestamp t = new Timestamp(time);
+          String s = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(t);
+          screens.add("'" + s + "'");
+      }
+      return screens;
+  }
+
+  public List<Long> getLpHistory () {
+      List<Long> l = new LinkedList<>();
+      for (PlayerHistory ph : history.values())
+          l.add (ph.getLp());
+      return l;
+  }
+
+    public List<Integer> getWinHistory () {
+        List<Integer> l = new LinkedList<>();
+        for (PlayerHistory ph : history.values())
+            l.add (ph.getWins());
+        return l;
+    }
+
+    public List<Integer> getLosesHistory () {
+        List<Integer> l = new LinkedList<>();
+        for (PlayerHistory ph : history.values())
+            l.add (ph.getLoses());
+        return l;
+    }
+
+    public List<Integer> getMatchesHistory () {
+        List<Integer> l = new LinkedList<>();
+        for (PlayerHistory ph : history.values())
+            l.add (ph.getMatches());
+        return l;
+    }
+
+    public Map<Long, PlayerHistory> getHistory() {
+        return history;
+    }
+
+    public void setHistory(Map<Long, PlayerHistory> history) {
+        this.history = history;
+    }
+
+    public List<PlayerStats> getAllStats() {
+        return allStats;
+    }
+
+    public void setAllStats(List<PlayerStats> allStats) {
+        this.allStats = allStats;
+    }
+
+    public void toggleActive () {
       this.active = !active;
   }
 
@@ -121,7 +180,11 @@ public class Player implements Comparable<Player>{
         this.tier = playerStats.getTier() + " " + playerStats.getRank();
         this.winRatio = getWinRatio();
         int rankValue = PlayerRank.getRankValue(playerStats.getTier());
-        this.tierValue = (rankValue*400) + (int)playerStats.getLeaguePoints();
+        int subRankValue = PlayerRank.getSubRankValue(playerStats.getRank());
+        if (playerStats.getTier() == null)
+            this.tierValue = 0;
+        else
+            this.tierValue = (rankValue*400) + (subRankValue*100) +  (int)playerStats.getLeaguePoints();
     }
 
     public String getTier() {

@@ -2,11 +2,8 @@ package grn.database.service;
 
 import grn.database.*;
 import grn.database.pojo.Match;
-import grn.database.pojo.MatchStats;
-import grn.database.pojo.PlayerMatchStats;
 import grn.database.pojo.Team;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,4 +56,18 @@ public class MatchService {
         update.execute();
     }
 
+    public static void toggleActive (Match match) {
+        deactivateAll();
+        String sql = "update tournament.match set active=? where id=?";
+        Update update = new Update(sql);
+        update.setParams(!match.isActive(), match.getId());
+        update.execute();
+    }
+
+    public static void deactivateAll() {
+        String sql = "update tournament.match set active=false";
+        Update update = new Update(sql);
+        update.setParams();
+        update.execute();
+    }
 }

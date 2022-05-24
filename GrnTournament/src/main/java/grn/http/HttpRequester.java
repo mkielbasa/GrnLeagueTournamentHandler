@@ -22,7 +22,7 @@ import static grn.endpoint.EndpointRequest.OUTDATED_API_KEY;
 
 public class HttpRequester {
 
-    private static final int ENDPOINT_LIMIT = 50;
+    private static final int ENDPOINT_LIMIT = 45;
 
     private static int endpointCalls = 0;
 

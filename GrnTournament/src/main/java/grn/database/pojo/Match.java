@@ -19,6 +19,7 @@ public class Match {
   private int teamAScore;
   private int teamBScore;
   private int group;
+  private boolean active;
 
   private Team teamAObject;
   private Team teamBObject;
@@ -45,6 +46,7 @@ public class Match {
     if (row.get(8) != null)
       this.teamBScore = (int) row.get(8);
     this.group = (int) row.get(9);
+    this.active = (boolean) row.get(10);
 
     TeamRepository teamRepository = Repositories.getTeamRepository();
     this.teamAObject = teamRepository.getTeam(teamA);
@@ -60,6 +62,18 @@ public class Match {
       this.teamBIcon = teamBObject.getIcon();
     }
     this.result = teamAScore + " - " + teamBScore;
+  }
+
+  public void setResult(String result) {
+    this.result = result;
+  }
+
+  public void setActive(boolean active) {
+    this.active = active;
+  }
+
+  public boolean isActive() {
+    return active;
   }
 
   public int getTeamAScore() {

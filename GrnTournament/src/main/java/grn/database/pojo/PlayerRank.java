@@ -21,10 +21,10 @@ public class PlayerRank {
         ranks.put(7, "GRANDMASTER");
         ranks.put(8, "CHALLENGER");
 
-        subRanks.put(4, "I");
-        subRanks.put(3, "II");
-        subRanks.put(2, "III");
-        subRanks.put(1, "IV");
+        subRanks.put(3, "I");
+        subRanks.put(2, "II");
+        subRanks.put(1, "III");
+        subRanks.put(0, "IV");
     }
 
     public static int getRankValue (String tier) {
@@ -37,6 +37,8 @@ public class PlayerRank {
     }
 
     public static int getSubRankValue (String tier) {
+        if (tier == null)
+            return 0;
         for (int key : subRanks.keySet()) {
             String rank = subRanks.get(key);
             if (rank.equals(tier))

@@ -11,6 +11,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.File;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,6 +56,37 @@ public class PlayerRepository implements Repository {
             player.setMasteries(masteries);
             team.updateWinRatio ();
         }
+    }
+
+    public void savePlayerHistory () {
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        for (Player player : players.values()) {
+            List<PlayerStats> playerStats = PlayerService.getLeagues(player);
+            PlayerHistory playerHistory = new PlayerHistory();
+            playerHistory.setPlayerId(player.getInternalId());
+            playerHistory.setLp(player.getTierValue());
+            playerHistory.setScreenTime(now);
+            int wins = getWins(playerStats);
+            int loses = getLoses(playerStats);
+            playerHistory.setWins(wins);
+            playerHistory.setLoses(loses);
+            playerHistory.setMatches(wins + loses);
+            PlayerService.saveHistory(playerHistory);
+        }
+    }
+
+    private int getWins (List<PlayerStats> playerStats) {
+        int wins = 0;
+        for (PlayerStats playerStat : playerStats)
+            wins += playerStat.getWins();
+        return wins;
+    }
+
+    private int getLoses (List<PlayerStats> playerStats) {
+        int wins = 0;
+        for (PlayerStats playerStat : playerStats)
+            wins += playerStat.getLoses();
+        return wins;
     }
 
     private void loadPlayersBestStats() {

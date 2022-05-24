@@ -32,6 +32,15 @@ public class MatchRepository implements Repository {
                 matches.put(tier, new HashMap<>());
             matches.get(tier).put(match.getId(), match);
         }
+        currentMatch = getActiveMatch();
+    }
+
+    private Match getActiveMatch () {
+        for (int tier : matches.keySet())
+            for (Match match : matches.get(tier).values())
+                if (match.isActive())
+                    return match;
+        return null;
     }
 
     public Match getFinalMatch (int tier) {
@@ -64,6 +73,11 @@ public class MatchRepository implements Repository {
     }
 
     public Match getCurrentMatch() {
+        if (currentMatch == null) {
+            Match mock = new Match();
+            mock.setResult("NO-MATCH");
+            return new Match();
+        }
         return currentMatch;
     }
 }

@@ -17,11 +17,23 @@
         <div class="app-title-container">
             <a href="http://localhost:8080/">Control panel</a>
         </div>
+        <div class="option">
+            <a href="http://localhost:8080/tree4preview">Preview</a>
+        </div>
+        <div class="entry-text-small-container">
+            <p>Current match:</p>
+            <img th:if="${currentMatch.teamAObject}!=null" class="entry-logo" th:src="@{${currentMatch.teamAIcon}}"/>
+            <img th:if="${currentMatch.teamAObject}==null" class="entry-logo" src="users.png"/>
+            <span th:text="${currentMatch.result}"/>
+            <img th:if="${currentMatch.teamBObject}!=null" class="entry-logo" th:src="@{${currentMatch.teamBIcon}}"/>
+            <img th:if="${currentMatch.teamBObject}==null" class="entry-logo" src="users.png"/>
+        </div>
         <div class="tree">
             <ul>
                <li>
                    <div class="entry-text-small-container">
                        <a th:href="@{/editMatch(id=${final.id})}"><img class="entry-logo" src="edit.png"/></a>
+                       <a th:href="@{/toggleMatchActive(id=${final.id})}">A</a>
                        <a th:href="@{/updateMatchScore(id=${final.id},scoreA=${final.getTeamAScore()+1},scoreB=${final.getTeamBScore()})}">+</a>
                        <a th:href="@{/updateMatchScore(id=${final.id},scoreA=${final.getTeamAScore()-1},scoreB=${final.getTeamBScore()})}">-</a>
                        <img th:if="${final.teamAObject}!=null" class="entry-logo" th:src="@{${final.teamAIcon}}"/>
@@ -36,6 +48,7 @@
                        <li>
                            <div class="entry-text-small-container">
                                <a th:href="@{/editMatch(id=${starter1.id})}"><img class="entry-logo" src="edit.png"/></a>
+                               <a th:href="@{/toggleMatchActive(id=${starter1.id})}">A</a>
                                <a th:href="@{/updateMatchScore(id=${starter1.id},scoreA=${starter1.getTeamAScore()+1},scoreB=${starter1.getTeamBScore()})}">+</a>
                                <a th:href="@{/updateMatchScore(id=${starter1.id},scoreA=${starter1.getTeamAScore()-1},scoreB=${starter1.getTeamBScore()})}">-</a>
                                <img th:if="${starter1.teamAObject}!=null" class="entry-logo" th:src="@{${starter1.teamAIcon}}"/>
@@ -50,6 +63,7 @@
                        <li>
                            <div class="entry-text-small-container">
                                <a th:href="@{/editMatch(id=${starter2.id})}"><img class="entry-logo" src="edit.png"/></a>
+                               <a th:href="@{/toggleMatchActive(id=${starter2.id})}">A</a>
                                <a th:href="@{/updateMatchScore(id=${starter2.id},scoreA=${final.getTeamAScore()+1},scoreB=${starter2.getTeamBScore()})}">+</a>
                                <a th:href="@{/updateMatchScore(id=${starter2.id},scoreA=${final.getTeamAScore()-1},scoreB=${starter2.getTeamBScore()})}">-</a>
                                <img th:if="${starter2.teamAObject}!=null" class="entry-logo" th:src="@{${starter2.teamAIcon}}"/>
