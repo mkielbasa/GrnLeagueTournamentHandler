@@ -62,6 +62,17 @@ public class Player implements Comparable<Player>{
       updateTeamIcon();
   }
 
+  public Map<MaestryTier, List<ChampionMastery>> getMaestryTiers () {
+      Map<MaestryTier, List<ChampionMastery>> tiers = new HashMap<>();
+      for (ChampionMastery mastery : masteries) {
+          MaestryTier tier = MaestryTier.getTier(mastery.getChampionPoints());
+          if (!tiers.containsKey(tier))
+              tiers.put(tier, new ArrayList<>());
+          tiers.get(tier).add(mastery);
+      }
+      return tiers;
+  }
+
   private void updateTeamIcon () {
       TeamRepository teamRepository = Repositories.getTeamRepository();
       Team team = teamRepository.getTeam(teamId);
@@ -74,7 +85,7 @@ public class Player implements Comparable<Player>{
       List<String> screens = new LinkedList<>();
       for (Long time : history.keySet()) {
           Timestamp t = new Timestamp(time);
-          String s = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(t);
+          String s = new SimpleDateFormat("MM/dd").format(t);
           screens.add("'" + s + "'");
       }
       return screens;

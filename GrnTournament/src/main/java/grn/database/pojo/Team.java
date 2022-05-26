@@ -52,7 +52,7 @@ public class Team implements  Comparable<Team> {
         screens.add("'NA'");
     for (Long time : history.keySet()) {
       Timestamp t = new Timestamp(time);
-      String s = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(t);
+      String s = new SimpleDateFormat("MM/dd").format(t);
       screens.add("'" + s + "'");
     }
     return screens;

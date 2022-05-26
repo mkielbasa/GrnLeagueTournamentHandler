@@ -44,7 +44,7 @@
                 </td>
             </tr>
         </table>
-        <div class="player-charts">
+        <div class="player-charts-static">
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
             <div>
                 <canvas id="wlChart" height="300px"></canvas>
@@ -143,6 +143,18 @@
                             data: [[${team14matches}]],
                             borderColor: 'rgb(255,92,0)',
                             backgroundColor: 'rgb(255,92,0)',
+                        },
+                        {
+                            label: [(${team15.getShortNameFormat()})],
+                            data: [[${team15matches}]],
+                            borderColor: 'rgb(75,73,72)',
+                            backgroundColor: 'rgb(75,73,72)',
+                        },
+                        {
+                            label: [(${team16.getShortNameFormat()})],
+                            data: [[${team16matches}]],
+                            borderColor: 'rgb(173,86,201)',
+                            backgroundColor: 'rgb(173,86,201)',
                         }
                     ]
                 },
@@ -244,6 +256,18 @@
                             data: [[${team14lps}]],
                             borderColor: 'rgb(255,92,0)',
                             backgroundColor: 'rgb(255,92,0)',
+                        },
+                        {
+                            label: [(${team15.getShortNameFormat()})],
+                            data: [[${team15lps}]],
+                            borderColor: 'rgb(75,73,72)',
+                            backgroundColor: 'rgb(75,73,72)',
+                        },
+                        {
+                            label: [(${team16.getShortNameFormat()})],
+                            data: [[${team16lps}]],
+                            borderColor: 'rgb(173,86,201)',
+                            backgroundColor: 'rgb(173,86,201)',
                         }
                     ]
                 },

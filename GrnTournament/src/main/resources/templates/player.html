@@ -56,6 +56,70 @@
                     <div class="player-chart">
                         <canvas id="lpChart"></canvas>
                     </div>
+                    <div class="player-champ-tiers-container">
+                        <table class="player-champ-tiers-table">
+                            <tr>
+                                <td class="player-champ-S">S</td>
+                                <td class="player-champ-tierlist">
+                                    <th:block th:each="champ : ${S}">
+                                        <div class="player-champ-tierlist-item">
+                                            <img class="player-champ-tiers-icon" th:src="@{${champ.getChampionIcon()}}">
+                                        </div>
+                                    </th:block>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="player-champ-A">A</td>
+                                <td class="player-champ-tierlist">
+                                    <th:block th:each="champ : ${A}">
+                                        <div class="player-champ-tierlist-item">
+                                            <img class="player-champ-tiers-icon" th:src="@{${champ.getChampionIcon()}}">
+                                        </div>
+                                    </th:block>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="player-champ-B">B</td>
+                                <td class="player-champ-tierlist">
+                                    <th:block th:each="champ : ${B}">
+                                        <div class="player-champ-tierlist-item">
+                                            <img class="player-champ-tiers-icon" th:src="@{${champ.getChampionIcon()}}">
+                                        </div>
+                                    </th:block>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="player-champ-C">C</td>
+                                <td class="player-champ-tierlist">
+                                    <th:block th:each="champ : ${C}">
+                                        <div class="player-champ-tierlist-item">
+                                            <img class="player-champ-tiers-icon" th:src="@{${champ.getChampionIcon()}}">
+                                        </div>
+                                    </th:block>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="player-champ-D">D</td>
+                                <td class="player-champ-tierlist">
+                                    <th:block th:each="champ : ${D}">
+                                        <div class="player-champ-tierlist-item">
+                                            <img class="player-champ-tiers-icon" th:src="@{${champ.getChampionIcon()}}">
+                                        </div>
+                                    </th:block>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="player-champ-F">F</td>
+                                <td class="player-champ-tierlist">
+                                    <th:block th:each="champ : ${F}">
+                                        <div class="player-champ-tierlist-item">
+                                            <img class="player-champ-tiers-icon" th:src="@{${champ.getChampionIcon()}}">
+                                        </div>
+                                    </th:block>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class HttpController {
@@ -379,6 +380,7 @@ public class HttpController {
         List<Integer> wins = player.getWinHistory();
         List<Integer> loses = player.getLosesHistory();
         List<Integer> matches = player.getMatchesHistory();
+        Map<MaestryTier, List<ChampionMastery>> masteries = player.getMaestryTiers();
         ModelAndView mav = new ModelAndView("player");
         mav.addObject("player", player);
         mav.addObject("summonerLevel", "Lvl: " + player.getSummonerLevel());
@@ -389,6 +391,12 @@ public class HttpController {
         mav.addObject("loses", loses);
         mav.addObject("matches", matches);
         mav.addObject("lps", lps);
+        mav.addObject("S", masteries.get(MaestryTier.S));
+        mav.addObject("A", masteries.get(MaestryTier.A));
+        mav.addObject("B", masteries.get(MaestryTier.B));
+        mav.addObject("C", masteries.get(MaestryTier.C));
+        mav.addObject("D", masteries.get(MaestryTier.D));
+        mav.addObject("F", masteries.get(MaestryTier.F));
         return mav;
     }
 

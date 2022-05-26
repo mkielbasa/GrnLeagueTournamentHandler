@@ -334,9 +334,9 @@ a:visited {
     display: inline-block;
     margin: auto;
     width: 50%;
-    height: 80%;
+    height: 95%;
     left: 25%;
-    top: 10%;
+    top: 2%;
     position: absolute;
     background-color: rgba(190, 190, 190, 0.5);
     box-shadow: 3px 3px #343434;
@@ -422,18 +422,116 @@ a:visited {
 }
 
 .player-maestries {
-    display: inline-block;
     width: 50%;
-    transform: translateY(-50%);
 }
 
 .player-charts {
-    display: inline-block;
-    width: 35%;
+    position: absolute;
+    width: 46%;
+    transform: translateX(700px) translateY(-1100px);
+}
+
+.player-charts-static {
+    width: 600px;
 }
 
 .player-chart {
 
+}
+
+.player-champ-tiers-container {
+
+}
+
+.player-champ-tiers-table {
+    border-style: dotted;
+    border-color: #343434;
+    border: 1px;
+}
+
+.player-champ-S {
+    font-family: "Staatliches", sans-serif;
+    font-size: 40px;
+    color: #fffb00;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    text-shadow: 3px 3px 3px #343434;
+    background-color: #fd4646;
+}
+
+.player-champ-A {
+    font-family: "Staatliches", sans-serif;
+    font-size: 40px;
+    color: #fffb00;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    text-shadow: 3px 3px 3px #343434;
+    background-color: #e85c23;
+}
+
+.player-champ-B {
+    font-family: "Staatliches", sans-serif;
+    font-size: 40px;
+    color: #fffb00;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    text-shadow: 3px 3px 3px #343434;
+    background-color: #e3c748;
+}
+
+.player-champ-C {
+    font-family: "Staatliches", sans-serif;
+    font-size: 40px;
+    color: #fffb00;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    text-shadow: 3px 3px 3px #343434;
+    background-color: #a4f68a;
+}
+
+.player-champ-D {
+    font-family: "Staatliches", sans-serif;
+    font-size: 40px;
+    color: #fffb00;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    text-shadow: 3px 3px 3px #343434;
+    background-color: #2fcfde;
+}
+
+.player-champ-F {
+    font-family: "Staatliches", sans-serif;
+    font-size: 40px;
+    color: #fffb00;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    text-shadow: 3px 3px 3px #343434;
+    background-color: rgba(239, 239, 239, 0.5);
+}
+
+.player-champ-tierlist {
+    width: 700px;
+}
+
+.player-champ-tierlist-item {
+    display: inline-block;
+}
+
+.player-champ-tiers-icon {
+    width: 30px;
+    height: 30px;
 }
 
 .player-maestries-title {
