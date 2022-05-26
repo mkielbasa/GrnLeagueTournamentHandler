@@ -32,6 +32,7 @@
                     <a th:text="${team.name}" th:href="@{/team(id=${team.id})}"></a>
                 </td>
                 <td class="entry-text-small-container" th:text="${team.getTeamTierValue()}"></td>
+                <td class="entry-text-small-container" th:text="(${team.getExtraLP()})"></td>
                 <td>
                     <img th:if="${team.active}" class="entry-logo" src="active.png"/>
                     <img th:unless="${team.active}" class="entry-logo" src="inactive.png"/>

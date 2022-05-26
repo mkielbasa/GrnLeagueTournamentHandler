@@ -29,7 +29,6 @@ public class Team implements  Comparable<Team> {
     this.name = (String) row.get(2);
     this.shortName = (String) row.get(3);
     this.active = (Boolean) row.get(5);
-    this.extraLP = (int) row.get(6);
     this.icon = shortName + ".png";
     this.history = TeamService.getTeamHistory(id);
   }
@@ -135,7 +134,9 @@ public class Team implements  Comparable<Team> {
         Player player = players.get(i);
         tierValue += player.getTierValue();
       }
-      tierValue += extraLP;
+      this.extraLP = 0;
+      for (Player player : players)
+        this.extraLP += player.getExtraLp();
       return tierValue;
   }
 

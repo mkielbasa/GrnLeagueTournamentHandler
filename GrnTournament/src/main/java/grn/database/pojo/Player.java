@@ -31,6 +31,8 @@ public class Player implements Comparable<Player>{
   private String teamIcon;
   private String winRatio;
   private int tierValue;
+  private int otherTier;
+  private int extraLp;
   private boolean active;
   private List<ChampionMastery> masteries = new ArrayList<>();
   private Map<Long, PlayerHistory> history = new LinkedHashMap<>();
@@ -57,12 +59,13 @@ public class Player implements Comparable<Player>{
       this.summonerLevel = (long) row.get(8);
       this.id = (String) row.get(9);
       this.active = (Boolean) row.get(10);
+      this.otherTier = (int) row.get(11);
       this.profileIcon = "/profileicon/" + profileIconId + ".png";
       this.history = PlayerService.getPlayerHistory(internalId);
       updateTeamIcon();
   }
 
-  public Map<MaestryTier, List<ChampionMastery>> getMaestryTiers () {
+    public Map<MaestryTier, List<ChampionMastery>> getMaestryTiers () {
       Map<MaestryTier, List<ChampionMastery>> tiers = new HashMap<>();
       for (ChampionMastery mastery : masteries) {
           MaestryTier tier = MaestryTier.getTier(mastery.getChampionPoints());
@@ -192,10 +195,36 @@ public class Player implements Comparable<Player>{
         this.winRatio = getWinRatio();
         int rankValue = PlayerRank.getRankValue(playerStats.getTier());
         int subRankValue = PlayerRank.getSubRankValue(playerStats.getRank());
+        this.tierValue = calcLP();
+        this.extraLp = calcExtraLP(tierValue);
+        this.tierValue += extraLp;
+    }
+
+    private int calcLP () {
+        int tierValue = 0;
+        int rankValue = PlayerRank.getRankValue(playerStats.getTier());
+        int subRankValue = PlayerRank.getSubRankValue(playerStats.getRank());
         if (playerStats.getTier() == null)
-            this.tierValue = 0;
+            tierValue = 0;
         else
-            this.tierValue = (rankValue*400) + (subRankValue*100) +  (int)playerStats.getLeaguePoints();
+            tierValue = (rankValue*400) + (subRankValue*100) +  (int)playerStats.getLeaguePoints();
+        return tierValue;
+    }
+
+    private int calcExtraLP(int tierValue) {
+        int rankValue = PlayerRank.getRankValue(playerStats.getTier());
+        if (otherTier > rankValue) {
+            int currentRankValue = (rankValue * 400);
+            int otherRankValue = (otherTier * 400);
+            int diff = otherRankValue - currentRankValue;
+            return diff;
+        }
+        else
+            return 0;
+    }
+
+    public int getExtraLp() {
+        return extraLp;
     }
 
     public String getTier() {
