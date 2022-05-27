@@ -9,10 +9,9 @@ import grn.error.ConsoleHandler;
 import grn.exception.EndpointException;
 import grn.sound.SoundPlayer;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-public class WebController {
+@org.springframework.web.bind.annotation.RestController
+public class RestController {
 
     @GetMapping("/reloadPlayers")
     public String reloadPlayers () throws EndpointException {
