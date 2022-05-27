@@ -206,44 +206,31 @@ public class HttpController {
 
     @GetMapping("/tree4")
     public ModelAndView getTree4 () {
-        return buildTree4Model("tree4");
+        return buildTree8Model("tree8", 1);
     }
 
     @GetMapping("/tree4preview")
     public ModelAndView getTree4Preview () {
-        return buildTree4Model("tree4preview");
-    }
-
-    private ModelAndView buildTree4Model (String view) {
-        MatchRepository matchRepository = Repositories.getMatchRepository();
-        Match currentMatch = matchRepository.getCurrentMatch();
-        Match finalMatch = matchRepository.getFinalMatch(1);
-        ModelAndView mav = new ModelAndView(view);
-        mav.addObject("final", finalMatch);
-        List<Match> starter1 = matchRepository.getMatchesWithParent(1, finalMatch);
-        mav.addObject("starter1", starter1.get(0));
-        mav.addObject("starter2", starter1.get(1));
-        mav.addObject("currentMatch", currentMatch);
-        return mav;
+        return buildTree8Model("tree8preview", 1);
     }
 
     @GetMapping("/tree8")
     public ModelAndView getTree8 () {
-        return buildTree8Model("tree8");
+        return buildTree8Model("tree8", 2);
     }
 
     @GetMapping("/tree8preview")
     public ModelAndView getTree8Preview () {
-        return buildTree8Model("tree8preview");
+        return buildTree8Model("tree8preview", 2);
     }
 
-    public ModelAndView buildTree8Model (String view) {
+    public ModelAndView buildTree8Model (String view, int tier) {
         MatchRepository matchRepository = Repositories.getMatchRepository();
         Match currentMatch = matchRepository.getCurrentMatch();
-        Match finalMatch = matchRepository.getFinalMatch(2);
-        List<Match> semiFinals = matchRepository.getMatchesWithParent(2, finalMatch);
-        List<Match> starters1 = matchRepository.getMatchesWithParent(2, semiFinals.get(0));
-        List<Match> starters2 = matchRepository.getMatchesWithParent(2, semiFinals.get(1));
+        Match finalMatch = matchRepository.getFinalMatch(tier);
+        List<Match> semiFinals = matchRepository.getMatchesWithParent(tier, finalMatch);
+        List<Match> starters1 = matchRepository.getMatchesWithParent(tier, semiFinals.get(0));
+        List<Match> starters2 = matchRepository.getMatchesWithParent(tier, semiFinals.get(1));
         ModelAndView mav = new ModelAndView(view);
         mav.addObject("final", finalMatch);
         mav.addObject("semifinal1", semiFinals.get(0));
