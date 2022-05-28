@@ -128,6 +128,7 @@ public class MatchController {
         ModelAndView mav = new ModelAndView("currentMatch");
         Team teamA = currentMatch.getTeamAObject();
         Team teamB = currentMatch.getTeamBObject();
+        mav.addObject("match" , currentMatch);
         mav.addObject("teamA", teamA);
         mav.addObject("teamAplayers", teamA.getPlayers());
         mav.addObject("teamB", teamB);

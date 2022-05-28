@@ -1,12 +1,11 @@
 package com.example.grntournament.controlloer;
 
-import grn.database.pojo.ChampionMastery;
-import grn.database.pojo.MaestryTier;
-import grn.database.pojo.Player;
-import grn.database.pojo.Team;
+import grn.database.pojo.*;
+import grn.database.repository.MatchRepository;
 import grn.database.repository.PlayerRepository;
 import grn.database.repository.Repositories;
 import grn.database.repository.TeamRepository;
+import grn.database.service.MatchService;
 import grn.database.service.PlayerService;
 import grn.exception.EndpointException;
 import org.springframework.stereotype.Controller;
@@ -101,10 +100,36 @@ public class PlayerController {
 
     @GetMapping("/player")
     public ModelAndView getPlayer (@RequestParam String id) {
+        ModelAndView mav = new ModelAndView("player");
+        long internalId = Long.parseLong(id);
+        buildPlayerModel(mav, internalId);
+        return mav;
+    }
+
+    @GetMapping("/currentPlayer")
+    public ModelAndView getPlayer () {
+        PlayerRepository playerRepository = Repositories.getPlayerRepository();
+        Player currentPlayer = playerRepository.getCurrentPlayer();
+        ModelAndView mav = new ModelAndView("player");
+        buildPlayerModel(mav, currentPlayer.getInternalId());
+        return mav;
+    }
+
+    @GetMapping("/toggleCurrentPlayer")
+    public String getToggleMatchActive (@RequestParam String id) {
+        PlayerRepository playerRepository = Repositories.getPlayerRepository();
+        long internalId = Long.parseLong(id);
+        playerRepository.setCurrentPlayer (internalId);
+        Player currentPlayer = playerRepository.getCurrentPlayer();
+        ModelAndView mav = new ModelAndView("player");
+        buildPlayerModel(mav, currentPlayer.getInternalId());
+        return "index";
+    }
+
+    private void buildPlayerModel (ModelAndView mav, long playerId) {
         PlayerRepository playerRepository = Repositories.getPlayerRepository();
         TeamRepository teamRepository = Repositories.getTeamRepository();
-        long internalId = Long.parseLong(id);
-        Player player = playerRepository.get(internalId);
+        Player player = playerRepository.get(playerId);
         Team team = teamRepository.getTeam(player.getTeamId());
         List<ChampionMastery> maestries = new ArrayList<>();
         int max = 25;
@@ -119,7 +144,6 @@ public class PlayerController {
         List<Integer> loses = player.getLosesHistory();
         List<Integer> matches = player.getMatchesHistory();
         Map<MaestryTier, List<ChampionMastery>> masteries = player.getMaestryTiers();
-        ModelAndView mav = new ModelAndView("player");
         mav.addObject("player", player);
         mav.addObject("summonerLevel", "Lvl: " + player.getSummonerLevel());
         mav.addObject("teamIcon", team.getIcon());
@@ -135,7 +159,6 @@ public class PlayerController {
         mav.addObject("C", masteries.get(MaestryTier.C));
         mav.addObject("D", masteries.get(MaestryTier.D));
         mav.addObject("F", masteries.get(MaestryTier.F));
-        return mav;
     }
 
 }

@@ -15,26 +15,24 @@
             <table>
                 <tr>
                     <td><img class="team-logo" th:src="@{${teamA.icon}}"></td>
-                    <td class="team-name" th:text="${teamA.name}">Team A</td></tr>
-                <tr th:each="player : ${teamAplayers}">
-                    <td><img class="team-player-rank" th:src="@{${player.tierIcon}}"></td>
-                    <td class="team-player" th:text="${player.name}">Player 1</td>
+                </tr>
+                <tr>
+                    <td class="team-name" th:text="${teamA.shortName}">Team A</td>
                 </tr>
             </table>
         </div>
         <div class="vs-container">
             <div class="vs">
-                VS
+                <span th:text="${match.result}"></span>
             </div>
         </div>
         <div class="team">
             <table>
                 <tr>
                     <td><img class="team-logo" th:src="@{${teamB.icon}}"></td>
-                    <td class="team-name" th:text="${teamB.name}">Team B</td></tr>
-                <tr th:each="player : ${teamBplayers}">
-                    <td><img class="team-player-rank" th:src="@{${player.tierIcon}}"></td>
-                    <td class="team-player" th:text="${player.name}">Player 1</td>
+                </tr>
+                <tr>
+                    <td class="team-name" th:text="${teamB.shortName}">Team B</td>
                 </tr>
             </table>
         </div>

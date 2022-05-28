@@ -22,6 +22,7 @@ public class PlayerRepository implements Repository {
     private static final File TEAMS_FILE = new File("./GrnTournament/players.conf");
 
     private TeamRepository teamRepository;
+    private Player currentPlayer;
 
     public PlayerRepository (TeamRepository teamRepository) {
         this.teamRepository = teamRepository;
@@ -45,6 +46,7 @@ public class PlayerRepository implements Repository {
             players.put(player.getInternalId(), player);
         loadPlayerStats();
         loadPlayersBestStats();
+        this.currentPlayer = players.values().iterator().next();
     }
 
     private void loadPlayerStats() {
@@ -73,6 +75,10 @@ public class PlayerRepository implements Repository {
             playerHistory.setMatches(wins + loses);
             PlayerService.saveHistory(playerHistory);
         }
+    }
+
+    public Player getCurrentPlayer() {
+        return currentPlayer;
     }
 
     private int getWins (List<PlayerStats> playerStats) {
@@ -249,5 +255,9 @@ public class PlayerRepository implements Repository {
             if (player.getPUuid().equals(pUUID))
                 return true;
         return false;
+    }
+
+    public void setCurrentPlayer(long internalId) {
+        this.currentPlayer = players.get(internalId);
     }
 }

@@ -40,6 +40,9 @@
                     <img th:unless="${player.active}" class="entry-logo" src="inactive.png"/>
                 </td>
                 <td>
+                    <a th:href="@{/toggleCurrentPlayer(id=${player.internalId})}"><img class="entry-logo" src="wand.png"/></a>
+                </td>
+                <td>
                     <a th:href="@{/editPlayer(id=${player.internalId})}"><img class="entry-logo" src="edit.png"/></a>
                 </td>
                 <td>
