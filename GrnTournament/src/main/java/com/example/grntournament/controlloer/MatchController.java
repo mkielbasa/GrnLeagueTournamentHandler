@@ -4,7 +4,6 @@ import grn.database.pojo.*;
 import grn.database.repository.Repositories;
 import grn.database.repository.TeamRepository;
 import grn.database.service.MatchService;
-import grn.exception.EndpointException;
 import grn.database.repository.MatchRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -68,7 +67,7 @@ public class MatchController {
     }
 
     @PostMapping("/editMatch")
-    public String getEditMatchSubmit (@ModelAttribute Match match, Model model) throws EndpointException {
+    public String getEditMatchSubmit (@ModelAttribute Match match, Model model) {
         MatchRepository matchRepository = Repositories.getMatchRepository();
         TeamRepository teamRepository = Repositories.getTeamRepository();
         List<Team> teams = teamRepository.getAllTeams();

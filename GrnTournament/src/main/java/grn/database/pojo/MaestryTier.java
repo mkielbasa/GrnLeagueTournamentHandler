@@ -11,18 +11,16 @@ public enum MaestryTier {
 
     private static final MaestryTier[] tiers = {S,A,B,C,D,F};
 
-    private long minimum;
+    private final long minimum;
 
-    private MaestryTier (long minimum) {
+    MaestryTier(long minimum) {
         this.minimum = minimum;
     }
 
     public static MaestryTier getTier(long maestry) {
-        for (int i=0; i<tiers.length; i++) {
-            MaestryTier tier = tiers[i];
+        for (MaestryTier tier : tiers)
             if (maestry > tier.minimum)
                 return tier;
-        }
         return null;
     }
 }

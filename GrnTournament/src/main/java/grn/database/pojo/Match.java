@@ -1,12 +1,8 @@
 package grn.database.pojo;
 
-
-import com.example.grntournament.GrnTournamentApplication;
 import grn.database.QueryRow;
 import grn.database.repository.Repositories;
 import grn.database.repository.TeamRepository;
-import grn.database.service.MatchService;
-import grn.properties.PropertiesHandler;
 
 public class Match {
 

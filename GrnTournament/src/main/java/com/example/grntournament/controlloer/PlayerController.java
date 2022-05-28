@@ -1,11 +1,9 @@
 package com.example.grntournament.controlloer;
 
 import grn.database.pojo.*;
-import grn.database.repository.MatchRepository;
 import grn.database.repository.PlayerRepository;
 import grn.database.repository.Repositories;
 import grn.database.repository.TeamRepository;
-import grn.database.service.MatchService;
 import grn.database.service.PlayerService;
 import grn.exception.EndpointException;
 import org.springframework.stereotype.Controller;
