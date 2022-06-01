@@ -32,6 +32,7 @@ public class Player implements Comparable<Player>{
   private String winRatio;
   private int tierValue;
   private int otherTier;
+  private String server;
   private int extraLp;
   private boolean active;
   private List<ChampionMastery> masteries = new ArrayList<>();
@@ -60,6 +61,7 @@ public class Player implements Comparable<Player>{
       this.id = (String) row.get(9);
       this.active = (Boolean) row.get(10);
       this.otherTier = (int) row.get(11);
+      this.server = (String) row.get(12);
       this.profileIcon = "/profileicon/" + profileIconId + ".png";
       this.history = PlayerService.getPlayerHistory(internalId);
       updateTeamIcon();
@@ -120,6 +122,10 @@ public class Player implements Comparable<Player>{
         for (PlayerHistory ph : history.values())
             l.add (ph.getMatches());
         return l;
+    }
+
+    public String getServer() {
+        return server;
     }
 
     public Map<Long, PlayerHistory> getHistory() {

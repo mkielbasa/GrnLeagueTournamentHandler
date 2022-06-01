@@ -129,7 +129,7 @@ public class PlayerRepository implements Repository {
     public void checkPlayers () throws EndpointException {
         for (Player player : players.values()) {
             try {
-                SummonerEndpoint sEndpoint = new SummonerEndpoint(player.getName());
+                SummonerEndpoint sEndpoint = new SummonerEndpoint(player.getName(), player.getServer());
                 sEndpoint.doRequest();
             } catch (NotFoundException e) {
                 ConsoleHandler.handleWarning("Player " + player.getName() + " not found (probably has changed name)");
@@ -140,7 +140,7 @@ public class PlayerRepository implements Repository {
 
     public Player initPlayer (String summoner, Team team) throws EndpointException {
         try {
-            SummonerEndpoint sEndpoint = new SummonerEndpoint(summoner);
+            SummonerEndpoint sEndpoint = new SummonerEndpoint(summoner, "eun1");
             RequestResult result = sEndpoint.doRequest();
             JSONObject jSummoner = (JSONObject) result.parseJSON();
             Player player = new Player();
@@ -169,7 +169,7 @@ public class PlayerRepository implements Repository {
         PlayerService.clearMasteries(player);
         String summonerId = player.getSummonerId();
         try {
-            ChampionMasteryEndpoint cEndpoint = new ChampionMasteryEndpoint(summonerId);
+            ChampionMasteryEndpoint cEndpoint = new ChampionMasteryEndpoint(summonerId, player.getServer());
             RequestResult result = cEndpoint.doRequest();
             JSONArray jMaestries = (JSONArray) result.parseJSON();
             for (Object jObject : jMaestries.toArray()) {
@@ -184,7 +184,7 @@ public class PlayerRepository implements Repository {
     }
 
     private String getProbablyNewName (String puuid) throws EndpointException {
-        SummonerUUIDEndpoint sEndpoint = new SummonerUUIDEndpoint(puuid);
+        SummonerUUIDEndpoint sEndpoint = new SummonerUUIDEndpoint(puuid, "eun1");
         RequestResult result = sEndpoint.doRequest();
         JSONObject jObject = (JSONObject) result.parseJSON();
         String gameName = (String) jObject.get("name");
@@ -200,7 +200,7 @@ public class PlayerRepository implements Repository {
     public void initLeagues(Player player) throws EndpointException {
         try {
             PlayerService.clearLeagues(player);
-            LeagueEndpoint lEndpoint = new LeagueEndpoint(player.getSummonerId());
+            LeagueEndpoint lEndpoint = new LeagueEndpoint(player.getSummonerId(), player.getServer());
                 RequestResult result = lEndpoint.doRequest();
                 JSONArray jLeagues = (JSONArray) result.parseJSON();
                 for (Object jObject : jLeagues.toArray()) {

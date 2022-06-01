@@ -7,21 +7,23 @@ import org.json.simple.JSONArray;
 public class ChampionMasteryEndpoint extends EndpointRequest {
 
     private String summonerId;
+    private String server;
 
-    public ChampionMasteryEndpoint(String summonerId) {
+    public ChampionMasteryEndpoint(String summonerId, String server) {
         super();
         this.summonerId = summonerId;
+        this.server = server;
         this.params = buildParams();
     }
 
     @Override
     protected String[] buildParams() {
-        return new String[] {summonerId, apiKey};
+        return new String[] {server,summonerId, apiKey};
     }
 
     @Override
     protected String buildURL() {
-        return "https://eun1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/%s?api_key=%s";
+        return "https://%s.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/%s?api_key=%s";
     }
 
     @Override

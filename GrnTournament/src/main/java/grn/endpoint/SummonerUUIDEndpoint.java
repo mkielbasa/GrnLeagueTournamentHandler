@@ -8,8 +8,9 @@ import java.net.URLEncoder;
 public class SummonerUUIDEndpoint extends EndpointRequest{
 
     private String puuid;
+    private String server;
 
-    public SummonerUUIDEndpoint(String puuid) {
+    public SummonerUUIDEndpoint(String puuid, String server) {
         super();
         try {
             this.puuid = URLEncoder.encode(puuid, "UTF-8");
@@ -21,12 +22,12 @@ public class SummonerUUIDEndpoint extends EndpointRequest{
 
     @Override
     protected String[] buildParams() {
-        return new String[] {puuid, apiKey};
+        return new String[] {server, puuid, apiKey};
     }
 
     @Override
     protected String buildURL() {
-        return "https://eun1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/%s?api_key=%s";
+        return "https://$s.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/%s?api_key=%s";
     }
 
     @Override
