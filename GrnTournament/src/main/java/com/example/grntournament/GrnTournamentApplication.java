@@ -3,7 +3,7 @@ package com.example.grntournament;
 import grn.database.ConnectionEstablisher;
 import grn.database.repository.Repositories;
 import grn.error.ConsoleHandler;
-import grn.file.TextFileWriter;
+import grn.http.file.TextFileWriter;
 import grn.http.HttpRequester;
 import grn.twitch.TwitchBot;
 import org.springframework.boot.SpringApplication;

@@ -1,4 +1,4 @@
-package grn.file;
+package grn.http.file;
 
 import grn.error.ConsoleHandler;
 

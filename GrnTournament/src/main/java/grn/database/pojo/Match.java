@@ -11,7 +11,6 @@ public class Match {
   private long teamB;
   private boolean finished;
   private long parentId;
-  private long winner;
   private int teamAScore;
   private int teamBScore;
   private int group;
@@ -35,8 +34,6 @@ public class Match {
       this.teamB = (long) row.get(3);
     this.finished = (boolean) row.get(4);
     this.parentId = (long) row.get(5);
-    if (row.get(6) != null)
-      this.winner = (long) row.get(6);
     if (row.get(7) != null)
       this.teamAScore = (int) row.get(7);
     if (row.get(8) != null)

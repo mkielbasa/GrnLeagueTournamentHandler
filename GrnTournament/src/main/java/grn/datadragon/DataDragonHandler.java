@@ -1,6 +1,6 @@
 package grn.datadragon;
 
-import grn.file.FileDownloader;
+import grn.http.file.FileDownloader;
 import grn.properties.PropertiesHandler;
 
 import java.io.File;
